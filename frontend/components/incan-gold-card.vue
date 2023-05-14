@@ -6,6 +6,8 @@
 </template>
 
 <script lang="ts" setup>
+	import Card from '@/utils/Card'
+
 	const props = defineProps({
 		card: {
 			type: Card,

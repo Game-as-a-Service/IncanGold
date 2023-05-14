@@ -9,8 +9,7 @@
 		"postinstall": "nuxt prepare"
 	},
 	"dependencies": {
-		"nuxt": "^3.4.2",
-		"incan-gold-core": "workspace:*"
+		"nuxt": "^3.4.2"
 	},
 	"devDependencies": {
 		"@types/node": "^18",
