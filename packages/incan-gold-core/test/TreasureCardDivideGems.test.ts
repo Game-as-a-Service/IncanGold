@@ -28,8 +28,6 @@ describe('寶物卡將寶石平分給通道中的玩家', ()=>{
         // then 3位玩家的背包裡都會裝3顆寶石
         for(let player of game.players)
             expect(player.bag?.gems.length).toBe(3);
-        
-        
     })
 
     it(`寶石數對人數除不盡`,()=>{

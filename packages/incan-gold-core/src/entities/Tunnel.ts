@@ -21,6 +21,12 @@ class Tunnel {
     this.cards.push(card);
   }
 
+  public exitNoPlayers():boolean{
+    for(let player of this.players)
+      if(!player.inTent) return false;
+    return true;
+  }
+
   public remove(): void {
     // 1.移除背包
     this.bags.splice(0,this.bags.length);
@@ -35,8 +41,10 @@ class Tunnel {
     // 丟棄所有神器卡
     var tmpCards: Card[] = [];
     this.cards.forEach((card) => {
-      if (card instanceof ArtifactCard) 
+      if (card instanceof ArtifactCard){
         trashDeck.appendCard(card);
+        card.tunnel = null;
+      } 
       else 
         tmpCards.push(card);
     });
@@ -44,14 +52,17 @@ class Tunnel {
 
     // 災難卡放入廢棄排堆
     var index = 0;
-    for(let [name, times] of HazardCard.counter){
+    for(let [name, times] of HazardCard.counter.entries()){
       if(times == 2){
         var hazardCard = this.cards.find(card=>{
           index ++;
           return((card instanceof HazardCard) && (card.name == name))
         });
 
-        if(hazardCard) trashDeck.appendCard(hazardCard);
+        if(hazardCard){
+          trashDeck.appendCard(hazardCard);
+          hazardCard.tunnel = null;
+        }
         this.cards.splice(index,1);
         break; 
       }

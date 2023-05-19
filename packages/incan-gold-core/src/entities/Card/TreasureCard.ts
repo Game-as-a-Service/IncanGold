@@ -21,9 +21,9 @@ class TresasureCard extends Card {
 
   public devideGemsTo(players:Player[]): void {
     // iterations:分配次數
-    var iterations = this.gems.length/players.length;
+    var iterations = Math.floor(this.gems.length/players.length);
 
-    for(let i=0;i<Math.floor(iterations);i++){
+    for(let i=0;i<iterations;i++){
       players.forEach(player=>{
         let gem = this.gems.pop();
         if(gem) player.putGemInBag(gem)
@@ -34,7 +34,7 @@ class TresasureCard extends Card {
 
   public trigger(): void {
     this.generateGems();
-    var players = this.tunnel?.players;
+    var players = this.tunnel?.players.filter(player=>player.inTent === false);
     if(players) this.devideGemsTo(players);
   }
 

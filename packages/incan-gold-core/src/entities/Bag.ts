@@ -19,6 +19,7 @@ class Bag {
 
   public putArtifactIn(artifact: ArtifactCard): void {
     this.artifactCards.push(artifact);
+    artifact.tunnel = null;
     this.points += artifact.points;
   }
 
