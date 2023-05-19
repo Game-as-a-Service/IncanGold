@@ -15,10 +15,11 @@ class GameService {
     // 🔺 要求使用者選擇 method 🔺
     public askPlayers():void{
         if(this.game.forcedExplore == false){
-            // 寄出可以選擇的訊息
+            throw "請選擇離開通道或繼續探險";
         }else{
             this.game.forcedExplore = false;
             // 寄出不可以選擇的訊息
+            throw "沒得選，給我探險";
         }
     }
 

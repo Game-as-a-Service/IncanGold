@@ -28,7 +28,6 @@ class TresasureCard extends Card {
         let gem = this.gems.pop();
         if(gem) player.putGemInBag(gem)
       });
-
     }
   }
 

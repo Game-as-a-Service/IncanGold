@@ -33,7 +33,7 @@ class Player {
     this.inTent = true;
     this.tent.updatePoints();
     if(this.tunnel.exitNoPlayers())
-      throw new Error("通道沒人囉～");
+      throw new Error("通道沒人囉～該回合結束");
   }
 
   public leaveBag(): Bag|null {
