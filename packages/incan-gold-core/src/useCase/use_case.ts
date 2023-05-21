@@ -10,6 +10,7 @@ class GameService {
     }
 
     // 結束遊戲 method
+    public askPlayers():void;
 
     
     // 🔺 要求使用者選擇 method 🔺
@@ -23,11 +24,11 @@ class GameService {
         }
     }
 
-    public afterRoundEnd():void{
+    public afterRoundEnd():void {
         if(this.game.round!==5){   
             this.game.putCardsInDeck(); 
             this.game.onRoundStart();
-            this.game.onTurnStart(); // 甭擔心拋例外，第 1 Turn 絕不會被迫結束
+            this.game.onTurnStart(); 
         }else{
             this.game.findWinner();
             // 結束遊戲，顯示玩家?獲勝
@@ -35,8 +36,8 @@ class GameService {
         }
     }
 
-    // 等待玩家的選擇結束後要走的流程
-    public afterPlayersChoice(playersChoices:string[]):void{
+    // 等待玩家的選擇結束後要走的流程 ， return
+    public afterPlayersChoice(playersChoices:string[]):any{
         // 1. 根據接收到的選擇更改玩家狀態
         for(let i=0;i<this.game.players.length;i++){
             this.game.players[i].choice = playersChoices[i];
@@ -47,24 +48,20 @@ class GameService {
             console.log(`player${player.id} choose ${player.choice}`);
         
         // 3. 分配寶石&神器，並讓要離開的玩家離開通道
-        var nextTurn = true;
-        try   { this.game.getAndGo()   }  // 可能所有玩家都自願離開通道
-        catch {
-            this.game.onRoundEnd(); // 回合結束 
-            this.afterRoundEnd(); 
-            nextTurn = false; 
-        }
-
-        if(nextTurn){
-            try   { this.game.onTurnStart()} // 可能災難卡重複出現，所有玩家都被迫離開通道
-            catch { 
-                this.game.onRoundEnd(); // 回合結束
-                this.afterRoundEnd(); 
+        this.game.getAndGo() 
+        if(this.game.tunnel.existNoPlayers()){
+            this.game.onRoundEnd();
+            this.afterRoundEnd();
+        }else{
+            this.game.onTurnStart();
+            if(this.game.tunnel.exitNoPlayers()){
+                this.game.onRoundEnd();
+                this.afterRoundEnd();
             }
         }
 
         // 4. 要求使用者選擇
-        
+        return this.askPlayers();
     }
 
     // 遊戲開始
@@ -73,6 +70,7 @@ class GameService {
         this.game.onRoundStart();
         this.game.onTurnStart();
         // 要求使用者選擇
+        this.askPlayers();
     }
 }
 

@@ -21,7 +21,7 @@ class Tunnel {
     this.cards.push(card);
   }
 
-  public exitNoPlayers():boolean{
+  public existNoPlayers():boolean{
     for(let player of this.players)
       if(!player.inTent) return false;
     return true;
