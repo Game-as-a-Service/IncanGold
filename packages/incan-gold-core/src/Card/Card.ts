@@ -1,5 +1,6 @@
-
-export class Card {
+class Card {
 	execute() {}
 	getPlayerInTunnel() {}
 }
+
+export default Card;

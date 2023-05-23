@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-	import Card from '@/utils/Card'
+	import { Card } from 'incan-gold-core'
 
 	const cardUrl = "./237254689-ce62c0ab-f66d-4718-8a43-4a42cc1df1ab.jpg";
 
