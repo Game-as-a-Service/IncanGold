@@ -2,7 +2,7 @@ import Game from '../entities/Game'
 
 
 class GameService {
-    
+
     public game : Game;
 
     constructor(){
@@ -12,7 +12,7 @@ class GameService {
     // 結束遊戲 method
     public askPlayers():void;
 
-    
+
     // 🔺 要求使用者選擇 method 🔺
     public askPlayers():void{
         if(this.game.forcedExplore == false){
@@ -42,7 +42,7 @@ class GameService {
         for(let i=0;i<this.game.players.length;i++){
             this.game.players[i].choice = playersChoices[i];
         }
-        
+
         // 2. 公布玩家選擇
         for(let player of this.game.players) // 應該不能是console.log
             console.log(`player${player.id} choose ${player.choice}`);
@@ -54,7 +54,7 @@ class GameService {
             this.afterRoundEnd();
         }else{
             this.game.onTurnStart();
-            if(this.game.tunnel.exitNoPlayers()){
+            if(this.game.tunnel.existNoPlayers()){
                 this.game.onRoundEnd();
                 this.afterRoundEnd();
             }
