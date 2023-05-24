@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 devDependencies:
+  '@babel/plugin-transform-modules-commonjs':
+    specifier: ^7.21.5
+    version: 7.21.5(@babel/core@7.21.8)
   '@types/jest':
     specifier: ^29.5.1
     version: 29.5.1
@@ -315,6 +318,20 @@ packages:
     dependencies:
       '@babel/core': 7.21.8
       '@babel/helper-plugin-utils': 7.21.5
+    dev: true
+
+  /@babel/plugin-transform-modules-commonjs@7.21.5(@babel/core@7.21.8):
+    resolution: {integrity: sha512-OVryBEgKUbtqMoB7eG2rs6UFexJi6Zj6FDXx+esBLPTCxCNxAY9o+8Di7IsUGJ+AVhp5ncK0fxWUBd0/1gPhrQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.21.8
+      '@babel/helper-module-transforms': 7.21.5
+      '@babel/helper-plugin-utils': 7.21.5
+      '@babel/helper-simple-access': 7.21.5
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@babel/template@7.20.7:

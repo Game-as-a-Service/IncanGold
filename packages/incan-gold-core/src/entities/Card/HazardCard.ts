@@ -3,7 +3,7 @@ import Tunnel from "../Tunnel";
 import Player from "../Player";
 import Game from "../Game";
 
-const hazardNames = ["fire","rocks","mummy","python","spiders"];
+export const hazardNames = ["fire","rocks","mummy","python","spiders"];
 
 class HazardCard extends Card {
 
@@ -50,5 +50,3 @@ class HazardCard extends Card {
 }
 
 export default HazardCard;
-
-export { hazardNames };

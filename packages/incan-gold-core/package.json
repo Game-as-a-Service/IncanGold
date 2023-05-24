@@ -2,14 +2,14 @@
   "name": "incan-gold-core",
   "version": "1.0.0",
   "description": "",
-  "main": "/dist/index.js",
   "files": [
     "package.json",
-    "index.js",
     "dist/"
   ],
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "import": "./dist/index.js"
+    }
   },
   "scripts": {
     "build": "tsc --build tsconfig.build.json ",

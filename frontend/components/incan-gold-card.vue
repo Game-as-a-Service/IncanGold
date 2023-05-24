@@ -1,23 +1,40 @@
 <template>
-	<img
+	<!-- <img
 		alt="Card Image"
 		:src="card.path"
-		:class="['card-img', { 'card-img__vertical': vertical }]" />
+		:class="['card-img', { 'card-img__vertical': vertical }]" /> -->
+	<div>
+		{{ test }}
+	</div>
 </template>
 
 <script lang="ts" setup>
-	const props = defineProps({
-		card: {
-			type: Card,
-			required: true,
-		},
-		vertical: {
-			type: Boolean,
-			default: false,
-		},
-	});
+import { Card } from 'incan-gold-core'
 
-	const { card, vertical } = toRefs(props);
+const test = ref('gg')
+
+class DisaplyCard {
+	path: string;
+}
+
+const props = defineProps({
+	// card: {
+	// 	type: DisaplyCard,
+	// 	required: true,
+	// },
+	vertical: {
+		type: Boolean,
+		default: false,
+	},
+});
+
+// const { card, vertical } = toRefs(props)
+const { vertical } = toRefs(props)
+
+onMounted(() => {
+	console.log('GG')
+	console.log(Card)
+})
 </script>
 
 <style>
