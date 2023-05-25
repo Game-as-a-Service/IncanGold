@@ -35,7 +35,7 @@ export class Deck{
 }
 
 export class TrashDeck{
-    private cards : Card[] = [];
+    public cards : Card[] = [];
 
     public appendCard(card:Card) : void {
         this.cards.push(card);

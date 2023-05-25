@@ -5,7 +5,7 @@ import TreasureCard from "./Card/TreasureCard";
 import Player from "./Player";
 import Bag from "./Bag";
 import {TrashDeck} from "./Deck";
-import Game from "./Game";
+import Game from "./IncanGold";
 
 class Tunnel {
   public players : Player[] = [];
@@ -19,6 +19,12 @@ class Tunnel {
 
   public appendCard(card: Card): void {
     this.cards.push(card);
+  }
+
+  public existNoPlayers():boolean{
+    for(let player of this.players)
+      if(!player.inTent) return false;
+    return true;
   }
 
   public remove(): void {
@@ -35,8 +41,10 @@ class Tunnel {
     // 丟棄所有神器卡
     var tmpCards: Card[] = [];
     this.cards.forEach((card) => {
-      if (card instanceof ArtifactCard) 
+      if (card instanceof ArtifactCard){
         trashDeck.appendCard(card);
+        card.tunnel = null;
+      } 
       else 
         tmpCards.push(card);
     });
@@ -44,14 +52,17 @@ class Tunnel {
 
     // 災難卡放入廢棄排堆
     var index = 0;
-    for(let [name, times] of HazardCard.counter){
+    for(let [name, times] of HazardCard.counter.entries()){
       if(times == 2){
         var hazardCard = this.cards.find(card=>{
           index ++;
           return((card instanceof HazardCard) && (card.name == name))
         });
 
-        if(hazardCard) trashDeck.appendCard(hazardCard);
+        if(hazardCard){
+          trashDeck.appendCard(hazardCard);
+          hazardCard.tunnel = null;
+        }
         this.cards.splice(index,1);
         break; 
       }

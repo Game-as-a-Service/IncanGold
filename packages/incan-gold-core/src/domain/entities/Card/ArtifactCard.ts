@@ -17,8 +17,6 @@ class ArtifactCard extends Card {
   public trigger(): void {}
 }
 
-let a = new ArtifactCard("11",10);
-
 export default ArtifactCard;
 
 export {artifactList};

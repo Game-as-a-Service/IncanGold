@@ -1,7 +1,7 @@
 import Card from "./Card";
 import Tunnel from "../Tunnel";
 import Player from "../Player";
-import Game from "../Game";
+import Game from "../IncanGold";
 
 const hazardNames = ["fire","rocks","mummy","python","spiders"];
 
@@ -39,7 +39,11 @@ class HazardCard extends Card {
       // 重複的話就把玩家趕離通道
       if(this.hasExist()){
         var players = this.tunnel?.players;
-        if(players) players.forEach(player=>{player.leaveTunnel()})
+        if(players) players.forEach(player=>{
+          var bag = player.leaveBag();
+          if(bag) this.tunnel?.bags.push(bag);
+          player.leaveTunnel()
+        })
       }
     }
   }
