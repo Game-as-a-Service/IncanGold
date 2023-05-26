@@ -1,4 +1,5 @@
 import Game from "../../domain/entities/IncanGold";
+import { Event } from '../../domain/events/Event';
 
 
 export default interface IncanGoldRepository {

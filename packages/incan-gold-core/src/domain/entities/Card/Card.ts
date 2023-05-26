@@ -1,5 +1,7 @@
 import Tunnel from "../Tunnel";
 import Player from "../Player";
+import {Event} from "../../events/Event"
+
 
 abstract class Card {
   public tunnel: Tunnel|null;
@@ -8,7 +10,7 @@ abstract class Card {
     this.tunnel = null;
   }
 
-  public abstract trigger(): void;
+  public abstract trigger(): Event;
 }
 
 export default Card;

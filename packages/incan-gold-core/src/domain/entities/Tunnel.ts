@@ -5,26 +5,36 @@ import TreasureCard from "./Card/TreasureCard";
 import Player from "./Player";
 import Bag from "./Bag";
 import {TrashDeck} from "./Deck";
-import Game from "./IncanGold";
+import IncanGold from "./IncanGold";
 
 class Tunnel {
-  public players : Player[] = [];
+  private _players : Player[] = [];
   public cards : Card[] = [];
   public bags : Bag[] = [];
-  public game : Game;
+  public game : IncanGold;
 
-  constructor(game:Game){
+  constructor(game:IncanGold){
     this.game = game;
+  }
+
+  set players(players:Player[]){
+    this._players = players;
+  }
+
+  get players():Player[]{
+    return this._players.filter(player=>player.inTent == false);
   }
 
   public appendCard(card: Card): void {
     this.cards.push(card);
   }
 
-  public existNoPlayers():boolean{
-    for(let player of this.players)
-      if(!player.inTent) return false;
-    return true;
+  public existNoPlayers():boolean{ 
+    return (this.players.length == 0);
+  }
+
+  public getLastCard():Card{
+    return this.cards[this.cards.length-1];
   }
 
   public remove(): void {
@@ -38,6 +48,14 @@ class Tunnel {
   }
 
   public discardInto(trashDeck:TrashDeck): void {
+    // 災難卡放入廢棄排堆
+    let lastCard = this.getLastCard();
+    if(lastCard instanceof HazardCard && HazardCard.counter[lastCard.name]==2){
+      trashDeck.appendCard(lastCard);
+      lastCard.tunnel = null;
+      this.cards.splice(this.cards.length-1,1)
+    }
+    
     // 丟棄所有神器卡
     var tmpCards: Card[] = [];
     this.cards.forEach((card) => {
@@ -50,23 +68,6 @@ class Tunnel {
     });
     this.cards = tmpCards;
 
-    // 災難卡放入廢棄排堆
-    var index = 0;
-    for(let [name, times] of HazardCard.counter.entries()){
-      if(times == 2){
-        var hazardCard = this.cards.find(card=>{
-          index ++;
-          return((card instanceof HazardCard) && (card.name == name))
-        });
-
-        if(hazardCard){
-          trashDeck.appendCard(hazardCard);
-          hazardCard.tunnel = null;
-        }
-        this.cards.splice(index,1);
-        break; 
-      }
-    }
   }
 }
 

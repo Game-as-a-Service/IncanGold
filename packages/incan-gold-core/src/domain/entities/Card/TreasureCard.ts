@@ -2,6 +2,7 @@ import Card from "./Card";
 import Tunnel from "../Tunnel";
 import Gem from "../Gem";
 import Player from "../Player";
+import {Event,NewTurnTreasureCardTriggeredEvent} from "../../events/Event"
 
 class TresasureCard extends Card {
   public readonly points: number;
@@ -31,10 +32,22 @@ class TresasureCard extends Card {
     }
   }
 
-  public trigger(): void {
+  public trigger(): Event {
     this.generateGems();
-    var players = this.tunnel?.players.filter(player=>player.inTent === false);
+    var players = this.tunnel?.players || [];
     if(players) this.devideGemsTo(players);
+
+    const event:NewTurnTreasureCardTriggeredEvent = {
+      name:'NewTurnTreasureCardTriggered',
+      data:{
+          currentTurn: this.tunnel?.game.turn || 1,
+          cardPoints : this.points,
+          numberOfGemsInBag : players[0].bag?.gems.length || 0,
+          numberOfGemsOnCard : this.gems.length
+      }
+    }
+
+    return event;
   }
 
   public clear():void{

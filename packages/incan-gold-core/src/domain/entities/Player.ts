@@ -26,14 +26,13 @@ class Player {
     this.tent = tent;
     tent.player = this;
     this.bag = null;
-    this.inTent = false;
+    this.inTent = true;
   }
 
-  // 玩家總是帶著新的空背包進入通道
   public enterTunnel(): void {
     this.choice = Choice.NotSelected;
     this.inTent = false;
-    this.bag = new Bag();
+    this.bag = new Bag(); // 玩家總是帶著新的空背包進入通道
   }
 
   public leaveTunnel(): void {

@@ -1,22 +1,29 @@
 import Player from "./Player";
 import Bag from "./Bag"
+import ArtifactCard from "./Card/ArtifactCard"
 
 class Tent {
   public readonly id: number;
-  public points: number;
+  private _points: number;
   public player: Player | null = null;
-  public bags:Bag[] = [];
+  public artifacts: ArtifactCard[] = [];
 
   constructor(id: number) {
     this.id = id;
-    this.points = 0;
+    this._points = 0;
+  }
+
+  get points(){
+    return this._points;
   }
 
   public updatePoints(): void {
     if(this.player?.bag){
-      this.points += this.player.bag.points;
-      var bag = this.player?.leaveBag();
-      if(bag) this.bags.push(bag);
+      this._points += this.player.bag.points;
+      this.player.bag.artifactCards.forEach(artifact=>{
+        this.artifacts.push(artifact);
+      })
+      this.player.leaveBag();
     }
   }
 }
