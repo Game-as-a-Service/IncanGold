@@ -114,7 +114,8 @@ class IncanGold {
             }
         }
 
-        yield this.askPlayers();
+        if(!this.winnerID) 
+            yield this.askPlayers();
     }
 
     public getPlayer(id:number):Player{
@@ -202,10 +203,7 @@ class IncanGold {
     // 從牌堆抽牌放入通道
     public putCardInTunnel():void{
         var card = this.deck.drawCard()
-        if(card){
-            this.tunnel.appendCard(card);
-            card.tunnel = this.tunnel;
-        }
+        if(card) this.tunnel.appendCard(card);
     }
 
     // 把通道中的牌放回牌堆
@@ -268,6 +266,7 @@ class IncanGold {
     }
 
     public onTurnStart() : Event {
+        this.getPlayersInTunnel().forEach(player=>player.choice = Choice.NotSelected);
         this.turn ++;  // 當前回合的turn數 +1
         this.putCardInTunnel(); // 把卡放進通道內
         const newCard = this.tunnel.cards[this.tunnel.cards.length-1];

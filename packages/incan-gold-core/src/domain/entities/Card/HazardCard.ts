@@ -44,7 +44,7 @@ class HazardCard extends Card {
         players.forEach(player=>{
           var bag = player.leaveBag();
           if(bag) this.tunnel?.bags.push(bag);
-          player.leaveTunnel()
+          player.leaveTunnel();
         })
       }
     }

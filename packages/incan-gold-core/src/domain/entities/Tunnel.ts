@@ -27,6 +27,7 @@ class Tunnel {
 
   public appendCard(card: Card): void {
     this.cards.push(card);
+    card.tunnel = this;
   }
 
   public existNoPlayers():boolean{ 

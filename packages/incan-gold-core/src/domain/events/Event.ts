@@ -44,7 +44,7 @@ export interface NewTurnHazardCardTriggeredEvent extends Event{
     data:{
         currentTurn:number;
         cardName : string;
-        forcePlayersToLeave : boolean;
+        forcePlayersToLeave : boolean|null;
     }
 }
 
@@ -62,7 +62,7 @@ export interface NewTurnArtifactCardTriggeredEvent extends Event{
 export interface AllocatedGemsAndArtifactsToPlayersEvent extends Event{
     name:'AllocatedGemsAndArtifactsToPlayer';
     data:{
-        playersID: number[];        // 離開的玩家們
+        leavingplayersID: number[];        // 離開的玩家們
         artifactsInBag: string[];   // 背包中的神器
         numberOfGemsInBag: number;  // 背包中的寶石數
         numberOfGemsOnCard:Record<number, number> // 通道中卡片上剩下的寶石數
