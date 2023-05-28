@@ -14,7 +14,10 @@ import { Card } from 'incan-gold-core'
 const test = ref('gg')
 
 class DisaplyCard {
-	path: string;
+	path: string = '';
+	updatePath(url: string) {
+		this.path = url
+	}
 }
 
 const props = defineProps({
