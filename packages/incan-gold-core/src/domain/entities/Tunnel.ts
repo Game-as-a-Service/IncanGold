@@ -4,72 +4,102 @@ import HazardCard from "./Card/HazardCard";
 import TreasureCard from "./Card/TreasureCard";
 import Player from "./Player";
 import Bag from "./Bag";
-import {TrashDeck} from "./Deck";
+import { TrashDeck } from "./Deck";
+import Gem from "./Gem";
+import { Choice } from "./Player";
 import IncanGold from "./IncanGold";
 
 class Tunnel {
   private _players : Player[] = [];
   public cards : Card[] = [];
-  public bags : Bag[] = [];
-  public game : IncanGold;
 
-  constructor(game:IncanGold){
-    this.game = game;
-  }
-
-  set players(players:Player[]){
+  set players(players:Player[]) {
     this._players = players;
   }
 
-  get players():Player[]{
-    return this._players.filter(player=>player.inTent == false);
+  get players():Player[] {
+    return this._players.filter(player=>player.inTent === false);
+  }
+
+  get leavingPlayers(): Player[] {
+    return this.players.filter(player=>player.choice === Choice.Quit);
+  }
+
+  get noPlayers():boolean { 
+    return (this.players.length == 0);
+  }
+
+  get lastCard():Card {
+    return this.cards[this.cards.length-1];
   }
 
   public appendCard(card: Card): void {
     this.cards.push(card);
-    card.tunnel = this;
   }
 
-  public existNoPlayers():boolean{ 
-    return (this.players.length == 0);
-  }
-
-  public getLastCard():Card{
-    return this.cards[this.cards.length-1];
-  }
-
-  public remove(): void {
-    // 1.移除背包
-    this.bags.splice(0,this.bags.length);
-    // 2.移除寶物卡上的寶石
-    for(let card of this.cards){
-    	if(card instanceof TreasureCard)
-    		card.clear();
-    }
-  }
-
-  public discardInto(trashDeck:TrashDeck): void {
-    // 災難卡放入廢棄排堆
-    let lastCard = this.getLastCard();
-    if(lastCard instanceof HazardCard && HazardCard.counter[lastCard.name]==2){
-      trashDeck.appendCard(lastCard);
-      lastCard.tunnel = null;
-      this.cards.splice(this.cards.length-1,1)
-    }
-    
-    // 丟棄所有神器卡
-    var tmpCards: Card[] = [];
+  public drawArtifactCards():ArtifactCard[]{
+    var tmpCards : Card[] = [];
+    var returnCards : ArtifactCard[] = [];
     this.cards.forEach((card) => {
-      if (card instanceof ArtifactCard){
-        trashDeck.appendCard(card);
-        card.tunnel = null;
-      } 
+      if (card instanceof ArtifactCard)
+        returnCards.push(card);
       else 
         tmpCards.push(card);
     });
     this.cards = tmpCards;
-
+    return returnCards;
   }
+
+  // 移除寶物卡上的寶石
+  public remove(): void {
+    this.cards.forEach(card=>{
+      if(card instanceof TreasureCard) card.clear();
+    })
+  }
+
+  public discardCards(game:IncanGold): void {
+    // 災難卡放入廢棄排堆
+    let lastCard = this.lastCard;
+    if(lastCard instanceof HazardCard && game.hazardCardCounter[lastCard.name]==2){
+      game.trashDeck.appendCard(lastCard);
+      this.cards.splice(this.cards.length-1,1)
+    }
+    
+    // 丟棄所有神器卡
+    this.drawArtifactCards().forEach(card=>{game.trashDeck.appendCard(card);})
+  }
+
+  // 分寶石給要離開的玩家
+  public distributeAllGems():void{
+    let players = this.leavingPlayers;
+    let sum = 0; // 總寶石數
+    let record:Map<TreasureCard, number> = new Map(); // 備份每張寶物卡有多少顆寶石
+    Array.from(this.cards)
+        .reverse()
+        .filter(card=>(card instanceof TreasureCard))
+        .forEach(card => {
+            let treasureCard = (<TreasureCard>card);
+            sum += treasureCard.numOfGems;
+            record.set(treasureCard,treasureCard.numOfGems);
+            treasureCard.clear();
+        })
+
+    let eachOneCanGet =  Math.floor(sum/players.length); // 離開的玩家各可以拿幾顆
+    let left = sum - eachOneCanGet*(players.length) // 分配後剩下的寶石數
+    players.forEach(player=>player.putGemsInBag(Array(eachOneCanGet).fill(new Gem())));
+
+    for(let [card,nums] of record){
+        let numsOfGems = nums > left ? left : nums;
+        card.gems = Array(numsOfGems).fill(new Gem());
+        if((left-=numsOfGems)<=0) break;
+    }
+  }
+
+  public distributeArtifactCards():void{
+    if(this.leavingPlayers.length === 1)
+      this.leavingPlayers[0].putInArtifactsInBag(this.drawArtifactCards());
+  }
+
 }
 
 export default Tunnel;

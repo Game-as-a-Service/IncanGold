@@ -1,59 +1,44 @@
 import Card from "./Card";
-import Tunnel from "../Tunnel";
 import Gem from "../Gem";
 import Player from "../Player";
-import {Event,NewTurnTreasureCardTriggeredEvent} from "../../events/Event"
+import IncanGold from "../IncanGold";
+import Event from "../../events/Event";
+import {NewTurnTreasureCardTriggeredEvent} from "../../events/NewTurnCardTriggeredEvent";
 
-class TresasureCard extends Card {
+export const pointsList = [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, 5, 7, 11]
+
+export default class TreasureCard extends Card {
   public readonly points: number;
-  public gems: Gem[];
+  public gems: Gem[] = [];
 
   constructor(points: number) {
     super();
     this.points = points;
-    this.gems = [];
   }
 
   public generateGems(): void {
-    for (let i = 0; i < this.points; i++) {
-      this.gems.push(new Gem());
-    }
-  }
-
-  public devideGemsTo(players:Player[]): void {
-    // iterations:分配次數
-    var iterations = Math.floor(this.gems.length/players.length);
-
-    for(let i=0;i<iterations;i++){
-      players.forEach(player=>{
-        let gem = this.gems.pop();
-        if(gem) player.putGemInBag(gem)
-      });
-    }
-  }
-
-  public trigger(): Event {
-    this.generateGems();
-    var players = this.tunnel?.players || [];
-    if(players) this.devideGemsTo(players);
-
-    const event:NewTurnTreasureCardTriggeredEvent = {
-      name:'NewTurnTreasureCardTriggered',
-      data:{
-          currentTurn: this.tunnel?.game.turn || 1,
-          cardPoints : this.points,
-          numberOfGemsInBag : players[0].bag?.gems.length || 0,
-          numberOfGemsOnCard : this.gems.length
-      }
-    }
-
-    return event;
+    this.gems = Array(this.points).fill(new Gem());
   }
 
   public clear():void{
-    this.gems.splice(0,this.gems.length);
+    this.gems = [];
   }
 
+  get numOfGems():number{
+    return this.gems.length;
+  }
+
+  public devideGemsTo(players:Player[]): void {
+    var eachOneCanGet = Math.floor(this.numOfGems/players.length); 
+    var left = this.numOfGems- (eachOneCanGet*players.length);
+    players.forEach(player=>player.putGemsInBag(Array(eachOneCanGet).fill(new Gem())));
+    this.gems = Array(left).fill(new Gem());
+  }
+
+  public trigger(game:IncanGold): Event {
+    this.generateGems();
+    this.devideGemsTo(game.playersInTunnel);
+    return new NewTurnTreasureCardTriggeredEvent(game);
+  }
 }
 
-export default TresasureCard;

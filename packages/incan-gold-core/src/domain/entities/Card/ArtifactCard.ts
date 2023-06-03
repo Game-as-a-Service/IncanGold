@@ -1,10 +1,12 @@
 import Card from "./Card";
-import Tunnel from "../Tunnel";
-import {Event,NewTurnArtifactCardTriggeredEvent} from "../../events/Event"
+import IncanGold from "../IncanGold";
+import Event from "../../events/Event"
+import {NewTurnArtifactCardTriggeredEvent} from "../../events/NewTurnCardTriggeredEvent"
 
-const artifactList =  {"黑暗大法師":12,"派大星":10,"金輪":8,"雞蛋糕模具":7,"杯子":5};
+export const artifactName:Record<number,string> = { 1:'杯子',2:'雞蛋糕模具',3:'金輪',4:'派大星',5:'黑暗大法師'};
+export const artifactPoints:Record<number,number> = { 1:5,2:7,3:8,4:10,5:12 };
 
-class ArtifactCard extends Card {
+export default class ArtifactCard extends Card {
 
   public readonly name : string;
   public readonly points : number;
@@ -15,22 +17,8 @@ class ArtifactCard extends Card {
     this.points = points;
   }
   
-  public trigger(): Event {
-    const turn = this.tunnel?.game.turn;
-    const players = this.tunnel?.players || [];
-    const event:NewTurnArtifactCardTriggeredEvent = {
-      name:'NewTurnArtifactCardTriggered',
-      data:{
-          currentTurn: turn||1,
-          cardName : this.name,
-          cardPoints : this.points,
-      }
-    }
-    
-    return event;
+  public trigger(game:IncanGold): Event {
+    return new NewTurnArtifactCardTriggeredEvent(game);
   }
+
 }
-
-export default ArtifactCard;
-
-export {artifactList};

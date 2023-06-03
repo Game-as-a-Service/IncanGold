@@ -1,23 +1,19 @@
 import Card from "./Card/Card"
-import ArtifactCard from "./Card/ArtifactCard";
 import HazardCard, {hazardNames} from "./Card/HazardCard"
-import TreasureCard from "./Card/TreasureCard"
-
+import TreasureCard, {pointsList} from "./Card/TreasureCard"
 
 export class Deck{
     public cards : Card[] = [];
 
     constructor(){
-        hazardNames.forEach(name=>{
-            for(let i=0;i<3;i++)
-                this.cards.push(new HazardCard(name));
-        });
-        
-        var pointsList = [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, 5, 7, 11]
-        pointsList.forEach(points=>{
-            this.cards.push(new TreasureCard(points));
-        });
+        hazardNames.forEach(name=>{ this.cards = this.cards.concat(Array(2).fill(new HazardCard(name))) });
+        // 調回3張
+        pointsList.splice(0,2).forEach(points=>{ this.cards.push(new TreasureCard(points)) });
     }
+
+    get numofCards():number{
+        return this.cards.length;
+    } 
 
     public shuffle() : void {
         for (let i = this.cards.length - 1; i > 0; i--) {
@@ -37,6 +33,10 @@ export class Deck{
 
 export class TrashDeck{
     public cards : Card[] = [];
+
+    get numofCards():number{
+        return this.cards.length;
+    } 
 
     public appendCard(card:Card) : void {
         this.cards.push(card);

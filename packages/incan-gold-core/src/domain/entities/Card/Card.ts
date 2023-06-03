@@ -1,16 +1,7 @@
-import Tunnel from "../Tunnel";
-import Player from "../Player";
-import {Event} from "../../events/Event"
+import IncanGold from "../IncanGold";
+import Event from "../../events/Event"
 
-
-abstract class Card {
-  public tunnel: Tunnel|null;
-
-  constructor() {
-    this.tunnel = null;
-  }
-
-  public abstract trigger(): Event;
+export default abstract class Card {
+  public abstract trigger(game:IncanGold): Event;
 }
 
-export default Card;
