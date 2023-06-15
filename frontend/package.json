@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "nuxt": "^3.4.2",
-    "incan-gold-core": "workspace:*",
     "ramda": "^0.29.0"
   },
   "devDependencies": {
