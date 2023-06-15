@@ -1,10 +1,10 @@
-import Game from '../src/entities/Game';
-import Card from '../src/entities/Card/Card';
-import TreasureCard from '../src/entities/Card/TreasureCard'
-import ArtifactCard from '../src/entities/Card/ArtifactCard'
-import HazardCard, { hazardNames } from '../src/entities/Card/HazardCard';
-import GameService from '../src/useCase/use_case';
-import Gem from '../src/entities/Gem';
+import Game from '../src/domain/entities/IncanGold';
+import Card from '../src/domain/entities/Card/Card';
+import TreasureCard from '../src/domain/entities/Card/TreasureCard'
+import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
+import HazardCard, { hazardNames } from '../src/domain/entities/Card/HazardCard';
+import GameService from '../src/app/useCase/use_case';
+import Gem from '../src/domain/entities/Gem';
 
 describe('',()=>{
     let gameService:GameService;

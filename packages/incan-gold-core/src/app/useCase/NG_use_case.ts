@@ -1,27 +1,12 @@
-import Game from '../entities/Game'
+import Game from '../../domain/entities/IncanGold'
 
 
 class GameService {
-
+    
     public game : Game;
 
     constructor(){
         this.game = new Game();
-    }
-
-    // 結束遊戲 method
-    public askPlayers():void;
-
-
-    // 🔺 要求使用者選擇 method 🔺
-    public askPlayers():void{
-        if(this.game.forcedExplore == false){
-            throw "請選擇離開通道或繼續探險";
-        }else{
-            this.game.forcedExplore = false;
-            // 寄出不可以選擇的訊息
-            throw "沒得選，給我探險";
-        }
     }
 
     public afterRoundEnd():void {
@@ -42,7 +27,7 @@ class GameService {
         for(let i=0;i<this.game.players.length;i++){
             this.game.players[i].choice = playersChoices[i];
         }
-
+        
         // 2. 公布玩家選擇
         for(let player of this.game.players) // 應該不能是console.log
             console.log(`player${player.id} choose ${player.choice}`);
@@ -62,15 +47,6 @@ class GameService {
 
         // 4. 要求使用者選擇
         return this.askPlayers();
-    }
-
-    // 遊戲開始
-    public gameStart():void{
-        // 提醒我自己要開出給定各種物件的函式
-        this.game.onRoundStart();
-        this.game.onTurnStart();
-        // 要求使用者選擇
-        this.askPlayers();
     }
 }
 

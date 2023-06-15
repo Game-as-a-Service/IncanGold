@@ -1,7 +1,7 @@
-import Game from '../src/entities/Game';
-import Card from '../src/entities/Card/Card';
-import TreasureCard from '../src/entities/Card/TreasureCard'
-import GameService from '../src/useCase/use_case';
+import Game from '../src/domain/entities/IncanGold';
+import Card from '../src/domain/entities/Card/Card';
+import TreasureCard from '../src/domain/entities/Card/TreasureCard'
+import GameService from '../src/app/useCase/use_case';
 
 describe("當遊戲回合結束時，遊戲檢查回合數，並結算勝負or把通道中的卡洗回牌堆",()=>{
     let gameService:GameService;
