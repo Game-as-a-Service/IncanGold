@@ -1,7 +1,7 @@
 {
   "name": "incan-gold",
   "version": "0.0.1",
-  "description": "",
+  "description": "https://m.media-amazon.com/images/I/71tVfX5NoBL.jpg",
   "main": "index.js",
   "scripts": {
     "dev": "pnpm run --stream --recursive dev",
@@ -11,5 +11,13 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Game-as-a-Service/IncanGold.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Game-as-a-Service/IncanGold/issues"
+  },
+  "homepage": "https://github.com/Game-as-a-Service/IncanGold#readme"
 }

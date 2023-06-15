@@ -1,6 +1,3 @@
-<script setup>
-</script>
-
 <template>
-  <div>hello world</div>
+  <div><incan-gold-game /></div>
 </template>
