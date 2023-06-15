@@ -1,9 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  incan-gold-core:
-    specifier: workspace:*
-    version: link:../packages/incan-gold-core
+  normalize.css:
+    specifier: ^8.0.1
+    version: 8.0.1
   nuxt:
     specifier: ^3.4.2
     version: 3.4.2(@types/node@18.0.0)
@@ -4100,6 +4100,10 @@ packages:
   /normalize-range@0.1.2:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /normalize.css@8.0.1:
+    resolution: {integrity: sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==}
     dev: false
 
   /npm-run-path@4.0.1:

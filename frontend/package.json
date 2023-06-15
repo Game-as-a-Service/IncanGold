@@ -1,6 +1,6 @@
 {
-	"name": "nuxt-app",
-	"private": true,
+  "name": "nuxt-app",
+  "private": true,
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -9,6 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "normalize.css": "^8.0.1",
     "nuxt": "^3.4.2",
     "ramda": "^0.29.0"
   },
