@@ -31,10 +31,7 @@ class Player {
 
   // 玩家總是帶著新的空背包進入通道
   public enterTunnel(): void {
-<<<<<<<< HEAD:packages/incan-gold-core/src/entities/Player.ts
-========
     this.choice = Choice.NotSelected;
->>>>>>>> origin/main:packages/incan-gold-core/src/domain/entities/Player.ts
     this.inTent = false;
     this.bag = new Bag();
   }
