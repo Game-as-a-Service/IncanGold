@@ -27,7 +27,7 @@
 }
 
 .game-chat__room {
-  width: 563px;
+  width: 567px;
   height: 208px;
   overflow: auto;
 	scrollbar-width: thin;
