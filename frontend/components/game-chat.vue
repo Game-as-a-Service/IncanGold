@@ -23,13 +23,13 @@
   background-color: rgba(132, 132, 132, 0.2);
   border-radius: 20px;
 	padding: 0 10px 10px 20px;
+  box-sizing: border-box;
 }
 
 .game-chat__room {
   width: 563px;
   height: 208px;
   overflow: auto;
-  box-sizing: border-box;
 	scrollbar-width: thin;
 	scrollbar-color: rgba(4, 4, 4, 0.35)  rgba(132, 132, 132, 0.2);
 }
