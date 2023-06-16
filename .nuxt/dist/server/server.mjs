@@ -1,0 +1,1 @@
+export { default } from "file:///D:/01%20%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/10%20-%20GaaS/IncanGold/node_modules/.pnpm/@nuxt+vite-builder@3.4.2_@types+node@18.0.0_vue@3.2.47/node_modules/@nuxt/vite-builder/dist/runtime/vite-node.mjs"
