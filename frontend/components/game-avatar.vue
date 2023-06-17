@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<div :class="['game-avatar', { 'game-avatar__empty': emptyPlayer }]">
 		<div class="avatar">
 			<img
@@ -25,9 +25,9 @@
 			<p>房主</p>
 		</div>
 	</div>
-</template>
+</template> -->
 
-<!-- 版型
+版型
 <template>
 	<div class="game-avatar">
 		<div class="avatar">
@@ -49,7 +49,6 @@
 		</div>
 	</div>
 </template>
--->
 
 <script setup>
 	import { compose, defaultTo, isEmpty, isNil, path } from "ramda";
