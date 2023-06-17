@@ -1,60 +1,31 @@
-<!-- <template>
+<template>
 	<div :class="['game-avatar', { 'game-avatar__empty': emptyPlayer }]">
 		<div class="avatar">
-			<img
-				v-if="!round && inTunnel"
-				:src="emptyPlayer ? '../public/game-avatar__empty.png' : 'playerAvatar'"
-				:alt="avatar" />
+			<img v-if="!round" :src="playerAvatar" :alt="avatar" />
 			<div v-else class="avatar-empty">
 				<img src="" alt="" />
-				<p>0</p>
+				<p>{{ bagScore }}</p>
 			</div>
+
 			<div class="name">
 				<p>{{ playerName }}</p>
 			</div>
-			<div class="tent-score">{{ tentScore }}</div>
+
+			<!-- 有玩家且遊戲中: 顯示 tentScore -->
+			<div v-if="!emptyPlayer && round" class="tent-score">
+				{{ tentScore }}
+			</div>
 		</div>
 
 		<div
-			v-if="!playerIsHost && !emptyPlayer"
+			v-if="!emptyPlayer"
 			:class="[
 				'game-avatar__status',
 				{ 'game-avatar__status--ready': playerIsReady },
 			]"></div>
+
 		<div v-if="playerIsHost && !emptyPlayer" class="playerIsHost">
 			<p>房主</p>
-		</div>
-	</div>
-</template> -->
-
-<template>
-	<!-- <div class="game-avatar">
-		<div class="avatar">
-			等待中，顯示玩家頭像
-			<img src="../public/avatar1.png" alt="avatar" />
-
-			遊戲中，頭像改為顯示分數
-			<div class="avatar-empty">
-				<img src="" alt="" />
-				<p>0</p>
-			</div>
-
-			<div class="name">
-				<p>player name</p>
-			</div>
-			<div class="tent-score">0</div>
-		</div>
-
-		<div class="game-avatar__status game-avatar__status--ready"></div>
-
-		<div class="playerIsHost">
-			<p>房主</p>
-		</div>
-	</div> -->
-	<div class="game-avatar game-avatar__empty">
-		<div class="avatar">
-			<!-- 無玩家 -->
-			<img src="../public/game-avatar__empty.png" alt="avatar" />
 		</div>
 	</div>
 </template>
@@ -78,7 +49,6 @@
 	const playerIsHost = computed(() => {
 		return path(["host"], user.value);
 	});
-	// const playerIsHost = true;
 
 	const playerName = computed(() => {
 		return path(["name"], user.value);
@@ -89,8 +59,19 @@
 	});
 
 	const playerIsReady = computed(() => {
-		return path(["avatar"], user.value) === "ready";
+		return path(["playerIsReady"], user.value);
 	});
+
+	const bagScore = computed(() => {
+		return path(["bagScore"], user.value);
+	});
+
+	const tentScore = computed(() => {
+		return path(["tentScore"], user.value);
+	});
+
+	// round 為 false: 等待中，round 為 true 遊戲中
+	const round = false;
 </script>
 
 <style>
