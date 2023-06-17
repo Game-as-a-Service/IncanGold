@@ -1,21 +1,29 @@
 import Card from "./Card/Card"
 import HazardCard, {hazardNames} from "./Card/HazardCard"
-import TreasureCard from "./Card/TreasureCard"
+import TreasureCard, {pointsList} from "./Card/TreasureCard"
 
 export class Deck{
     public cards : Card[] = [];
 
     constructor(){
-        hazardNames.forEach(name=>{
-            for(let i=0;i<3;i++)
-                this.cards.push(new HazardCard(name));
-        });
-        // 5 11 13 是我自己捕的，找不到剩下3張神器卡的分數
-        var pointsList = [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, 5, 11, 13]
-        pointsList.forEach(points=>{
-            this.cards.push(new TreasureCard(points));
+        pointsList.forEach((points,index)=>{ this.cards.push(new TreasureCard(("T"+points),points)) });
+        [5,7,11].forEach(points=>{
+            let cards = this.cards.filter(card=>new RegExp('^T' + points).test(card.cardID));
+            cards[0].cardID += "(1)" ;
+            cards[1].cardID += "(2)" ;
+        })
+        
+        hazardNames.forEach(name=>{ 
+            let cardID =  "H" + name.charAt(0).toUpperCase(); // HF (fire)
+            let ids = Array(3).fill(cardID).map( (cardID,index) => (cardID + (index+1)) ) // HF1,HF2...
+            let hazardCards = ids.map(id=>new HazardCard(id,name));
+            this.cards = this.cards.concat(hazardCards);
         });
     }
+
+    get numofCards():number{
+        return this.cards.length;
+    } 
 
     public shuffle() : void {
         for (let i = this.cards.length - 1; i > 0; i--) {
@@ -34,12 +42,26 @@ export class Deck{
 }
 
 export class TrashDeck{
-    public cards : Card[] = [];
+    public cards : Map<number, Card[]> = new Map();
 
-    public appendCard(card:Card) : void {
-        this.cards.push(card);
+    public constructor() {
+        this.cards = new Map();
+        [1,2,3,4,5].forEach(round=>{
+            this.cards.set( round, []);
+        })
     }
 
+    get numofCards():number{
+        let num = 0; 
+        this.cards.forEach(cards=>{
+            num += cards.length;
+        });
+        return num;
+    } 
+
+    public appendCards(currentRound:number, cards:Card[]) : void {
+            this.cards.set( currentRound, (this.cards.get(currentRound)||[]).concat(cards));
+    }
 }
 
 export default {
