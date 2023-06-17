@@ -27,19 +27,18 @@
 	</div>
 </template> -->
 
-版型
 <template>
 	<div class="game-avatar">
 		<div class="avatar">
 			<img src="../public/avatar1.png" alt="avatar" />
-			<div class="avatar-empty">
+			<!-- <div class="avatar-empty">
 				<img src="" alt="" />
 				<p>0</p>
-			</div>
+			</div> -->
 			<div class="name">
 				<p>player name</p>
 			</div>
-			<div class="total-score">0</div>
+			<div class="tent-score">0</div>
 		</div>
 
 		<div class="game-avatar__status game-avatar__status--ready"></div>
