@@ -5,10 +5,11 @@ import TreasureCard from "./Card/TreasureCard"
 import HazardCard from "./Card/HazardCard"
 import {TrashDeck, Deck} from "./Deck"
 import Tunnel from "./Tunnel"
-import Player from "./Player"
+import Player, {Choice} from "./Player"
 import Tent from "./Tent"
 import Bag from "./Bag"
 import Gem from "./Gem"
+import Event from "../events/Event"
 
 class Game{
     public temple:Temple;
@@ -36,6 +37,24 @@ class Game{
             this.players.push(new Player(i,this.tents[i-1],this.tunnel));
         }
         this.tunnel.players = this.players;
+    }
+
+    // 1️⃣ 待開出這兩種事件
+    public askPlayers():Event{
+        if(this.forcedExplore == false){
+            return "請選擇離開通道或繼續探險";
+        }else{
+            this.forcedExplore = false;
+            return "沒得選，給我探險";
+        }
+    }
+
+    // 遊戲開始
+    public gameStart():void{
+        this.onRoundStart();
+        this.onTurnStart();
+        // 要求使用者選擇
+        this.askPlayers();
     }
 
     public devideAllGems(players:Player[]):void{
@@ -71,7 +90,7 @@ class Game{
 
     public getAndGo():void{
         // 即將離開通道的玩家
-        var leavingPlayers = this.players.filter(player=>player.choice =="quit");
+        var leavingPlayers = this.players.filter(player=>player.choice == Choice.Quit);
         if(leavingPlayers.length !=0){
             // 分寶石給要離開的玩家
             this.devideAllGems(leavingPlayers);

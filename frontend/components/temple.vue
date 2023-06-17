@@ -5,7 +5,9 @@
 <style>
 .temple {
   width: 170px;
-  height: 240px;
+  height: 210px;
   background-color: gray;
+  background-color: transparent;
+  color: white;
 }
 </style>

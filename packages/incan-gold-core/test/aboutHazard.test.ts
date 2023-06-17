@@ -1,8 +1,8 @@
-import Game from '../src/entities/Game';
-import Card from '../src/entities/Card/Card';
-import TreasureCard from '../src/entities/Card/TreasureCard'
-import GameService from '../src/useCase/use_case';
-import HazardCard from '../src/entities/Card/HazardCard';
+import Game from '../src/domain/entities/IncanGold';
+import Card from '../src/domain/entities/Card/Card';
+import TreasureCard from '../src/domain/entities/Card/TreasureCard'
+import GameService from '../src/app/useCase/use_case';
+import HazardCard from '../src/domain/entities/Card/HazardCard';
 
 
 describe("災難卡被放入通道",()=>{

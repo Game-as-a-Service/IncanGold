@@ -1,16 +1,10 @@
 <template>
-	<!-- <img
-		alt="Card Image"
-		:src="card.path"
-		:class="['card-img', { 'card-img__vertical': vertical }]" /> -->
 	<div>
 		{{ test }}
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { Card } from 'incan-gold-core'
-
 const test = ref('gg')
 
 class DisaplyCard {
@@ -33,11 +27,6 @@ const props = defineProps({
 
 // const { card, vertical } = toRefs(props)
 const { vertical } = toRefs(props)
-
-onMounted(() => {
-	console.log('GG')
-	console.log(Card)
-})
 </script>
 
 <style>

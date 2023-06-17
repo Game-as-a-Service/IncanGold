@@ -1,6 +1,6 @@
-import Game from '../src/entities/Game';
-import Card from '../src/entities/Card/Card';
-import TreasureCard from '../src/entities/Card/TreasureCard'
+import Game from '../src/domain/entities/IncanGold';
+import Card from '../src/domain/entities/Card/Card';
+import TreasureCard from '../src/domain/entities/Card/TreasureCard';
 
 
 describe('寶物卡將寶石平分給通道中的玩家', ()=>{

@@ -7,7 +7,8 @@
 <style>
 .decks {
   width: 170px;
-  height: 240px;
-  background-color: gray;
+  height: 210px;
+  background-color: transparent;
+  color: white;
 }
 </style>
