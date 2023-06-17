@@ -18,11 +18,11 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
         game.setPlayerCount(2);
         game.makePlayersEnterTunnel();
         game.round = 1;
-        game.tunnel.appendCard(new TreasureCard(3));
+        game.tunnel.appendCard(new TreasureCard("T3",3));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new TreasureCard(5));
+        game.tunnel.appendCard(new TreasureCard("T5(1)",5));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new ArtifactCard(artifactName[1],artifactPoints[1]));
+        game.tunnel.appendCard(new ArtifactCard("A1",artifactName[1],artifactPoints[1]));
         game.tunnel.lastCard.trigger(game);
         game.makeChoice(game.playersInTunnel[0], Choice.KeepGoing).next();
         const iterator = game.makeChoice(game.playersInTunnel[1], Choice.Quit);
@@ -35,7 +35,7 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
         // then 
         expect(event.artifactsInBag[0]).toBe(artifactName[1]); 
         expect(!event.numberOfGemsOnCard).toBe(false);
-        expect(event.leavingplayersID[0]).toBe(2);
+        expect(event.leavingplayersID[0]).toBe('2');
         expect((event.numberOfGemsInLeavingplayersBag)).toBe(5);
     })
     
@@ -45,11 +45,11 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
         game.setPlayerCount(2);
         game.makePlayersEnterTunnel();
         game.round = 1;
-        game.tunnel.appendCard(new TreasureCard(3));
+        game.tunnel.appendCard(new TreasureCard("T3",3));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new TreasureCard(5));
+        game.tunnel.appendCard(new TreasureCard("T5(1)",5));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new ArtifactCard(artifactName[1],artifactPoints[1]));
+        game.tunnel.appendCard(new ArtifactCard("A1",artifactName[1],artifactPoints[1]));
         game.tunnel.lastCard.trigger(game);
         game.makeChoice(game.playersInTunnel[0], Choice.Quit).next();
         const iterator = game.makeChoice(game.playersInTunnel[1], Choice.Quit);
@@ -62,7 +62,7 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
         // then 
         expect(event.artifactsInBag.length).toBe(0); 
         expect(!event.numberOfGemsOnCard).toBe(false);
-        expect(event.leavingplayersID).toEqual([1,2]);
+        expect(event.leavingplayersID).toEqual(['1','2']);
         expect((event.numberOfGemsInLeavingplayersBag)).toBe(4);
 
     })
@@ -72,11 +72,11 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
         game.setPlayerCount(3);
         game.makePlayersEnterTunnel();
         game.round = 1;
-        game.tunnel.appendCard(new TreasureCard(4));
+        game.tunnel.appendCard(new TreasureCard("T4",4));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new TreasureCard(7));
+        game.tunnel.appendCard(new TreasureCard("T7(1)",7));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new ArtifactCard(artifactName[1],artifactPoints[1]));
+        game.tunnel.appendCard(new ArtifactCard("A1",artifactName[1],artifactPoints[1]));
         game.tunnel.lastCard.trigger(game);
         game.makeChoice(game.playersInTunnel[0], Choice.Quit).next();
         game.makeChoice(game.playersInTunnel[1], Choice.Quit).next();
@@ -92,7 +92,7 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
         expect(event.artifactsInBag.length).toBe(0); 
         expect(event.numberOfGemsOnCard[4]).toBe(1);
         expect(event.numberOfGemsOnCard[7]).toBe(1);
-        expect(event.leavingplayersID).toEqual([1,2,3]);
+        expect(event.leavingplayersID).toEqual(['1','2','3']);
         expect((event.numberOfGemsInLeavingplayersBag)).toBe(3);
     })
 
@@ -101,11 +101,11 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
         game.setPlayerCount(2);
         game.makePlayersEnterTunnel();
         game.round = 1;
-        game.tunnel.appendCard(new TreasureCard(4));
+        game.tunnel.appendCard(new TreasureCard("T4",4));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new TreasureCard(7));
+        game.tunnel.appendCard(new TreasureCard("T7(1)",7));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new ArtifactCard(artifactName[1],artifactPoints[1]));
+        game.tunnel.appendCard(new ArtifactCard("A1",artifactName[1],artifactPoints[1]));
         game.tunnel.lastCard.trigger(game);
         game.makeChoice(game.playersInTunnel[0], Choice.KeepGoing).next();
         const iterator = game.makeChoice(game.playersInTunnel[1], Choice.KeepGoing);

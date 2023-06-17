@@ -10,8 +10,8 @@ export default class HazardCard extends Card {
 
   public readonly name: string;
 
-  constructor(name: string) {
-    super();
+  constructor(cardID:string, name: string) {
+    super(cardID);
     this.name = name;
   }
 
@@ -29,8 +29,10 @@ export default class HazardCard extends Card {
     
     // 災難重複出現，就把玩家趕離通道
     if(this.appearsTwice(game)){
-      game.playersInTunnel.forEach(player=>player.clearBag())
-      game.makePlayersLeaveTunnel();
+      game.playersInTunnel.forEach(player=>{
+        player.clearBag()
+        player.leaveTunnel();
+      });
     }
     
     return new NewTurnHazardCardTriggeredEvent(game,this.appearsTwice(game));

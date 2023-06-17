@@ -18,7 +18,7 @@ describe("災難卡被放入通道",()=>{
         // given 
         game.setPlayerCount(3);
         game.round = 1;
-        game.deck.appendCard(new HazardCard('fire'));
+        game.deck.appendCard(new HazardCard("HF1",'fire'));
         const iterator = game.startRound();
         
         // when 
@@ -36,11 +36,11 @@ describe("災難卡被放入通道",()=>{
         game.setPlayerCount(1);
         game.round = 1;
         game.makePlayersEnterTunnel();
-        game.tunnel.appendCard(new HazardCard('spider'));
+        game.tunnel.appendCard(new HazardCard("HS1",'spider'));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new HazardCard('python'));
+        game.tunnel.appendCard(new HazardCard("HP1",'python'));
         game.tunnel.lastCard.trigger(game);
-        game.deck.appendCard(new HazardCard('fire'));
+        game.deck.appendCard(new HazardCard("HF1",'fire'));
         const iterator = game.startTurn();
 
         // when 
@@ -55,16 +55,17 @@ describe("災難卡被放入通道",()=>{
 
     it('災難卡種類已重複出現，玩家們皆清空背包、離開通道',()=>{
         // given 
+        game.round = 1;
+        game.resetHazardCardCounter();
         game.setPlayerCount(2);
         game.makePlayersEnterTunnel();
-        game.resetHazardCardCounter();
-        game.tunnel.appendCard(new TreasureCard(4));
+        game.tunnel.appendCard(new TreasureCard("T4",4));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new HazardCard('spider'));
+        game.tunnel.appendCard(new HazardCard("HS1",'spider'));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new HazardCard('python'));
+        game.tunnel.appendCard(new HazardCard("HP1",'python'));
         game.tunnel.lastCard.trigger(game);
-        game.deck.appendCard(new HazardCard('python'));
+        game.deck.appendCard(new HazardCard("HP2",'python'));
 
         // when 災難卡重複出現
         const iterator = game.startTurn();

@@ -1,7 +1,7 @@
-import Tunnel from "./Tunnel";
+import Tent from "./Tent";
 import Bag from "./Bag";
 import Gem from "./Gem";
-import ArtifactCard from "./Card/ArtifactCard";
+import Artifact from "./Artifact";
 
 export enum Choice {
   NotSelected = "notSelected",
@@ -10,14 +10,13 @@ export enum Choice {
 }
 
 export default class Player {
-  public id: number;
+  public id: string;
   public choice: Choice = Choice.NotSelected;
   public inTent: boolean = true;
-  public points: number = 0;
   public bag: Bag = new Bag();
-  public artifacts: ArtifactCard[] = [];
+  public tent: Tent = new Tent();
   
-  constructor(id: number) {
+  constructor(id: string) {
     this.id = id;
   }
 
@@ -28,8 +27,7 @@ export default class Player {
 
   public leaveTunnel(): void {
     this.inTent = true;
-    this.points += this.bag.points;
-    this.artifacts = this.artifacts.concat(this.bag.artifactCards);
+    this.tent.update(this.bag);
     this.clearBag();  
   }
 
@@ -41,8 +39,17 @@ export default class Player {
     this.bag.putGemsIn(gems);
   }
 
-  public putInArtifactsInBag(artifacts: ArtifactCard[]): void {
+  public putInArtifactsInBag(artifacts: Artifact[]): void {
     this.bag.putArtifactsIn(artifacts);
   }
+
+  get numOfArtifacts():number{
+    return this.tent.artifacts.length;
+  }
+
+  get points():number{
+    return this.tent.points;
+  }
+
 }
 

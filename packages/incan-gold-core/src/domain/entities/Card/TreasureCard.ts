@@ -5,14 +5,14 @@ import IncanGold from "../IncanGold";
 import Event from "../../events/Event";
 import {NewTurnTreasureCardTriggeredEvent} from "../../events/NewTurnCardTriggeredEvent";
 
-export const pointsList = [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, 5, 7, 11]
+export const pointsList = [1, 2, 3, 4, 5, 5, 7, 7, 9, 11, 11, 13, 14, 15, 17];
 
 export default class TreasureCard extends Card {
   public readonly points: number;
   public gems: Gem[] = [];
 
-  constructor(points: number) {
-    super();
+  constructor(cardID:string, points: number) {
+    super(cardID);
     this.points = points;
   }
 

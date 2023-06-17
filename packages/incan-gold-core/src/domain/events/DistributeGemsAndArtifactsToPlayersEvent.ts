@@ -5,7 +5,7 @@ import TreasureCard from "../entities/Card/TreasureCard";
 
 // 已分配寶石和神器給要離開的玩家們
 export default class DistributeGemsAndArtifactsToPlayersEvent extends Event {
-    public leavingplayersID: number[]; // 離開的玩家們
+    public leavingplayersID: string[]; // 離開的玩家們
     public artifactsInBag: string[] = [];   // 背包中的神器
     public numberOfGemsInLeavingplayersBag: number;  // 背包中的寶石數
     public numberOfGemsOnCard:Record<number, number> = {}; // 通道中卡片上剩下的寶石數
@@ -17,8 +17,8 @@ export default class DistributeGemsAndArtifactsToPlayersEvent extends Event {
         this.leavingplayersID = leavingPlayers.map(player=>player.id);
         
         this.artifactsInBag = leavingPlayers
-        .find(player=>player.bag.artifactCards.length!=0)
-        ?.bag.artifactCards
+        .find(player=>player.bag.artifacts.length!=0)
+        ?.bag.artifacts
         .map(artifacts=>artifacts.name) || [];
 
         this.numberOfGemsInLeavingplayersBag = leavingPlayers[0]?.bag.numOfGems || 0;

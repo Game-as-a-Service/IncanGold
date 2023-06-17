@@ -1,15 +1,10 @@
-import ArtifactCard from "./Card/ArtifactCard";
+import Artifact from "./Artifact";
 import Gem from "./Gem";
 
 class Bag {
   private _points: number = 0;
-  public artifactCards: ArtifactCard[];
-  public gems: Gem[];
-
-  constructor() {
-    this.artifactCards = [];
-    this.gems = []; 
-  }
+  public artifacts: Artifact[] = [];
+  public gems: Gem[] = [];
 
   get points(){
     return this._points;
@@ -19,8 +14,8 @@ class Bag {
     return this.gems.length;
   }
 
-  get numOfArtifactCards(){
-    return this.artifactCards.length;
+  get numOfArtifacts(){
+    return this.artifacts.length;
   }
 
   public putGemsIn(gems: Gem[]): void {
@@ -28,9 +23,9 @@ class Bag {
     this.gems = this.gems.concat(gems);
   }
 
-  public putArtifactsIn(artifactCards: ArtifactCard[]): void {
-    artifactCards.forEach(artifact=>{this._points += artifact.points;})
-    this.artifactCards = this.artifactCards.concat(artifactCards);
+  public putArtifactsIn(artifacts: Artifact[]): void {
+    artifacts.forEach(artifact=>{this._points += artifact.points;})
+    this.artifacts = this.artifacts.concat(artifacts);
   }
 
 }

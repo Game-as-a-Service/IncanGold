@@ -25,8 +25,8 @@ class Tunnel {
     return this.players.filter(player=>player.choice === Choice.Quit);
   }
 
-  get noPlayers():boolean { 
-    return (this.players.length == 0);
+  get isAnyPlayerPresent():boolean { 
+    return (this.players.length !== 0);
   }
 
   get lastCard():Card {
@@ -61,12 +61,12 @@ class Tunnel {
     // 災難卡放入廢棄排堆
     let lastCard = this.lastCard;
     if(lastCard instanceof HazardCard && game.hazardCardCounter[lastCard.name]==2){
-      game.trashDeck.appendCard(lastCard);
+      game.trashDeck.appendCards(game.round, [lastCard]);
       this.cards.splice(this.cards.length-1,1)
     }
     
     // 丟棄所有神器卡
-    this.drawArtifactCards().forEach(card=>{game.trashDeck.appendCard(card);})
+    game.trashDeck.appendCards(game.round, this.drawArtifactCards());
   }
 
   // 分寶石給要離開的玩家
@@ -95,9 +95,14 @@ class Tunnel {
     }
   }
 
-  public distributeArtifactCards():void{
-    if(this.leavingPlayers.length === 1)
-      this.leavingPlayers[0].putInArtifactsInBag(this.drawArtifactCards());
+  public distributeArtifacts():void{
+    if(this.leavingPlayers.length === 1){
+      let artifacts = this.cards
+      .filter(card=>(card instanceof ArtifactCard))
+      .map(card => (<ArtifactCard>card).giveArtifact());
+
+      this.leavingPlayers[0].putInArtifactsInBag(artifacts);
+    }
   }
 
 }

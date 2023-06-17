@@ -22,11 +22,11 @@ describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通
         game.resetHazardCardCounter();
         game.makePlayersEnterTunnel();
         game.players.forEach(player=>player.enterTunnel());
-        game.tunnel.appendCard(new TreasureCard(7));
+        game.tunnel.appendCard(new TreasureCard("T7(1)",7));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new ArtifactCard("artifact",5));
+        game.tunnel.appendCard(new ArtifactCard("A1","artifact",5));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new HazardCard("fire"));
+        game.tunnel.appendCard(new HazardCard("HF1","fire"));
         game.tunnel.lastCard.trigger(game);
 
         game.makeChoice(game.playersInTunnel[0], Choice.Quit).next();
@@ -51,11 +51,11 @@ describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通
         game.resetHazardCardCounter();
         game.makePlayersEnterTunnel();
         game.players.forEach(player=>player.enterTunnel());
-        game.tunnel.appendCard(new TreasureCard(7));
+        game.tunnel.appendCard(new TreasureCard("T7(1)",7));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new ArtifactCard("artifact",5));
+        game.tunnel.appendCard(new ArtifactCard("A1","artifact",5));
         game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new HazardCard("fire"));
+        game.tunnel.appendCard(new HazardCard("HF1","fire"));
         game.tunnel.lastCard.trigger(game);
 
         game.makeChoice(game.playersInTunnel[0], Choice.Quit).next();

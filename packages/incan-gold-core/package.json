@@ -6,9 +6,6 @@
   "scripts": {
     "test": "jest"
   },
-  "jest": {
-    "collectCoverage": true
-  },
   "author": "",
   "license": "ISC",
   "devDependencies": {

@@ -3,9 +3,9 @@ import IncanGold from "../entities/IncanGold";
 
 // 幾號玩家已做出選擇
 export class PlayerMadeChoiceEvent extends Event{
-    public readonly playerWhoMadeChoice:number; 
+    public readonly playerWhoMadeChoice:string; 
 
-    constructor(playerID:number){
+    constructor(playerID:string){
         super(EventName.PlayerMadeChoice);
         this.playerWhoMadeChoice = playerID;
     }
@@ -13,7 +13,7 @@ export class PlayerMadeChoiceEvent extends Event{
 
 // 通道中所有玩家皆已做出選擇
 export class AllPlayersMadeChoiceEvent extends Event{
-    public allPlayersChoices: Record<number, string> = {};
+    public allPlayersChoices: Record<string, string> = {};
 
     constructor(game:IncanGold){
         super(EventName.AllPlayersMadeChoice);

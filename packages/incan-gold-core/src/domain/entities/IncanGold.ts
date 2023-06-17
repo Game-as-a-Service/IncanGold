@@ -21,12 +21,12 @@ export default class IncanGold {
     public forceExplore:boolean = false;
     public round:number = 0;
     public turn:number = 0;
-    public winnerID:number = 0;
+    public winnerID:string = "";
     public gameover:boolean = false;
 
     public setPlayerCount(num:number) {
         for(let i=1;i<=num;i++)
-            this.players.push(new Player(i));
+            this.players.push(new Player(i.toString()));
         this.tunnel.players = this.players;
     }
 
@@ -63,7 +63,7 @@ export default class IncanGold {
 
     public *triggerLastCardInTunnel(): IterableIterator<Event> {
         yield this.tunnel.lastCard.trigger(this);
-        if(this.tunnel.noPlayers)
+        if(this.tunnel.isAnyPlayerPresent == false)
             yield* this.endRound();
     }
 
@@ -89,7 +89,7 @@ export default class IncanGold {
         this.turn++;
         yield new Event(EventName.TurnEnd);
     
-        if (!this.tunnel.noPlayers) {
+        if (this.tunnel.isAnyPlayerPresent) {
             yield* this.startTurn();
             return;
         }
@@ -105,9 +105,9 @@ export default class IncanGold {
 
     public *endRound(): IterableIterator<Event> {
         console.log('----- round end -----');
-        yield new RoundEndEvent(this);
         this.tunnel.discardCards(this);
         this.tunnel.remove();
+        yield new RoundEndEvent(this);
         this.round++;
         
         if (this.round <= 5) {
@@ -119,7 +119,7 @@ export default class IncanGold {
     }
 
     public *end(): IterableIterator<Event> {
-        this.winnerID = this.findWinner()?.id || 0;
+        this.winnerID = this.findWinner()?.id || "";
         this.gameover = true;
         yield new GameoverEvent(this);
     }
@@ -134,7 +134,7 @@ export default class IncanGold {
     }
 
     public addArtifactCardAndShuffleDeck(): void {
-        this.deck.appendCard(new ArtifactCard(artifactName[this.round],artifactPoints[this.round]));
+        this.deck.appendCard(new ArtifactCard(("A"+this.round) ,artifactName[this.round],artifactPoints[this.round]));
         this.deck.shuffle();
     }
 
@@ -157,11 +157,11 @@ export default class IncanGold {
         let highestPointsPlayers = this.players.filter((player) => player.points === highestPoints);
         
         let maxNumberOfHighestPointsPlayerArtifacts = Math.max(...
-            highestPointsPlayers.map((player) => player.artifacts.length)
+            highestPointsPlayers.map((player) => player.numOfArtifacts)
         );
 
         highestPointsPlayers = highestPointsPlayers.filter(
-            (player) => player.artifacts.length === maxNumberOfHighestPointsPlayerArtifacts
+            (player) => player.numOfArtifacts === maxNumberOfHighestPointsPlayerArtifacts
         );
         if(highestPointsPlayers.length===1)
             return highestPointsPlayers[0];
@@ -171,15 +171,15 @@ export default class IncanGold {
 
     public distributeResources(): void {
         this.tunnel.distributeAllGems();
-        this.tunnel.distributeArtifactCards();
+        this.tunnel.distributeArtifacts();
     }
 
     public makePlayersLeaveTunnel(): void {
         this.tunnel.leavingPlayers.forEach(player=>player.leaveTunnel());
     }
 
-    public getPlayer(id:number): Player {
-        let player =  this.players.find(player=>player.id===id);
+    public getPlayer(id:string): Player {
+        let player =  this.players.find(player=>player.id === id);
         if(player)
             return player
         else
