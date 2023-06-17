@@ -2,7 +2,6 @@ import Card from "./Card/Card"
 import HazardCard, {hazardNames} from "./Card/HazardCard"
 import TreasureCard, {pointsList} from "./Card/TreasureCard"
 
-
 export class Deck{
     public cards : Card[] = [];
 
@@ -65,3 +64,7 @@ export class TrashDeck{
     }
 }
 
+export default {
+    Deck,
+    TrashDeck
+}
