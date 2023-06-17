@@ -18,4 +18,3 @@ export default abstract class Card {
 
   public abstract trigger(game:IncanGold): Event;
 }
-

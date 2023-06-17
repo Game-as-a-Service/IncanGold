@@ -41,4 +41,3 @@ export default class TreasureCard extends Card {
     return new NewTurnTreasureCardTriggeredEvent(game);
   }
 }
-

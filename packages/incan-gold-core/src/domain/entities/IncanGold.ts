@@ -186,3 +186,4 @@ export default class IncanGold {
             throw new Error('This player is not in the game.');
     }
 }
+

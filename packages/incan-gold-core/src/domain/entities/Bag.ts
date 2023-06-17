@@ -26,6 +26,7 @@ class Bag {
   public putArtifactsIn(artifacts: Artifact[]): void {
     artifacts.forEach(artifact=>{this._points += artifact.points;})
     this.artifacts = this.artifacts.concat(artifacts);
+
   }
 
 }

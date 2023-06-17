@@ -104,7 +104,6 @@ class Tunnel {
       this.leavingPlayers[0].putInArtifactsInBag(artifacts);
     }
   }
-
 }
 
 export default Tunnel;

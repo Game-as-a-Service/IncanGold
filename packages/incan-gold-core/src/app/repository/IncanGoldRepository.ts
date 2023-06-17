@@ -1,14 +1,14 @@
-import Game from "../../domain/entities/IncanGold_ver2";
-import { Event } from '../../domain/events/Event';
+import IncanGold from "../../domain/entities/IncanGold";
+import  Event  from '../../domain/events/Event';
 
 
 export default interface IncanGoldRepository {
 
-    findGameById(gameId:string):Game;
+    findGameById(gameId:string):IncanGold;
 
     // save(IncanGold:Game):Game {
     //     return saveAndBroadcast(IncanGold, emptyList());
     // }
 
-    saveAndBroadcast(game:Game, events:Event[]): Game;
+    saveAndBroadcast(game:IncanGold, events:Event[]): IncanGold;
 }
