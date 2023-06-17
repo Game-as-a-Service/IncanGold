@@ -21,20 +21,24 @@
 				'game-avatar__status',
 				{ 'game-avatar__status--ready': playerIsReady },
 			]"></div>
-		<div v-if="playerIsHost" class="playerIsHost">
+		<div v-if="playerIsHost && !emptyPlayer" class="playerIsHost">
 			<p>房主</p>
 		</div>
 	</div>
 </template> -->
 
 <template>
-	<div class="game-avatar">
+	<!-- <div class="game-avatar">
 		<div class="avatar">
+			等待中，顯示玩家頭像
 			<img src="../public/avatar1.png" alt="avatar" />
-			<!-- <div class="avatar-empty">
+
+			遊戲中，頭像改為顯示分數
+			<div class="avatar-empty">
 				<img src="" alt="" />
 				<p>0</p>
-			</div> -->
+			</div>
+
 			<div class="name">
 				<p>player name</p>
 			</div>
@@ -45,6 +49,12 @@
 
 		<div class="playerIsHost">
 			<p>房主</p>
+		</div>
+	</div> -->
+	<div class="game-avatar game-avatar__empty">
+		<div class="avatar">
+			<!-- 無玩家 -->
+			<img src="../public/game-avatar__empty.png" alt="avatar" />
 		</div>
 	</div>
 </template>
@@ -135,6 +145,7 @@
 		background-color: #d9d9d9;
 	}
 
+	/* turn 分數 */
 	.avatar-empty p {
 		position: absolute;
 		top: 50%;
@@ -157,19 +168,6 @@
 		background-color: rgba(44, 220, 0, 0.65);
 	}
 
-	/* 無玩家 */
-	.game-avatar__empty {
-		background-color: transparent;
-	}
-
-	.game-avatar__empty .game-avatar__status--ready {
-		background: transparent;
-	}
-
-	.game-avatar__empty img {
-		border: none;
-	}
-
 	/* 房主標示' */
 	.playerIsHost {
 		position: absolute;
@@ -179,8 +177,6 @@
 		padding: 0 12px 0 10px;
 		border-radius: 10px 0 0 10px;
 	}
-
-	/* turn 分數 */
 
 	/* tent-score 分數 */
 	.tent-score {
@@ -199,5 +195,19 @@
 		background-color: #fff;
 		border: 2px solid #7b7b7b;
 		border-radius: 100px;
+	}
+
+	/* 無玩家 */
+
+	.game-avatar__empty {
+		background-color: transparent;
+	}
+
+	.game-avatar__empty .game-avatar__status--ready {
+		background: transparent;
+	}
+
+	.game-avatar__empty img {
+		border: none;
 	}
 </style>
