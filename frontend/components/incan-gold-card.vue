@@ -1,12 +1,10 @@
 <template>
-	<div>
-		{{ test }}
+	<div class="card">
+		<img class="card__back" src="card-back.png" alt="card back">
 	</div>
 </template>
 
 <script lang="ts" setup>
-const test = ref('gg')
-
 class DisaplyCard {
 	path: string = '';
 	updatePath(url: string) {
@@ -30,6 +28,16 @@ const { vertical } = toRefs(props)
 </script>
 
 <style>
+	.card {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 17 / 21;
+	}
+	.card__back {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+	}
 	.card-img {
 		width: 80px;
 		cursor: pointer;
