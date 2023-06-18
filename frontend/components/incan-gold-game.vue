@@ -106,7 +106,7 @@
 <style>
 	.incan-gold-game {
 		width: 1440px;
-		/* height: 1080px; */
+		height: 1080px;
 		padding: 6px 20px 16px;
 		margin: 12px;
 		background-color: #0e0a31;
@@ -157,12 +157,14 @@
 	}
 
 	.incan-gold-game__top {
-		padding: 10px 13px;
+		padding: 10px 11px;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		margin-bottom: 10px;
+		align-items: center;
 		background: rgba(132, 132, 132, 0.2);
+		box-sizing: border-box;
+		margin-bottom: 20px;
 	}
 
 	.incan-gold-game__main {
@@ -189,6 +191,6 @@
 	.incan-gold-game__avatars {
 		display: flex;
 		flex-direction: column;
-		/* justify-content: space-between; */
+		justify-content: space-between;
 	}
 </style>
