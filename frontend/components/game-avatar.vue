@@ -18,13 +18,13 @@
 		</div>
 
 		<div
-			v-if="!emptyPlayer"
+			v-if="!emptyPlayer && !round"
 			:class="[
 				'game-avatar__status',
 				{ 'game-avatar__status--ready': playerIsReady },
 			]"></div>
 
-		<div v-if="playerIsHost && !emptyPlayer" class="playerIsHost">
+		<div v-if="playerIsHost && !emptyPlayer && !round" class="playerIsHost">
 			<p>房主</p>
 		</div>
 	</div>
@@ -71,7 +71,7 @@
 	});
 
 	// round 為 false: 等待中，round 為 true 遊戲中
-	const round = false;
+	const round = true;
 </script>
 
 <style>

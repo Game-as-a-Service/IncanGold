@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
 	"name": "nuxt-app",
 	"private": true,
 	"scripts": {
@@ -20,25 +19,4 @@
 		"@types/ramda": "^0.29.2",
 		"jest": "^29.5.0"
 	}
-=======
-  "name": "nuxt-app",
-  "private": true,
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "dependencies": {
-    "normalize.css": "^8.0.1",
-    "nuxt": "^3.4.2",
-    "ramda": "^0.29.0"
-  },
-  "devDependencies": {
-    "@types/node": "^18",
-    "@types/ramda": "^0.29.2",
-    "jest": "^29.5.0"
-  }
->>>>>>> 08eab42cf0335999bac4907a17eca6ab1c89d642
 }
