@@ -3,7 +3,7 @@
 		<div class="avatar">
 			<img v-if="!round" :src="playerAvatar" :alt="avatar" />
 			<div v-else class="avatar-empty">
-				<img src="" alt="" />
+				<img :src="emptyPlayer ? defaultPlayer : ''" alt="" />
 				<p class="font-cubic">{{ bagScore }}</p>
 			</div>
 
@@ -33,6 +33,8 @@
 <script setup>
 	import { compose, defaultTo, isEmpty, isNil, path } from "ramda";
 
+	const defaultPlayer = '/player.png'
+
 	const props = defineProps({
 		user: {
 			type: Object,
@@ -55,7 +57,7 @@
 	});
 
 	const playerAvatar = computed(() => {
-		return compose(defaultTo("./player.png"), path(["avatar"]))(user.value);
+		return compose(defaultTo(defaultPlayer), path(["avatar"]))(user.value);
 	});
 
 	const playerIsReady = computed(() => {
