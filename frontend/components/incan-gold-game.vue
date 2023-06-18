@@ -2,12 +2,50 @@
 	import { take, takeLast } from "ramda";
 
 	const player = ref([
-		{ name: "frohman", avatar: "/player1.png", host: true },
-		{ name: "frohman", avatar: "/player1.png" },
-		{},
-		{},
-		{},
-		{},
+		{
+			name: "frohman",
+			avatar: "/player1.png",
+			host: true,
+			bagScore: 10,
+			tentScore: 98,
+			playerIsReady: 1,
+		},
+		{
+			name: "Gina",
+			avatar: "/player2.png",
+			bagScore: 1,
+			tentScore: 10,
+			playerIsReady: 1,
+		},
+		{
+			name: "Peggy",
+			avatar: "/player3.png",
+			bagScore: 13,
+			tentScore: 1,
+			playerIsReady: 0,
+		},
+		{
+			name: "frohman",
+			avatar: "/player1.png",
+			host: false,
+			bagScore: 10,
+			tentScore: 98,
+			playerIsReady: 0,
+		},
+		{
+			name: "Gina",
+			avatar: "/player2.png",
+			bagScore: 12,
+			tentScore: 10,
+			playerIsReady: 1,
+		},
+		{
+			name: "Gina",
+			avatar: "/player2.png",
+			bagScore: 12,
+			tentScore: 10,
+			playerIsReady: 1,
+		},
 		{},
 		{},
 	]);
@@ -119,12 +157,12 @@
 	}
 
 	.incan-gold-game__top {
-		padding: 10px 13px;
+		padding: 10px 11px;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		margin-bottom: 10px;
 		background: rgba(132, 132, 132, 0.2);
+		box-sizing: border-box;
 	}
 
 	.incan-gold-game__main {
