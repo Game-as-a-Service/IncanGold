@@ -7,15 +7,24 @@
 </template>
 
 <style>
-.font-k2d {
-  font-family: "K2D", "sans-serif", system-ui;
+html, body, div#__nuxt {
+  font-family: 'Noto Sans';
 }
 
-.font-lexend {
-  font-family: "Lexend", "sans-serif", system-ui;
+@font-face {
+  font-family: 'Jokerman';
+  src: url(Jokerman.ttf);
+}
+
+.font-NotoSans {
+  font-family: "Noto Sans", "sans-serif", system-ui;
 }
 
 .font-cubic {
   font-family: "Cubic 11", "sans-serif", system-ui;
+}
+
+.font-jokerman {
+  font-family: "Jokerman", "sans-serif", system-ui;
 }
 </style>
