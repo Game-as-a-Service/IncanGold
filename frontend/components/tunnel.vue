@@ -1,6 +1,6 @@
 <template>
 	<div class="tunnel">
-		<img src="../public/history.png" alt="cards history" />
+		<img src="/history.png" alt="cards history" />
 	</div>
 </template>
 
