@@ -161,8 +161,10 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
+		align-items: center;
 		background: rgba(132, 132, 132, 0.2);
 		box-sizing: border-box;
+		margin-bottom: 20px;
 	}
 
 	.incan-gold-game__main {

@@ -8,7 +8,6 @@
 	.temple {
 		width: 163px;
 		height: 163px;
-		margin: 30px 20px;
 		text-align: center;
 	}
 

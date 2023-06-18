@@ -7,7 +7,7 @@
 <style>
 	.tunnel {
 		width: 1040px;
-		height: 210px;
+		height: 190px;
 		background-color: transparent;
 		border: 4px dashed #939393;
 		border-radius: 20px;

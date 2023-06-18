@@ -75,12 +75,6 @@
 </script>
 
 <style>
-	*,
-	*::before,
-	*::after {
-		box-sizing: border-box;
-	}
-
 	.game-avatar {
 		width: 158px;
 		border-radius: 1.25rem;
