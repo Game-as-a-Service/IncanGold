@@ -1,158 +1,189 @@
-import Temple from "./Temple"
 import Card from "./Card/Card"
-import ArtifactCard from "./Card/ArtifactCard"
-import TreasureCard from "./Card/TreasureCard"
-import HazardCard from "./Card/HazardCard"
+import ArtifactCard, { artifactName, artifactPoints } from "./Card/ArtifactCard"
+import HazardCard,{hazardNames} from "./Card/HazardCard"
 import {TrashDeck, Deck} from "./Deck"
 import Tunnel from "./Tunnel"
 import Player, {Choice} from "./Player"
-import Tent from "./Tent"
-import Bag from "./Bag"
-import Gem from "./Gem"
-import Event from "../events/Event"
+import Event, { EventName } from "../events/Event"
+import RoundEndEvent from "../events/RoundEndEvent"
+import {PlayerMadeChoiceEvent,AllPlayersMadeChoiceEvent} from "../events/MadeChoiceEvent"
+import DistributeGemsAndArtifactsToPlayersEvent from "../events/DistributeGemsAndArtifactsToPlayersEvent";
+import GameoverEvent from "../events/GameoverEvent";
+import TresasureCard from "./Card/TreasureCard"
 
-class Game{
-    public temple:Temple;
-    public deck:Deck;
-    public trashDeck:TrashDeck;
-    public tunnel:Tunnel;
-    public tents :Tent[] = [];
+export default class IncanGold {
+    public tunnel:Tunnel = new Tunnel();
+    public deck:Deck = new Deck();
+    public trashDeck:TrashDeck = new TrashDeck();
     public players:Player[] = [];
-    public forcedExplore : boolean = false;
+
+    public hazardCardCounter: Record<string, number> = {};
+    public forceExplore:boolean = false;
     public round:number = 0;
     public turn:number = 0;
-    public winnerID:number = 0;
+    public winnerID:string = "";
+    public gameover:boolean = false;
 
-    constructor(){
-        this.tunnel = new Tunnel(this);
-        this.temple = new Temple();
-        this.deck = new Deck();
-        this.trashDeck = new TrashDeck();
-    }
-
-    // 配置有幾位玩家
-    public setPlayerCount(num:number){
-        for(let i=1;i<=num;i++){
-            this.tents.push(new Tent(i));
-            this.players.push(new Player(i,this.tents[i-1],this.tunnel));
-        }
+    public setPlayerCount(num:number) {
+        for(let i=1;i<=num;i++)
+            this.players.push(new Player(i.toString()));
         this.tunnel.players = this.players;
     }
 
-    // 1️⃣ 待開出這兩種事件
-    public askPlayers():Event{
-        if(this.forcedExplore == false){
-            return "請選擇離開通道或繼續探險";
-        }else{
-            this.forcedExplore = false;
-            return "沒得選，給我探險";
-        }
+    get playersInTunnel():Player[] {
+        return this.tunnel.players;
     }
 
-    // 遊戲開始
-    public gameStart():void{
-        this.onRoundStart();
-        this.onTurnStart();
-        // 要求使用者選擇
-        this.askPlayers();
+    get allPlayersMadeChoice():boolean {
+        return !(this.playersInTunnel.find(player=>player.choice == Choice.NotSelected))
     }
 
-    public devideAllGems(players:Player[]):void{
-        let sum = 0; // 總寶石數
-        let record:Map<Card, number> = new Map(); // 備份每張寶物卡有多少顆寶石
-        let tempCards = Array.from(this.tunnel.cards);
-        for(let card of tempCards.reverse()){
-            if(card instanceof TreasureCard){
-                sum += card.gems.length;
-                record.set(card,card.gems.length);
-                card.clear();
-            }
-        }
-
-        let eachOneCanGet =  Math.floor(sum/players.length); // 離開的玩家各可以拿幾顆
-        let left = sum - eachOneCanGet*(players.length) // 最後會剩下的寶石數
-
-        for(let player of players){
-            for(var i=0; i<eachOneCanGet;i++)
-                player.putGemInBag(new Gem());
-        }
-
-        for(let i = left; i>0 ;){
-            for(let [card,nums] of record){
-                for(let j = 1;j<=nums; j++){
-                    (<TreasureCard>card).gems.push(new Gem());
-                    if((--i)==0) break;
-                }
-                if(i==0) break;
-            }
-        }
+    public *start():IterableIterator<Event>{
+        this.round = 1;
+        yield* this.startRound();
     }
 
-    public getAndGo():void{
-        // 即將離開通道的玩家
-        var leavingPlayers = this.players.filter(player=>player.choice == Choice.Quit);
-        if(leavingPlayers.length !=0){
-            // 分寶石給要離開的玩家
-            this.devideAllGems(leavingPlayers);
-            // 分神器給要離開的玩家
-            if(leavingPlayers.length==1){
-                var artifacts = this.tunnel.cards.filter(card=>(card instanceof ArtifactCard))
-                artifacts.forEach(artifact => { leavingPlayers[0].putInArtifactInBag(<ArtifactCard>artifact)})
-            }
-            // 讓這些玩家離開通道   
-            for(let player of leavingPlayers) player.leaveTunnel();
-        }
+    public *startRound():IterableIterator<Event>{
+        console.log('----- current round:' + this.round + '-----');
+        this.putCardsBackIntoDeck();
+        this.resetHazardCardCounter();
+        this.addArtifactCardAndShuffleDeck();
+        this.makePlayersEnterTunnel();
+        this.turn = 1;
+        yield* this.startTurn();
     }
 
-    // 從牌堆抽牌放入通道
-    public putCardInTunnel():void{
-        var card = this.deck.drawCard()
-        if(card){
-            this.tunnel.appendCard(card);
-            card.tunnel = this.tunnel;
-        }
+    public *startTurn():IterableIterator<Event> {
+        this.resetPlayersChoice();
+        this.putCardInTunnel();
+        yield* this.triggerLastCardInTunnel();
+        if(this.forceExplore)
+            yield* this.forceAllPlayersExplore();
     }
 
-    // 把通道中的牌放回牌堆
-    public putCardsInDeck():void{
-        this.tunnel.cards.forEach(card=>{
-            this.deck.appendCard(card)
-            card.tunnel = null; // 卡片已不在通道內
-        });
-        this.tunnel.cards.splice(0);
+    public *triggerLastCardInTunnel(): IterableIterator<Event> {
+        yield this.tunnel.lastCard.trigger(this);
+        if(this.tunnel.isAnyPlayerPresent == false)
+            yield* this.endRound();
     }
+
+    public *forceAllPlayersExplore(): IterableIterator<Event> {
+        this.forceExplore = false;
+        this.playersInTunnel.forEach(player=>player.choice = Choice.KeepGoing)
+        yield new AllPlayersMadeChoiceEvent(this);
+        yield* this.endTurn();
+    }
+
+    public *makeChoice(player: Player, choice: Choice) {
+        player.choice = choice;
+        yield new PlayerMadeChoiceEvent(player.id);
     
-    // 找到贏家，記錄起來
-    public findWinner():void{
-        var maxPoints = 0;
-        this.tents.forEach((tent)=>{
-            if(tent.points>=maxPoints){
-                maxPoints = tent.points;
-                this.winnerID = tent.id;
-            }
-        })
+        if (this.allPlayersMadeChoice) {
+            yield new AllPlayersMadeChoiceEvent(this);
+            yield* this.endTurn();
+        }
     }
 
-    public onRoundStart() : void{
-        this.round ++;
-        this.turn = 0;    
-        HazardCard.initializeCounter(); // 重新計算災難卡的出現次數
-        var artifact = this.temple.drawCard();
-        if(artifact) this.deck.appendCard(artifact);
+    public *endTurn(): IterableIterator<Event> {
+        yield* this.getAndGo();
+        this.turn++;
+        yield new Event(EventName.TurnEnd);
+    
+        if (this.tunnel.isAnyPlayerPresent) {
+            yield* this.startTurn();
+            return;
+        }
+
+        yield* this.endRound();
+    }
+
+    public *getAndGo():IterableIterator<Event> {
+        this.distributeResources();
+        yield new DistributeGemsAndArtifactsToPlayersEvent(this);
+        this.makePlayersLeaveTunnel();
+    }
+
+    public *endRound(): IterableIterator<Event> {
+        console.log('----- round end -----');
+        this.tunnel.discardCards(this);
+        this.tunnel.remove();
+        yield new RoundEndEvent(this);
+        this.round++;
+        
+        if (this.round <= 5) {
+            yield* this.startRound();
+            return;
+        }
+    
+        yield* this.end();
+    }
+
+    public *end(): IterableIterator<Event> {
+        this.winnerID = this.findWinner()?.id || "";
+        this.gameover = true;
+        yield new GameoverEvent(this);
+    }
+
+    public putCardsBackIntoDeck(): void {
+        this.tunnel.cards.forEach(card=>{ this.deck.appendCard(card) });
+        this.tunnel.cards = [];
+    }
+
+    public resetHazardCardCounter(): void {
+        hazardNames.forEach(name=>this.hazardCardCounter[name]=0);
+    }
+
+    public addArtifactCardAndShuffleDeck(): void {
+        this.deck.appendCard(new ArtifactCard(("A"+this.round) ,artifactName[this.round],artifactPoints[this.round]));
         this.deck.shuffle();
+    }
+
+    public makePlayersEnterTunnel(): void {
         this.players.forEach(player=>player.enterTunnel());
     }
 
-    public onRoundEnd() : void{
-        this.tunnel.discardInto(this.trashDeck);
-        this.tunnel.remove();     
+    public resetPlayersChoice(): void {
+        this.playersInTunnel.forEach(player=>player.choice = Choice.NotSelected);
     }
 
-    public onTurnStart() : void{
-        this.turn ++;  // 當前回合的turn數 +1
-        this.putCardInTunnel(); // 把卡放進通道內
-        this.tunnel.cards[this.tunnel.cards.length-1].trigger(); // 觸發被放入通道的卡片效果
+    public putCardInTunnel(): void {
+        var card = this.deck.drawCard()
+        if(card) this.tunnel.appendCard(card);
+    }
+
+    public findWinner(): Player|void {
+        let highestPoints = Math.max(...this.players.map((player) => player.points));
+        if(!highestPoints) return;
+        let highestPointsPlayers = this.players.filter((player) => player.points === highestPoints);
+        
+        let maxNumberOfHighestPointsPlayerArtifacts = Math.max(...
+            highestPointsPlayers.map((player) => player.numOfArtifacts)
+        );
+
+        highestPointsPlayers = highestPointsPlayers.filter(
+            (player) => player.numOfArtifacts === maxNumberOfHighestPointsPlayerArtifacts
+        );
+        if(highestPointsPlayers.length===1)
+            return highestPointsPlayers[0];
+        else
+            return;
+    }
+
+    public distributeResources(): void {
+        this.tunnel.distributeAllGems();
+        this.tunnel.distributeArtifacts();
+    }
+
+    public makePlayersLeaveTunnel(): void {
+        this.tunnel.leavingPlayers.forEach(player=>player.leaveTunnel());
+    }
+
+    public getPlayer(id:string): Player {
+        let player =  this.players.find(player=>player.id === id);
+        if(player)
+            return player
+        else
+            throw new Error('This player is not in the game.');
     }
 }
 
-export default Game;
