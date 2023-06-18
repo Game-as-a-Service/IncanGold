@@ -4,7 +4,7 @@
 			<img v-if="!round" :src="playerAvatar" :alt="avatar" />
 			<div v-else class="avatar-empty">
 				<img src="" alt="" />
-				<p>{{ bagScore }}</p>
+				<p class="font-cubic">{{ bagScore }}</p>
 			</div>
 
 			<div class="name">
@@ -12,7 +12,7 @@
 			</div>
 
 			<!-- 有玩家且遊戲中: 顯示 tentScore -->
-			<div v-if="!emptyPlayer && round" class="tent-score">
+			<div v-if="!emptyPlayer && round" class="tent-score font-cubic">
 				{{ tentScore }}
 			</div>
 		</div>
@@ -125,7 +125,7 @@
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		transform: translate(-50%, -55%);
+		transform: translate(-50%, -54%);
 		font-size: 66px;
 		color: #7b7b7b;
 	}
@@ -165,7 +165,7 @@
 		font-weight: 700;
 		color: #bf0000;
 		text-align: center;
-		line-height: 38px;
+		line-height: 44px;
 
 		background-color: #fff;
 		border: 2px solid #7b7b7b;

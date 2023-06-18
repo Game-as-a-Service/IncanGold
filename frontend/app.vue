@@ -16,6 +16,11 @@ html, body, div#__nuxt {
   src: url(Jokerman.ttf);
 }
 
+@font-face {
+  font-family: 'Cubic 11';
+  src: url(Cubic_11_1.013_R.woff2);
+}
+
 .font-NotoSans {
   font-family: "Noto Sans", "sans-serif", system-ui;
 }
