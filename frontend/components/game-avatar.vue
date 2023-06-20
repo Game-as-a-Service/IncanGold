@@ -71,7 +71,7 @@
 	});
 
 	// round 為 false: 等待中，round 為 true 遊戲中
-	const round = true;
+	const round = false;
 </script>
 
 <style>
