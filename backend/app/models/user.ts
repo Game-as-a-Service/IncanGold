@@ -1,34 +1,23 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from "typeorm";
+import bcrypt from "bcrypt";
 
-export interface UserDocument extends Document {
-  name?: string;
-  email: string;
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column({
+    length: 100,
+  })
+  @Column()
+  username: string;
+  @Column()
   password: string;
-  createdAt: Date;
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+
+  checkPassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }
-
-const userSchema: Schema<UserDocument> = new Schema({
-  name: {
-    type: String,
-    required: false,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const UserModel: Model<UserDocument> = mongoose.model<UserDocument>(
-  "User",
-  userSchema
-);
-
-export default UserModel;

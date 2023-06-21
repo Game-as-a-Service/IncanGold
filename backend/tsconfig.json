@@ -1,8 +1,13 @@
 {
-    "compilerOptions": {
-      "target": "es2016",
-      "outDir": "./dist",
-      "esModuleInterop": true,
-      "strict": true
-    }
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
+}
