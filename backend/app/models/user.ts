@@ -3,6 +3,11 @@ import bcrypt from "bcrypt";
 
 @Entity()
 export class User {
+  constructor(){
+    this.id = 0;
+    this.username = "";
+    this.password = "";
+  }
   @PrimaryGeneratedColumn()
   id: number;
   @Column({
