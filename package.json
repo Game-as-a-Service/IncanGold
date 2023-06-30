@@ -7,7 +7,12 @@
     "dev": "pnpm run --stream --recursive dev",
     "build": "pnpm run --stream --recursive build",
     "test": "pnpm run --stream --recursive test",
-    "test:core": "pnpm run --filter core test"
+    "test:core": "pnpm run --filter core test",
+    "backend:up": "docker build -t incan-gold-node .",
+    "backend:run": "docker run -it --name ig-backend -p 3030:3000 -v ./:/app incan-gold-node /bin/sh",
+    "backend:exec": "docker exec -it ig-backend /bin/sh",
+    "backend:down": "docker stop ig-backend && docker rm ig-backend"
+
   },
   "keywords": [],
   "author": "",
