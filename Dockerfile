@@ -4,13 +4,15 @@ WORKDIR /app
 #COPY package*.json ./
 
 # 安裝相依套件
-#RUN npm install
+RUN npm install -g pnpm
 
 # 複製專案檔案到容器中
 #COPY . .
 
 # 開放容器的埠號
-EXPOSE 3000
+EXPOSE 8000
+EXPOSE 8001
+EXPOSE 24678
 
 # 啟動伺服器
 #CMD [ "node", "server.js" ]
