@@ -1,22 +1,21 @@
 import {IStartGameRepository} from '../Repository';
-import EventBus from '../EventBus';
 import IncanGold from '../../../packages/incan-gold-core/src/domain/entities/IncanGold';
-import { GameStatus,toGameStatus } from '../IncanGoldDto';
+import { GameStatus,toGameStatus } from '../Dto/IncanGoldDto';
+import { EventDto } from '../Dto/EventDto/EventDto';
+import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
 
 // Create a game entity using the room ID and the players' IDs 
 // (the game entity's ID will be the room ID), 
 // and start the game until the first round's first turn, which is the "selection" phase.
 export default class StartGameUseCase {
     private _incanGoldRepository: IStartGameRepository;
-    private _eventBus: EventBus;
 
-    constructor(incanGoldRepository: IStartGameRepository, eventBus: EventBus) {
+    constructor(incanGoldRepository: IStartGameRepository) {
         this._incanGoldRepository = incanGoldRepository;
-        this._eventBus = eventBus;
     }
   
     async execute(input:StartGameInput):Promise<StartGameOutput>{
-        // 創(沒得查，因為還沒有game XD)
+        // 創(沒得查，因為還沒有game)
         var incanGold = this._incanGoldRepository.creatGame(input.roomID, input.plyerIDs);
         
         // 改
@@ -26,11 +25,9 @@ export default class StartGameUseCase {
         this._incanGoldRepository.save(incanGold);
 
         // 推
-        this._eventBus.broadcast(events);
-
         return {
-            statusCode:200,
-            game:toGameStatus(incanGold)
+            game:toGameStatus(incanGold),
+            events: transformEventsToEventDtos.execute(events)
         };
     }
 }
@@ -41,6 +38,6 @@ export interface StartGameInput {
 }
 
 interface StartGameOutput {
-    statusCode: number;
     game: GameStatus;
+    events:EventDto[];
 }

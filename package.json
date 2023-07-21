@@ -7,7 +7,11 @@
     "dev": "pnpm run --stream --recursive dev",
     "build": "pnpm run --stream --recursive build",
     "test": "pnpm run --stream --recursive test",
-    "test:core": "pnpm run --filter core test"
+    "test:core": "pnpm run --filter core test",
+    "be:up": "docker build -t incan-gold-node .",
+    "be:run": "docker run -it --name ig-backend -p 8000:8000 -p 3030:3000 -p 24678:24678 -v ./:/app incan-gold-node /bin/sh",
+    "be:exec": "docker exec -it ig-backend /bin/sh",
+    "be:down": "docker stop ig-backend && docker rm ig-backend"
   },
   "keywords": [],
   "author": "",
@@ -19,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/Game-as-a-Service/IncanGold/issues"
   },
-  "homepage": "https://github.com/Game-as-a-Service/IncanGold#readme"
+  "homepage": "https://github.com/Game-as-a-Service/IncanGold#readme",
+  "dependencies": {
+    "pnpm": "^8.6.5"
+  }
 }

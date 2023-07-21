@@ -1,38 +1,26 @@
-import { Response } from "express";
+// import { Response } from "express";
 import StartGameUseCase,{ StartGameInput } from "../../app/useCase/StartGameUseCase";
 import MakeChoiceUseCase, { MakeChoiceInput } from "../../app/useCase/MakeChoiceUseCase";
 import { IncanGoldRepository } from "../../frameworks/data-services/IncanGoldRepository";
-import ImplEventBus from "../eventBus/ImplEventBus";
+import { StartGameRepository } from "frameworks/data-services/StartGameRepository";
 
-class IncanGoldController {
-    private resp: Response;
-    constructor(resp:Response) {
-        this.resp = resp;
+export class IncanGoldController {
+    // private resp: Response;
+    // constructor(resp:Response) {
+    //     this.resp = resp;
+    // }
+
+    async StartGame(input:StartGameInput) {
+        const repository = new StartGameRepository();
+        const useCase = new StartGameUseCase(repository);
+ 
+        return await useCase.execute(input);
     }
 
-    async StartGameController(input:StartGameInput) {
+    async MakeChoice(input:MakeChoiceInput) {
         const repository = new IncanGoldRepository();
-        const useCase = new StartGameUseCase(repository,new ImplEventBus());
+        const useCase = new MakeChoiceUseCase(repository);
 
-        const output = await useCase.execute(input);
-
-        if (output.statusCode === 200) {
-            this.resp.status(200).send(output.game);
-            return;
-        }
-        // ... other error handling
-    }
-
-    async MakeChoiceController(input:MakeChoiceInput) {
-        const repository = new IncanGoldRepository();
-        const useCase = new MakeChoiceUseCase(repository,new ImplEventBus());
-
-        const output = await useCase.execute(input);
-
-        if (output.statusCode === 200) {
-            this.resp.status(200).send(output.game);
-            return;
-        }
-        // ... other error handling
+        return await useCase.execute(input);
     }
 }

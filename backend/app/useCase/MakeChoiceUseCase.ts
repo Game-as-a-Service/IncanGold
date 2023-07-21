@@ -1,16 +1,16 @@
 import {IRepository} from '../Repository';
-import EventBus from '../EventBus';
-import { GameStatus,toGameStatus } from '../IncanGoldDto';
+import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
+import { GameStatus,toGameStatus } from '../Dto/IncanGoldDto';
 import type IncanGold from '../../../packages/incan-gold-core/src/domain/entities/IncanGold';
 import { Choice } from '../../../packages/incan-gold-core/src/domain/constant/Choice';
+import Event from '../../../packages/incan-gold-core/src/domain/events/Event';
+import { EventDto } from '../Dto/EventDto/EventDto';
 
 export default class MakeChoiceUseCase {
     private _incanGoldRepository: IRepository;
-    private _eventBus: EventBus;
 
-    constructor(incanGoldRepository: IRepository, eventBus: EventBus) {
+    constructor(incanGoldRepository: IRepository) {
         this._incanGoldRepository = incanGoldRepository;
-        this._eventBus = eventBus;
     }
   
     async execute(input:MakeChoiceInput):Promise<MakeChoiceOutput>{
@@ -30,11 +30,9 @@ export default class MakeChoiceUseCase {
         }
 
         // 推
-        this._eventBus.broadcast(events);
-
         return {
-            statusCode:200,
-            game:toGameStatus(incanGold)
+            game:toGameStatus(incanGold),
+            events:transformEventsToEventDtos.execute(events)
         };
     }
 }
@@ -46,6 +44,6 @@ export interface MakeChoiceInput {
 }
 
 interface MakeChoiceOutput {
-    statusCode: number;
     game: GameStatus;
+    events:EventDto[];
 }

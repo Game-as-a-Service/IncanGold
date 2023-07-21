@@ -4,7 +4,6 @@ export interface IRepository {
     findGameById(gameId:string):Promise<IncanGold>;
     
     save(game:IncanGold): Promise<void>;
-
 }
 
 export interface IStartGameRepository {

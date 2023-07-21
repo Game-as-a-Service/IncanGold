@@ -1,8 +1,8 @@
-import ArtifactCard from "../../packages/incan-gold-core/src/domain/entities/Card/ArtifactCard"
-import TreasureCard from "../../packages/incan-gold-core/src/domain/entities/Card/TreasureCard"
-import IncanGold from "../../packages/incan-gold-core/src/domain/entities/IncanGold"
-import Player from "../../packages/incan-gold-core/src/domain/entities/Player"
-import Card from "../../packages/incan-gold-core/src/domain/entities/Card/Card"
+import ArtifactCard from "../../../packages/incan-gold-core/src/domain/entities/Card/ArtifactCard"
+import TreasureCard from "../../../packages/incan-gold-core/src/domain/entities/Card/TreasureCard"
+import IncanGold from "../../../packages/incan-gold-core/src/domain/entities/IncanGold"
+import Player from "../../../packages/incan-gold-core/src/domain/entities/Player"
+import Card from "../../../packages/incan-gold-core/src/domain/entities/Card/Card"
 
 export interface GameStatus {
     round: number
@@ -14,8 +14,6 @@ export interface GameStatus {
     // choiseTimer: timestamp
 }
 
-type cardId = string
-
 export interface PlayerDto {
     playerId: string
     inTent: boolean   
@@ -24,6 +22,7 @@ export interface PlayerDto {
     artifacts: string[]
 }
 
+type cardId = string
 export interface Room {
     card : cardId         // 發現的卡
     remainingGems: number // 剩餘的寶石數

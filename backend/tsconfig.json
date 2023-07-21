@@ -10,10 +10,11 @@
       "outDir": "./dist",
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
-      "moduleResolution": "Node",
+      "moduleResolution": "nodenext",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
-      "sourceMap": true
+      "sourceMap": true,
+      "strict": true,
     },
     "include": [
       "**/*.ts",
@@ -22,3 +23,4 @@
       "D:/Gaas/IncanGold/packages/incan-gold-core/src/domain/entities/IncanGold.ts"
     ]
   }
+  
