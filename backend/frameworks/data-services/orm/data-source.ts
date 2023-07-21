@@ -6,7 +6,8 @@ import { PlayerData } from "./PlayerData"
 
 export const AppDataSource = new DataSource({
     type: "mysql",
-    host: "localhost",
+    // host: "localhost",
+    host: "sql2",
     port: 3306,
     username: "root",
     password: "123456",

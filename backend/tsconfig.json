@@ -14,7 +14,7 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
-      "strict": true,
+      "strict": false,
     },
     "include": [
       "**/*.ts",

@@ -2,8 +2,8 @@
 import {io} from 'socket.io-client'
 
 let socket
-const gameId = '123'
-const playerId = '456'
+const gameId = '123456'
+const playerId = 'a'
 const handleSocketConnect = () => {
   console.log('connect')
   socket = io('http://localhost:8000')
@@ -32,6 +32,7 @@ const handleChoice = () => {
 const handleStartGame = () => {
   const params = {
     gameId,
+    playerId: ['a','b','c']
   }
   socket.emit('start_game', params)
 }

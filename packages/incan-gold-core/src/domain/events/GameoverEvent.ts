@@ -4,7 +4,7 @@ import IncanGold from "../entities/IncanGold";
 
 // 遊戲已結束
 export default class GameoverEvent extends Event{
-    public readonly winnerID:number|string;
+    public readonly winnerID:string;
     public players:PlayerAndPoints[];
 
     constructor(game:IncanGold){
