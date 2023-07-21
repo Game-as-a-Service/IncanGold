@@ -6,12 +6,19 @@ import Player from "./Player";
 import Bag from "./Bag";
 import { TrashDeck } from "./Deck";
 import Gem from "./Gem";
-import { Choice } from "./Player";
+import { Choice } from "../constant/Choice";
 import IncanGold from "./IncanGold";
 
 class Tunnel {
   private _players : Player[] = [];
-  public cards : Card[] = [];
+  public cards : Card[];
+
+  constructor(cards:Card[]){
+    if(cards.length)
+      this.cards = cards;
+    else
+      this.cards = [];
+  }
 
   set players(players:Player[]) {
     this._players = players;

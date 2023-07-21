@@ -1,8 +1,24 @@
 {
     "compilerOptions": {
-      "target": "es2016",
+      "baseUrl": "./",
+      "lib": [
+        "es5",
+        "es6"
+      ],
+      "target": "ESNext",
+      "module": "CommonJS",
       "outDir": "./dist",
       "esModuleInterop": true,
-      "strict": true
-    }
+      "allowSyntheticDefaultImports": true,
+      "moduleResolution": "Node",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "sourceMap": true
+    },
+    "include": [
+      "**/*.ts",
+      "**/*.test.ts",
+      "../packages/incan-gold-core/src/domain/**/*.ts",
+      "D:/Gaas/IncanGold/packages/incan-gold-core/src/domain/entities/IncanGold.ts"
+    ]
   }

@@ -1,24 +1,30 @@
 import Card from "./Card/Card"
-import HazardCard, {hazardNames} from "./Card/HazardCard"
-import TreasureCard, {pointsList} from "./Card/TreasureCard"
+import { hazardNames,pointsList } from "../constant/CardInfo";
+import HazardCard from "./Card/HazardCard"
+import TreasureCard from "./Card/TreasureCard"
 
 export class Deck{
-    public cards : Card[] = [];
+    public cards : Card[];
 
-    constructor(){
-        pointsList.forEach((points,index)=>{ this.cards.push(new TreasureCard(("T"+points),points)) });
-        [5,7,11].forEach(points=>{
-            let cards = this.cards.filter(card=>new RegExp('^T' + points).test(card.cardID));
-            cards[0].cardID += "(1)" ;
-            cards[1].cardID += "(2)" ;
-        })
-        
-        hazardNames.forEach(name=>{ 
-            let cardID =  "H" + name.charAt(0).toUpperCase(); // HF (fire)
-            let ids = Array(3).fill(cardID).map( (cardID,index) => (cardID + (index+1)) ) // HF1,HF2...
-            let hazardCards = ids.map(id=>new HazardCard(id,name));
-            this.cards = this.cards.concat(hazardCards);
-        });
+    constructor(cards:Card[]){
+        if(cards.length)
+            this.cards = cards;
+        else{
+            this.cards = [];
+            pointsList.forEach((points,index)=>{ this.cards.push(new TreasureCard(("T"+points),points)) });
+            [5,7,11].forEach(points=>{
+                let cards = this.cards.filter(card=>new RegExp('^T' + points).test(card.cardID));
+                cards[0].cardID += "(1)" ;
+                cards[1].cardID += "(2)" ;
+            })
+            
+            hazardNames.forEach(name=>{ 
+                let cardID =  "H" + name.charAt(0).toUpperCase(); // HF (fire)
+                let ids = Array(3).fill(cardID).map( (cardID,index) => (cardID + (index+1)) ) // HF1,HF2...
+                let hazardCards = ids.map(id=>new HazardCard(id,name));
+                this.cards = this.cards.concat(hazardCards);
+            });   
+        }
     }
 
     get numofCards():number{
@@ -42,13 +48,17 @@ export class Deck{
 }
 
 export class TrashDeck{
-    public cards : Map<number, Card[]> = new Map();
+    public cards : Map<number, Card[]>;
 
-    public constructor() {
-        this.cards = new Map();
-        [1,2,3,4,5].forEach(round=>{
-            this.cards.set( round, []);
-        })
+    public constructor( cards : Map<number, Card[]>) {
+        if(cards.get(1))
+            this.cards = cards;
+        else{
+            this.cards = new Map();
+            [1,2,3,4,5].forEach(round=>{
+                this.cards.set( round, []);
+            })
+        }
     }
 
     get numofCards():number{

@@ -1,7 +1,6 @@
-import Event, { EventName } from "./Event";
+import Event from "./Event";
+import { EventName } from "../constant/EventName";
 import IncanGold from "../entities/IncanGold";
-import HazardCard from "../entities/Card/HazardCard";
-
 
 // 回合結束
 export default class RoundEndEvent extends Event{

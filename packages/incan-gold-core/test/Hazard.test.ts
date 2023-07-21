@@ -1,22 +1,18 @@
 import IncanGold from '../src/domain/entities/IncanGold';
 import TreasureCard from '../src/domain/entities/Card/TreasureCard'
 import HazardCard from '../src/domain/entities/Card/HazardCard';
-import Player,{Choice} from '../src/domain/entities/Player';
+import { Choice } from '../src/domain/constant/Choice';
+import Player from '../src/domain/entities/Player';
 import Event  from '../src/domain/events/Event';
 import { NewTurnHazardCardTriggeredEvent } from '../src/domain/events/NewTurnCardTriggeredEvent';
 import { AllPlayersMadeChoiceEvent } from '../src/domain/events/MadeChoiceEvent';
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe("災難卡被放入通道",()=>{
-    let game:IncanGold;
-
-    beforeEach(()=>{
-        game = new IncanGold();
-    })
 
     it('回合第一張卡為災難卡，玩家只能繼續探險',()=>{
         // given 
-        game.setPlayerCount(3);
+        const game = new IncanGold('1',['1','2','3']);
         game.round = 1;
         game.deck.appendCard(new HazardCard("HF1",'fire'));
         const iterator = game.startRound();
@@ -33,7 +29,7 @@ describe("災難卡被放入通道",()=>{
 
     it('災難卡種類尚未重複出現,繼續此round',()=>{
         // given 
-        game.setPlayerCount(1);
+        const game = new IncanGold('1',['1']);
         game.round = 1;
         game.makePlayersEnterTunnel();
         game.tunnel.appendCard(new HazardCard("HS1",'spider'));
@@ -55,9 +51,9 @@ describe("災難卡被放入通道",()=>{
 
     it('災難卡種類已重複出現，玩家們皆清空背包、離開通道',()=>{
         // given 
+        const game = new IncanGold('1',['1','2']);
         game.round = 1;
         game.resetHazardCardCounter();
-        game.setPlayerCount(2);
         game.makePlayersEnterTunnel();
         game.tunnel.appendCard(new TreasureCard("T4",4));
         game.tunnel.lastCard.trigger(game);

@@ -1,5 +1,5 @@
-import  Event,{ EventName } from "./Event";
-// import Player from "../entities/Player";
+import  Event from "./Event";
+import { EventName } from "../constant/EventName";
 import IncanGold from "../entities/IncanGold";
 
 // 遊戲已結束

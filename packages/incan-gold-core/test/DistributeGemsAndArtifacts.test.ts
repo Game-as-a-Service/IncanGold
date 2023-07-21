@@ -1,21 +1,17 @@
 import IncanGold from '../src/domain/entities/IncanGold';
 import TreasureCard from '../src/domain/entities/Card/TreasureCard'
 import HazardCard from '../src/domain/entities/Card/HazardCard';
-import ArtifactCard,{ artifactName,artifactPoints } from '../src/domain/entities/Card/ArtifactCard'
-import Player,{Choice} from '../src/domain/entities/Player';
+import { artifactName,artifactPoints } from '../src/domain/constant/CardInfo';
+import { Choice } from '../src/domain/constant/Choice';
+import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
 import DistributeGemsAndArtifactsToPlayersEvent from '../src/domain/events/DistributeGemsAndArtifactsToPlayersEvent'
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe('玩家選擇結束後，分配寶石&神器', ()=>{
-    let game : IncanGold;
-
-    beforeEach(()=>{
-        game = new IncanGold();
-    })
 
     it(`僅1名玩家選擇回家,寶石、神器全拿`,()=>{
         // given 
-        game.setPlayerCount(2);
+        const game = new IncanGold('1',['1','2']);
         game.makePlayersEnterTunnel();
         game.round = 1;
         game.tunnel.appendCard(new TreasureCard("T3",3));
@@ -42,7 +38,7 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
 
     it(`多名玩家選擇回家，寶石平分，神器留在通道中`,()=>{
         // given 
-        game.setPlayerCount(2);
+        const game = new IncanGold('1',['1','2']);
         game.makePlayersEnterTunnel();
         game.round = 1;
         game.tunnel.appendCard(new TreasureCard("T3",3));
@@ -69,7 +65,7 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
 
     it(`多名玩家選擇回家，寶石數對人數除不盡會留在寶物卡上`,()=>{
         // given 
-        game.setPlayerCount(3);
+        const game = new IncanGold('1',['1','2','3']);
         game.makePlayersEnterTunnel();
         game.round = 1;
         game.tunnel.appendCard(new TreasureCard("T4",4));
@@ -98,7 +94,7 @@ describe('玩家選擇結束後，分配寶石&神器', ()=>{
 
     it(`所有玩家選擇繼續探險，寶石、神器皆留在通道中`,()=>{
         // given 
-        game.setPlayerCount(2);
+        const game = new IncanGold('1',['1','2']);
         game.makePlayersEnterTunnel();
         game.round = 1;
         game.tunnel.appendCard(new TreasureCard("T4",4));

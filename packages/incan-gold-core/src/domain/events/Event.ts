@@ -1,3 +1,5 @@
+import { EventName } from "../constant/EventName";
+
 export default class Event {
     public name:EventName;
 
@@ -6,14 +8,3 @@ export default class Event {
     }
 }
 
-export enum EventName {
-    NewTurnTreasureCardTriggered = 'NewTurnTreasureCardTriggered',
-    NewTurnHazardCardTriggered = 'NewTurnHazardCardTriggered',
-    NewTurnArtifactCardTriggered = 'NewTurnArtifactCardTriggered',
-    PlayerMadeChoice = 'PlayerMadeChoice',
-    AllPlayersMadeChoice = 'AllPlayersMadeChoice',
-    DistributeGemsAndArtifactsToPlayers = 'DistributeGemsAndArtifactsToPlayers',
-    RoundEnd ='RoundEnd',
-    TurnEnd = 'TurnEnd',
-    Gameover = 'Gameover',
-}

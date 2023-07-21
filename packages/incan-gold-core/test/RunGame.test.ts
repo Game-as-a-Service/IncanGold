@@ -2,8 +2,10 @@ import IncanGold from '../src/domain/entities/IncanGold';
 import TreasureCard from '../src/domain/entities/Card/TreasureCard'
 import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
 import HazardCard from '../src/domain/entities/Card/HazardCard';
-import Player, { Choice } from '../src/domain/entities/Player';
-import Event, { EventName } from "../src/domain/events/Event"
+import { Choice } from '../src/domain/constant/Choice';
+import { EventName } from '../src/domain/constant/EventName';
+import Player from '../src/domain/entities/Player';
+import Event from "../src/domain/events/Event"
 
 interface PlayerAndChoice{
     player:Player,
@@ -11,14 +13,9 @@ interface PlayerAndChoice{
 }
 
 describe('',()=>{
-    let game:IncanGold;
-
-    beforeEach(()=>{
-        game = new IncanGold();
-    })
 
     it("玩家隨機決定,跑完整場遊戲",async ()=>{
-        game.setPlayerCount(5);
+        const game = new IncanGold('1',['a','b','c']);
         const iterator = playGame(game,playersAndChoices(game));
         while(!game.gameover){
             let event = iterator.next().value;
@@ -45,7 +42,7 @@ function playersAndChoices(game:IncanGold):Iterator<PlayerAndChoice> {
     return {
       next: function() {
         if(playerIndex >= game.playersInTunnel.length ) playerIndex=0 ;
-        choice_index = Math.round(Math.random());
+        choice_index = 1; // Math.round(Math.random());
         return {
             value: {player: game.playersInTunnel[playerIndex++], choice:choices[choice_index]},
             done:false

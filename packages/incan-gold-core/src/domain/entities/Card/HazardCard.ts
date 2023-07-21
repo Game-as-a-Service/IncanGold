@@ -4,8 +4,6 @@ import IncanGold from "../IncanGold";
 import Event from "../../events/Event"
 import {NewTurnHazardCardTriggeredEvent} from "../../events/NewTurnCardTriggeredEvent"
 
-export const hazardNames = ["fire","rocks","mummy","python","spiders"];
-
 export default class HazardCard extends Card {
 
   public readonly name: string;

@@ -1,5 +1,6 @@
-import  Event,{ EventName } from "./Event";
-import { Choice } from "../entities/Player";
+import { EventName } from "../constant/EventName";
+import  Event from "./Event";
+import { Choice } from "../constant/Choice"; 
 import IncanGold from "../entities/IncanGold";
 import TreasureCard from "../entities/Card/TreasureCard";
 

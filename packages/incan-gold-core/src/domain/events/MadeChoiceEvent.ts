@@ -1,4 +1,5 @@
-import Event, { EventName } from "./Event";
+import Event from "./Event";
+import { EventName } from "../constant/EventName";
 import IncanGold from "../entities/IncanGold";
 
 // 幾號玩家已做出選擇

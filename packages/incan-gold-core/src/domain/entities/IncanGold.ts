@@ -1,20 +1,22 @@
-import Card from "./Card/Card"
-import ArtifactCard, { artifactName, artifactPoints } from "./Card/ArtifactCard"
-import HazardCard,{hazardNames} from "./Card/HazardCard"
+import ArtifactCard from "./Card/ArtifactCard"
+import { hazardNames,artifactName,artifactPoints } from "../constant/CardInfo"
 import {TrashDeck, Deck} from "./Deck"
 import Tunnel from "./Tunnel"
-import Player, {Choice} from "./Player"
-import Event, { EventName } from "../events/Event"
+import { Choice } from "../constant/Choice";
+import { EventName } from "../constant/EventName"
+import Player from "./Player"
+import Event from "../events/Event"
 import RoundEndEvent from "../events/RoundEndEvent"
 import {PlayerMadeChoiceEvent,AllPlayersMadeChoiceEvent} from "../events/MadeChoiceEvent"
 import DistributeGemsAndArtifactsToPlayersEvent from "../events/DistributeGemsAndArtifactsToPlayersEvent";
 import GameoverEvent from "../events/GameoverEvent";
-import TresasureCard from "./Card/TreasureCard"
+import Card from "./Card/Card";
 
 export default class IncanGold {
-    public tunnel:Tunnel = new Tunnel();
-    public deck:Deck = new Deck();
-    public trashDeck:TrashDeck = new TrashDeck();
+    public gameID:string;
+    public tunnel:Tunnel;
+    public deck:Deck;
+    public trashDeck:TrashDeck;
     public players:Player[] = [];
 
     public hazardCardCounter: Record<string, number> = {};
@@ -24,9 +26,21 @@ export default class IncanGold {
     public winnerID:string = "";
     public gameover:boolean = false;
 
-    public setPlayerCount(num:number) {
-        for(let i=1;i<=num;i++)
-            this.players.push(new Player(i.toString()));
+    constructor(
+        ID:string, 
+        playerIDs:string[],
+        tunnel:Card[]=[],
+        deck:Card[]=[],
+        trashDeck:Map<number,Card[]>= new Map())
+    {
+        this.gameID = ID;
+        this.tunnel = new Tunnel(tunnel);
+        this.deck = new Deck(deck);
+        this.trashDeck = new TrashDeck(trashDeck);
+
+        playerIDs.forEach(playerID=>{
+            this.players.push(new Player(playerID));
+        })
         this.tunnel.players = this.players;
     }
 
@@ -44,10 +58,9 @@ export default class IncanGold {
     }
 
     public *startRound():IterableIterator<Event>{
-        console.log('----- current round:' + this.round + '-----');
         this.putCardsBackIntoDeck();
         this.resetHazardCardCounter();
-        this.addArtifactCardAndShuffleDeck();
+        // this.addArtifactCardAndShuffleDeck();
         this.makePlayersEnterTunnel();
         this.turn = 1;
         yield* this.startTurn();
@@ -104,7 +117,6 @@ export default class IncanGold {
     }
 
     public *endRound(): IterableIterator<Event> {
-        console.log('----- round end -----');
         this.tunnel.discardCards(this);
         this.tunnel.remove();
         yield new RoundEndEvent(this);
@@ -119,7 +131,9 @@ export default class IncanGold {
     }
 
     public *end(): IterableIterator<Event> {
-        this.winnerID = this.findWinner()?.id || "";
+        const winner = this.findWinner();
+        if(winner)
+            this.winnerID = winner.id;
         this.gameover = true;
         yield new GameoverEvent(this);
     }

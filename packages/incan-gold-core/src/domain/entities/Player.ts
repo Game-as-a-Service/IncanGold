@@ -1,13 +1,8 @@
+import { Choice } from "../constant/Choice";
 import Tent from "./Tent";
 import Bag from "./Bag";
 import Gem from "./Gem";
 import Artifact from "./Artifact";
-
-export enum Choice {
-  NotSelected = "notSelected",
-  KeepGoing = "keepGoing",
-  Quit = "quit",
-}
 
 export default class Player {
   public id: string;

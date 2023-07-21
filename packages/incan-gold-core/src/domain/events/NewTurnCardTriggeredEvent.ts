@@ -1,4 +1,5 @@
-import Event, { EventName } from "./Event";
+import Event from "./Event";
+import { EventName } from "../constant/EventName";
 import IncanGold from "../entities/IncanGold";
 import TresasureCard from "../entities/Card/TreasureCard";
 import HazardCard from "../entities/Card/HazardCard";

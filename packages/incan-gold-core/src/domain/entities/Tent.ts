@@ -36,4 +36,8 @@ export default class Tent{
     get artifacts():Artifact[]{
         return this._artifacts;
     }
+
+    get artifactsNames():string[]{
+        return this._artifacts.map(artifact=>artifact.name);
+    }
 }
