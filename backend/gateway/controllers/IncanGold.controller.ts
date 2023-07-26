@@ -2,7 +2,7 @@
 import StartGameUseCase,{ StartGameInput } from "../../app/useCase/StartGameUseCase";
 import MakeChoiceUseCase, { MakeChoiceInput } from "../../app/useCase/MakeChoiceUseCase";
 import { IncanGoldRepository } from "../../frameworks/data-services/IncanGoldRepository";
-import { StartGameRepository } from "frameworks/data-services/StartGameRepository";
+import { StartGameRepository } from "../../frameworks/data-services/StartGameRepository";
 
 export class IncanGoldController {
     // private resp: Response;
