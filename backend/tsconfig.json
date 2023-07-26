@@ -2,6 +2,7 @@
     "compilerOptions": {
       "baseUrl": "./",
       "lib": [
+        "DOM",
         "es5",
         "es6"
       ],

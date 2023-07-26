@@ -12,6 +12,7 @@
     "be:database": "docker run --name sql2 -p 3306:3306 --network incan-network -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8",
     "be:up": "docker build -t incan-gold-node .",
     "be:run": "docker run -it --name ig-backend -p 8000:8000 -p 3030:3000 -p 24678:24678 --network incan-network -v ./:/app incan-gold-node /bin/sh",
+    "be:runInWindows":"docker run -it --name ig-backend -p 8000:8000 -p 3030:3000 -p 24678:24678 --network incan-network -v ${pwd}:/app incan-gold-node /bin/sh",
     "be:exec": "docker exec -it ig-backend /bin/sh",
     "be:down": "docker stop ig-backend && docker rm ig-backend"
   },

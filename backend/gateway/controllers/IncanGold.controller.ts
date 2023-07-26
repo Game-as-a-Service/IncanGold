@@ -2,7 +2,6 @@
 import StartGameUseCase,{ StartGameInput } from "../../app/useCase/StartGameUseCase";
 import MakeChoiceUseCase, { MakeChoiceInput } from "../../app/useCase/MakeChoiceUseCase";
 import { IncanGoldRepository } from "../../frameworks/data-services/IncanGoldRepository";
-import { StartGameRepository } from "../../frameworks/data-services/StartGameRepository";
 
 export class IncanGoldController {
     // private resp: Response;
@@ -11,7 +10,7 @@ export class IncanGoldController {
     // }
 
     async StartGame(input:StartGameInput) {
-        const repository = new StartGameRepository();
+        const repository = new IncanGoldRepository();
         const useCase = new StartGameUseCase(repository);
  
         return await useCase.execute(input);

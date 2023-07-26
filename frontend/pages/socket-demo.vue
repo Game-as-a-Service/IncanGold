@@ -24,7 +24,7 @@ const handleChoice = () => {
   const params = {
     gameId,
     playerId,
-    choise: 'keepGoing'
+    choice: 'KeepGoing'
   }
   socket.emit('player_choice', params)
 }

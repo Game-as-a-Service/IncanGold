@@ -5,10 +5,10 @@ import { Choice } from "../../packages/incan-gold-core/src/domain/constant/Choic
 import MakeChoiceUseCase, { MakeChoiceInput } from "../app/useCase/MakeChoiceUseCase";
 
 AppDataSource.initialize().then(async()=>{
-    await startGame('1',['a','b','c']);
-    makeChoice('1','a',Choice.Quit);
-    // makeChoice('1','b',Choice.KeepGoing);
-    // makeChoice('1','c',Choice.Quit);
+    // await startGame('2',['a','b','c']);
+    // makeChoice('2','a',Choice.Quit);
+    // makeChoice('2','b',Choice.KeepGoing);
+    makeChoice('2','c',Choice.Quit);
 })
 
 async function startGame(roomID:string, plyerIDs:string[]){
