@@ -8,7 +8,6 @@ export interface GameStatus {
     round: number
     turn: number
     deckLength: number
-    // trashDeck: cardId[] 
     players: PlayerDto[]
     tunnel: Room[]
     // choiseTimer: timestamp

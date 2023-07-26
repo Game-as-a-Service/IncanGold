@@ -25,6 +25,6 @@
   },
   "homepage": "https://github.com/Game-as-a-Service/IncanGold#readme",
   "dependencies": {
-    "pnpm": "^8.6.5"
+    "pnpm": "^8.6.9"
   }
 }

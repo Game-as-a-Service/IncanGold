@@ -1,4 +1,4 @@
-import {IStartGameRepository} from '../Repository';
+import { IRepository } from '../Repository';
 import IncanGold from '../../../packages/incan-gold-core/src/domain/entities/IncanGold';
 import { GameStatus,toGameStatus } from '../Dto/IncanGoldDto';
 import { EventDto } from '../Dto/EventDto/EventDto';
@@ -8,9 +8,9 @@ import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
 // (the game entity's ID will be the room ID), 
 // and start the game until the first round's first turn, which is the "selection" phase.
 export default class StartGameUseCase {
-    private _incanGoldRepository: IStartGameRepository;
+    private _incanGoldRepository: IRepository;
 
-    constructor(incanGoldRepository: IStartGameRepository) {
+    constructor(incanGoldRepository: IRepository) {
         this._incanGoldRepository = incanGoldRepository;
     }
   

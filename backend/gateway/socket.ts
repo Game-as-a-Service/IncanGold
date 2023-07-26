@@ -63,8 +63,9 @@ export default function setupSocket(server: HttpServer){
         })
 
         socket.on("start_game", (payload) => {
+            controller.StartGame(payload)
             console.log(`message: ${JSON.stringify(payload)}`);
-            io.emit("message", 'get start_game');
+            io.emit("message", controller.StartGame(payload));
         })
         socket.on("player_ready", (payload) => {
             console.log(`message: ${JSON.stringify(payload)}`);
