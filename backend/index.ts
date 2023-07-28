@@ -2,8 +2,18 @@ import express, { Express, Request, Response } from "express";
 import { createServer } from "http";
 // import { Server, Socket } from "socket.io";
 import setupSocket from "./gateway/socket";
+import { MySqlContainer } from "testcontainers";
+import { AppDataSource, configDataSource } from "./frameworks/data-services/orm/data-source";
+(async function(){
+    const container = await new MySqlContainer()
+    .withExposedPorts(3306)
+    .withRootPassword('123456')
+    .withDatabase('test')
+    .start();
 
-const port = 8000;
+    configDataSource(container.getHost(),container.getMappedPort(3306));
+    await AppDataSource.initialize();
+    const port = 8000;
 const app:Express = express();
 const server = createServer(app);
 // const io = new Server(server, {
@@ -32,3 +42,7 @@ setupSocket(server)
 server.listen(port, () => {
     console.log(`listening on port ${port}`)
 })
+})()
+
+
+
