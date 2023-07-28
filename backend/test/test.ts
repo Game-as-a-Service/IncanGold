@@ -3,13 +3,28 @@ import { IncanGoldRepository } from "../frameworks/data-services/IncanGoldReposi
 import { AppDataSource } from "../frameworks/data-services/orm/data-source";
 import { Choice } from "../../packages/incan-gold-core/src/domain/constant/Choice";
 import MakeChoiceUseCase, { MakeChoiceInput } from "../app/useCase/MakeChoiceUseCase";
+import { MySqlContainer } from "testcontainers"
+import { configDataSource } from "../frameworks/data-services/orm/data-source";
 
-AppDataSource.initialize().then(async()=>{
-    // await startGame('2',['a','b','c']);
-    // makeChoice('2','a',Choice.Quit);
-    // makeChoice('2','b',Choice.KeepGoing);
+
+async function app(){
+    const container = await new MySqlContainer()
+    .withExposedPorts(3306)
+    .withRootPassword('123456')
+    .withDatabase('test')
+    .start();
+
+    configDataSource(container.getHost(),container.getMappedPort(3306));
+    await AppDataSource.initialize();
+
+
+    await startGame('2',['a','b','c']);
+    makeChoice('2','a',Choice.Quit);
+    makeChoice('2','b',Choice.KeepGoing);
     makeChoice('2','c',Choice.Quit);
-})
+
+}
+
 
 async function startGame(roomID:string, plyerIDs:string[]){
     const input:StartGameInput = { roomID, plyerIDs };
@@ -26,3 +41,6 @@ async function makeChoice(gameId:string, playerId:string, choice:Choice){
     console.log(JSON.stringify(game));
     console.log(JSON.stringify(events));
 }
+
+
+app();
