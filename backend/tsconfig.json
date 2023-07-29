@@ -7,15 +7,21 @@
         "es6"
       ],
       "target": "ESNext",
-      "module": "CommonJS",
+      "module": "ESNext",
       "outDir": "./dist",
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
-      "moduleResolution": "nodenext",
+      "moduleResolution": "Node",
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
     },
+    
+    "ts-node": {
+      "esm": true,
+      "experimentalSpecifierResolution": "node"
+    },
+
     "include": [
       "**/*.ts",
       "**/*.test.ts",

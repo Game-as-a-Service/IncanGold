@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ManyToOne,JoinColumn } from "typeorm"
+import { Entity, PrimaryColumn, Column, ManyToOne,Relation } from "typeorm"
 import { IncanGoldData } from "./IncanGoldData"
 import { Choice } from "../../../../packages/incan-gold-core/src/domain/constant/Choice"
 
@@ -14,7 +14,7 @@ export class PlayerData {
     })
     choice:Choice
 
-    @Column({default: true})
+    @Column("int",{default: true})
     inTent: boolean   
     
     @Column("int",{default: 0})
@@ -30,5 +30,5 @@ export class PlayerData {
     artifacts: string[] 
 
     @ManyToOne(()=>IncanGoldData,(incanGold)=>incanGold.players)
-    incanGold:IncanGoldData
+    incanGold: Relation<IncanGoldData>
 }

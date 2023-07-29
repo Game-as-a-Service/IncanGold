@@ -6,7 +6,7 @@ import { IncanGoldData } from "./orm/IncanGoldData";
 import { PlayerData } from "./orm/PlayerData";
 import { CardData,CardLocation } from "./orm/CardData";
 import IncanGold from "../../../packages/incan-gold-core/src/domain/entities/IncanGold";
-import { pointsList,hazardNames } from "../../../packages/incan-gold-core/src/domain/constant/CardInfo";
+import { treasureCards,hazardCards,artifactCards } from "../../../packages/incan-gold-core/src/domain/constant/CardInfo";
 
 export class IncanGoldRepository implements IRepository {
     private _dataSource: DataSource = AppDataSource;
@@ -28,35 +28,12 @@ export class IncanGoldRepository implements IRepository {
 
         const cards:CardData[] = [];
 
-        pointsList.forEach(points => {
-        const card = new CardData();
-        card.cardID = ("T"+points);
-        card.location = CardLocation.Deck;
-        cards.push(card);
+        [...treasureCards, ...hazardCards, ...artifactCards].forEach( card => {
+            const cardData = new CardData();
+            cardData.cardID = card.ID;
+            cardData.location = card.ID[0] === 'A' ? CardLocation.Temple : CardLocation.Deck;
+            cards.push(cardData);
         });
-        [5,7,11].forEach( points =>{
-            let tempcards = cards.filter(card=>new RegExp('^T' + points).test(card.cardID));
-            tempcards[0].cardID += "(1)" ;
-            tempcards[1].cardID += "(2)" ;
-        })
-            
-        hazardNames.forEach(name=>{ 
-            let cardID =  "H" + name.charAt(0).toUpperCase(); // HF (fire)
-            let ids = Array(3).fill(cardID).map( (cardID,index) => (cardID + (index+1)) ) // HF1,HF2...
-            ids.map(id=>{
-            const card = new CardData();
-            card.cardID = id;
-            card.location = CardLocation.Deck;
-            cards.push(card);
-            });
-        }); 
-
-        [1,2,3,4,5].forEach(round=>{
-        const card = new CardData();
-        card.cardID = ("A"+round);
-        card.location = CardLocation.Temple;
-        cards.push(card);
-        })
 
         this._incanGoldData.cards = cards;
 

@@ -1,5 +1,5 @@
 import ArtifactCard from "./Card/ArtifactCard"
-import { hazardNames,artifactName,artifactPoints } from "../constant/CardInfo"
+import { hazardNames, artifactCards } from "../constant/CardInfo"
 import {TrashDeck, Deck} from "./Deck"
 import Tunnel from "./Tunnel"
 import { Choice } from "../constant/Choice";
@@ -148,7 +148,8 @@ export default class IncanGold {
     }
 
     public addArtifactCardAndShuffleDeck(): void {
-        this.deck.appendCard(new ArtifactCard(("A"+this.round) ,artifactName[this.round],artifactPoints[this.round]));
+        const i = this.round -1; // index of artifactCards
+        this.deck.appendCard(new ArtifactCard(artifactCards[i].ID,artifactCards[i].name,artifactCards[i].points));
         this.deck.shuffle();
     }
 

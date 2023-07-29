@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ManyToOne,JoinColumn } from "typeorm"
+import { Entity, PrimaryColumn, Column, ManyToOne,JoinColumn,Relation } from "typeorm"
 import { IncanGoldData } from "./IncanGoldData"
 
 export enum CardLocation {
@@ -14,13 +14,13 @@ export class CardData {
     @PrimaryColumn("varchar")
     cardID:string
     
-    @Column({nullable: true})
+    @Column("int",{nullable: true})
     gems :number
 
-    @Column({nullable: true})
+    @Column("int",{nullable: true})
     remainingGems :number
 
-    @Column({nullable: true})
+    @Column("bool",{nullable: true})
     remainingArtifact:boolean
 
     @Column({
@@ -35,5 +35,5 @@ export class CardData {
     @PrimaryColumn({ type: 'varchar', name: 'incanGoldId' })
     @ManyToOne(() => IncanGoldData, (incanGold) => incanGold.cards)
     @JoinColumn({name:'incanGoldId'})
-    incanGold: IncanGoldData
+    incanGold: Relation<IncanGoldData>
 }

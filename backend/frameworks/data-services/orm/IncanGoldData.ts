@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn,OneToMany } from "typeorm"
+import { Entity, Column, PrimaryColumn,OneToMany,Relation } from "typeorm"
 import { CardData } from "./CardData"
 import { PlayerData } from "./PlayerData"
 
@@ -7,21 +7,21 @@ export class IncanGoldData {
     @PrimaryColumn("uuid")
     id: string
 
-    @Column("int")
+    @Column("int",{nullable: true})
     round: number
 
-    @Column("int")
+    @Column("int",{nullable: true})
     turn: number
 
     @OneToMany(() => CardData, (card) => card.incanGold,{
         cascade:true,
         eager: true,
     })
-    cards: CardData[]
+    cards: Relation<CardData>[]
 
     @OneToMany(() => PlayerData, (player) => player.incanGold,{
         cascade:true,
         eager: true,
     })
-    players: PlayerData[]
+    players: Relation<PlayerData>[]
 }

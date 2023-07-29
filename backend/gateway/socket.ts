@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
-import { IncanGoldController } from "./controllers/IncanGold.controller";
-import { AppDataSource } from "../frameworks/data-services/orm/data-source";
+import { incanGoldController } from "./controllers/IncanGold.controller";
+import { AppDataSource,configDataSource } from "../frameworks/data-services/orm/data-source";
 export default function setupSocket(server: HttpServer){
     const mockValue = {
         round: 2,
@@ -34,8 +34,10 @@ export default function setupSocket(server: HttpServer){
         },
         choiseTimer: new Date().getTime() + 10000,
     }
+
+    configDataSource("localhost", 123456);
     AppDataSource.initialize().then(async()=>{
-        const controller = new IncanGoldController()
+
         const io = new Server(server, {
             cors: {
                 origin: "*", // 允許的來源
@@ -61,12 +63,12 @@ export default function setupSocket(server: HttpServer){
                 console.log(`message: ${choise}`);
                 io.emit("message", 'get your choise');
                 // io.emit('update_game_status', mockValue)
-                io.emit('update_game_status', await controller.MakeChoice(choise))
+                io.emit('update_game_status', await incanGoldController.MakeChoice(choise))
             })
     
             socket.on("start_game", async (payload) => {
                 console.log(`message: ${JSON.stringify(payload)}`);
-                io.emit("message", await controller.StartGame({ roomID:payload.gameId, plyerIDs: payload.playerId}));
+                io.emit("message", await incanGoldController.StartGame({ roomID:payload.gameId, plyerIDs: payload.playerId}));
             })
             socket.on("player_ready", (payload) => {
                 console.log(`message: ${JSON.stringify(payload)}`);

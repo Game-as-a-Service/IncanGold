@@ -1,29 +1,18 @@
 import Card from "./Card/Card"
-import { hazardNames,pointsList } from "../constant/CardInfo";
+import { hazardCards,treasureCards } from "../constant/CardInfo";
 import HazardCard from "./Card/HazardCard"
 import TreasureCard from "./Card/TreasureCard"
 
 export class Deck{
     public cards : Card[];
 
-    constructor(cards:Card[]){
+    constructor(cards:Card[] = []){
         if(cards.length)
             this.cards = cards;
         else{
             this.cards = [];
-            pointsList.forEach((points,index)=>{ this.cards.push(new TreasureCard(("T"+points),points)) });
-            [5,7,11].forEach(points=>{
-                let cards = this.cards.filter(card=>new RegExp('^T' + points).test(card.cardID));
-                cards[0].cardID += "(1)" ;
-                cards[1].cardID += "(2)" ;
-            })
-            
-            hazardNames.forEach(name=>{ 
-                let cardID =  "H" + name.charAt(0).toUpperCase(); // HF (fire)
-                let ids = Array(3).fill(cardID).map( (cardID,index) => (cardID + (index+1)) ) // HF1,HF2...
-                let hazardCards = ids.map(id=>new HazardCard(id,name));
-                this.cards = this.cards.concat(hazardCards);
-            });   
+            treasureCards.forEach( card => { this.cards.push(new TreasureCard(card.ID, card.points)) });
+            hazardCards.forEach( card => { this.cards.push(new HazardCard(card.ID, card.name)) });   
         }
     }
 

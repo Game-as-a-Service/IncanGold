@@ -4,16 +4,14 @@ import { IncanGoldData } from "./orm/IncanGoldData";
 import { PlayerData } from "./orm/PlayerData";
 import Gem from "../../../packages/incan-gold-core/src/domain/entities/Gem";
 import Artifact from "../../../packages/incan-gold-core/src/domain/entities/Artifact";
-import { artifactName,artifactPoints, hazardNames } from "../../../packages/incan-gold-core/src/domain/constant/CardInfo";
+import { artifactCards, hazardCards } from "../../../packages/incan-gold-core/src/domain/constant/CardInfo";
 import Card from "../../../packages/incan-gold-core/src/domain/entities/Card/Card";
 import TreasureCard from "../../../packages/incan-gold-core/src/domain/entities/Card/TreasureCard";
 import ArtifactCard from "../../../packages/incan-gold-core/src/domain/entities/Card/ArtifactCard";
 import HazardCard from "../../../packages/incan-gold-core/src/domain/entities/Card/HazardCard";
-import { DataSource, Index } from "typeorm";
 import { CardData } from "./orm/CardData";
 import { CardLocation } from "./orm/CardData";
 
-const hazard = { "F":0, "R":1, "M":2, "P":3, "S":4 };
 
 export class Domain_OrmEntity_Transformer {
 
@@ -23,9 +21,9 @@ export class Domain_OrmEntity_Transformer {
         player.putGemsInBag(Array(data.gemsInBag).fill(new Gem()));
         player.tent.points = data.totalPoints;
         player.tent.numOfGems = data.gemsInTent;
-        player.tent.artifacts = data.artifacts.map(name=>{
-            const key = Object.entries(artifactName).find(([_, value]) => value === name)?.[0];
-            return new Artifact(name,artifactPoints[key]);
+        player.tent.artifacts = data.artifacts.map( artifactName =>{
+            const {name,points} = artifactCards.find(card => card.name === artifactName );
+            return new Artifact(name,points);
         })
     }
 
@@ -44,12 +42,12 @@ export class Domain_OrmEntity_Transformer {
             card = new TreasureCard(data.cardID,data.gems);
             (<TreasureCard>card).gems = (Array(data.remainingGems).fill(new Gem()));
         }else if(data.cardID.match(/^A.*/)){
-            const index = data.cardID[1];
-            card = new ArtifactCard(data.cardID,artifactName[index],artifactPoints[index]);
+            const artifactCard = artifactCards.find(card => card.ID === data.cardID);
+            card = new ArtifactCard(artifactCard.ID,artifactCard.name,artifactCard.points);
             (<ArtifactCard>card).isArtifactPresent = data.remainingArtifact;
         }else if(data.cardID.match(/^H.*/)){
-            const letter = data.cardID[1]
-            card = new HazardCard(data.cardID, hazardNames[hazard[letter]]);
+            const {ID,name} = hazardCards.find(card => card.ID === data.cardID);
+            card = new HazardCard(ID, name);
         }
         return card;
     }
@@ -58,9 +56,7 @@ export class Domain_OrmEntity_Transformer {
         if(data.cardID.match(/^T.*/)){
             data.remainingGems = (<TreasureCard>card).numOfGems;
         }else if(data.cardID.match(/^A.*/)){
-            const index = data.cardID[1];
-            card = new ArtifactCard(data.cardID,artifactName[index],artifactPoints[index]);
-            (<ArtifactCard>card).isArtifactPresent = data.remainingArtifact;
+            data.remainingArtifact = (<ArtifactCard>card).isArtifactPresent;
         }
     }
 
