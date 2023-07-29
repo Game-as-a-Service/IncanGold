@@ -20,4 +20,4 @@ export function configDataSource(host:string,port:number):void {
         migrations: [],
         subscribers: [],
     })
-}
+} 

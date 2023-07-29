@@ -22,7 +22,7 @@ export default class StartGameUseCase {
         const events = Array.from(incanGold.start());
 
         // 存
-        this._incanGoldRepository.save(incanGold);
+        await this._incanGoldRepository.save(incanGold);
 
         // 推
         return {

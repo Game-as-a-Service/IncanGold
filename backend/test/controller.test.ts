@@ -2,17 +2,19 @@ import { configDataSource,AppDataSource } from "../frameworks/data-services/orm/
 import { expect,describe, test, afterAll, beforeAll } from 'vitest';
 import { MySqlContainer } from "testcontainers";
 import { incanGoldController } from "gateway/controllers/IncanGold.controller";
-import { StartGameInput } from "app/useCase/StartGameUseCase";
+import StartGameUseCase, { StartGameInput } from "../app/useCase/StartGameUseCase";
 import { MakeChoiceInput } from "app/useCase/MakeChoiceUseCase";
 import { Choice } from "../../packages/incan-gold-core/src/domain/constant/Choice";
+import { IncanGoldData } from "frameworks/data-services/orm/IncanGoldData";
+import { IncanGoldRepository } from "../frameworks/data-services/IncanGoldRepository";
 
 
 describe("以controller的視角進行測試", ()=>{
-
     var container;
 
+    // Create a container + ORM connection takes approximately 15 seconds, 
+    // so to be on the safe side, we set the timeout to 20 seconds.
     beforeAll(async()=>{
-       
         container = await new MySqlContainer()
         .withExposedPorts(3306)
         .withRootPassword('123456')
@@ -21,32 +23,24 @@ describe("以controller的視角進行測試", ()=>{
 
         configDataSource(container.getHost(),container.getMappedPort(3306));
         await AppDataSource.initialize();
-    })
+    },20000) 
 
     afterAll(async () => {
         await container.stop();
     });
 
-    test('startGame', async () => {
-
-        // container = await new MySqlContainer()
-        // .withExposedPorts(3306)
-        // .withRootPassword('123456')
-        // .withDatabase('test')
-        // .start();
-
-        // configDataSource(container.getHost(),container.getMappedPort(3306));
-        // await AppDataSource.initialize();
-
-        console.log(1);
-
-        // let result = await startGame('1',['a','b','c']);
-        // console.log(JSON.stringify(result.game));
-        // console.log(JSON.stringify(result.events));
-        // result = await makeChoice('1','a',Choice.Quit);
-        // console.log(JSON.stringify(result.game));
-        // console.log(JSON.stringify(result.events));
-    
+    test('runGame', async () => {
+        try{
+            await startGame('1',['a','b','c']); // 開始遊戲
+            let m1 = makeChoice('1','a',Choice.Quit);    // a 選擇
+            let m2 = makeChoice('1','b',Choice.Quit);    // b 選擇
+            let m3 = makeChoice('1','c',Choice.KeepGoing); // c 選擇
+            const arr = await Promise.all([m1,m2,m3]);
+            console.log(JSON.stringify(arr[2].game));
+            console.log(JSON.stringify(arr[2].events));
+        }catch(e){
+            console.log(e);
+        }
     });
 
 })
@@ -55,15 +49,11 @@ describe("以controller的視角進行測試", ()=>{
 
 
 async function startGame(roomID:string, plyerIDs:string[]){
-    console.log(1);
     const input:StartGameInput = { roomID, plyerIDs };
-    console.log(1);
     return await incanGoldController.StartGame(input);
 }
 
 async function makeChoice(gameId:string, playerId:string, choice:string){
-    console.log(2);
     const input:MakeChoiceInput = { gameId,playerId,choice };
-    console.log(2);
     return await incanGoldController.MakeChoice(input);
 }

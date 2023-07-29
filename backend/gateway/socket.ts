@@ -1,8 +1,9 @@
 import { Server, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
-import { incanGoldController } from "./controllers/IncanGold.controller";
-import { AppDataSource,configDataSource } from "../frameworks/data-services/orm/data-source";
-export default function setupSocket(server: HttpServer){
+import { IncanGoldController } from "./controllers/IncanGold.controller";
+// import { AppDataSource, configDataSource } from "../frameworks/data-services/orm/data-source";
+
+export default async function setupSocket(server: HttpServer){
     const mockValue = {
         round: 2,
         turn: 3,
@@ -33,11 +34,10 @@ export default function setupSocket(server: HttpServer){
             remainingArtifacts: [] 
         },
         choiseTimer: new Date().getTime() + 10000,
-    }
+    } 
 
-    configDataSource("localhost", 123456);
-    AppDataSource.initialize().then(async()=>{
-
+    // AppDataSource.initialize().then(async()=>{
+        const incanGoldController = new IncanGoldController()
         const io = new Server(server, {
             cors: {
                 origin: "*", // 允許的來源
@@ -75,5 +75,5 @@ export default function setupSocket(server: HttpServer){
                 io.emit("message", 'get player_ready');
             })
         })
-    });
+    // });
 }

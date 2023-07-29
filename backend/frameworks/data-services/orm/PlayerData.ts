@@ -14,7 +14,7 @@ export class PlayerData {
     })
     choice:Choice
 
-    @Column("int",{default: true})
+    @Column("bool",{default: true})
     inTent: boolean   
     
     @Column("int",{default: 0})

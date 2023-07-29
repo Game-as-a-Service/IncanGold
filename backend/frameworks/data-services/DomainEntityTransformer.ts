@@ -82,9 +82,7 @@ export class Domain_OrmEntity_Transformer {
         const game = new IncanGold(data.id, data.players.map(player=>player.id),tunnel,deck,trashDeck);
         game.round = data.round;
         game.turn = data.turn;
-        
         data.players.forEach((playerData,index)=>this.updatePlayer(playerData, game.players[index]));
-        
         return game;
     }
 

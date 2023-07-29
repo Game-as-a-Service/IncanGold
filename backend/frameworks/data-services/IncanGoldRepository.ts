@@ -9,11 +9,15 @@ import IncanGold from "../../../packages/incan-gold-core/src/domain/entities/Inc
 import { treasureCards,hazardCards,artifactCards } from "../../../packages/incan-gold-core/src/domain/constant/CardInfo";
 
 export class IncanGoldRepository implements IRepository {
-    private _dataSource: DataSource = AppDataSource;
+    private _dataSource: DataSource;
     private _queryRunner : QueryRunner | null;
     private _transformer = new Domain_OrmEntity_Transformer();
     private _incanGoldData: IncanGoldData | null;
     private _callbacksRunInTransaction:Function[] = [];
+
+    constructor(){
+        this._dataSource = AppDataSource;
+    }
 
     creatGame(id: string, playerIDs:string[]): IncanGold {
         this._incanGoldData = new IncanGoldData();
@@ -59,12 +63,26 @@ export class IncanGoldRepository implements IRepository {
         this._transformer.updateIncanGoldData(game, this._incanGoldData);
 
         const cardPromise = this._incanGoldData.cards.map(card=>{
-            this._queryRunner.manager.getRepository(CardData).update({cardID:card.cardID},card);
+            const {cardID,gems,remainingGems,remainingArtifact,location,whenInTrashDeck} = card;
+
+            this._queryRunner.manager
+            .getRepository(CardData)
+            .update(
+                {cardID},
+                {gems,remainingGems,remainingArtifact,location,whenInTrashDeck}
+            );
         });
         await Promise.all(cardPromise);
     
         const playerPromise = this._incanGoldData.players.map(player=>{
-            this._queryRunner.manager.getRepository(PlayerData).update({id:player.id},player);
+            const {id,choice,inTent,gemsInBag,gemsInTent,totalPoints,artifacts} = player;
+
+            this._queryRunner.manager
+            .getRepository(PlayerData)
+            .update(
+                {id},
+                {choice,inTent,gemsInBag,gemsInTent,totalPoints,artifacts}
+            );
         });
         await Promise.all(playerPromise);
     

@@ -49,7 +49,7 @@ export default class IncanGold {
     }
 
     get allPlayersMadeChoice():boolean {
-        return !(this.playersInTunnel.find(player=>player.choice == Choice.NotSelected))
+        return !(this.playersInTunnel.find(player=>(player.choice === Choice.NotSelected)))
     }
 
     public *start():IterableIterator<Event>{
@@ -90,7 +90,7 @@ export default class IncanGold {
     public *makeChoice(player: Player, choice: Choice) {
         player.choice = choice;
         yield new PlayerMadeChoiceEvent(player.id);
-    
+
         if (this.allPlayersMadeChoice) {
             yield new AllPlayersMadeChoiceEvent(this);
             yield* this.endTurn();

@@ -24,7 +24,7 @@ export default class MakeChoiceUseCase {
             
             // 改
             this._events = Array.from(this._incanGold.makeChoice(player,input.choice as Choice));
-            
+
             // 存
             await this._incanGoldRepository.update(this._incanGold);
         

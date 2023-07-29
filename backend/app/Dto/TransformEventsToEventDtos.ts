@@ -1,4 +1,5 @@
 import { EventDto, EventDtoTransformer } from "./EventDto/EventDto";
+import { PlayerMadeChoiceEventTransformer } from "./EventDto/PlayerMadeChoiceEventDto";
 import { AllPlayersMadeChoiceEventTransformer } from "./EventDto/AllPlayersMadeChoiceEventDto";
 import { DistributeGemsAndArtifactsToPlayersEventTransformer } from "./EventDto/DistributeGemsAndArtifactsToPlayersEventDto";
 import { GameoverEventTransformer } from "./EventDto/GameoverEventDto";
@@ -11,11 +12,12 @@ export class TransformEventsToEventDtos {
 
     constructor(){
         this._transformers = [
+            new PlayerMadeChoiceEventTransformer(),
             new AllPlayersMadeChoiceEventTransformer(),
             new DistributeGemsAndArtifactsToPlayersEventTransformer(),
             new GameoverEventTransformer(),
             new HazardCardEventTransformer(),
-            new RoundEndEventTransformer()
+            new RoundEndEventTransformer(),
         ];
     }
 
