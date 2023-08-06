@@ -1,12 +1,13 @@
 import { configDataSource,AppDataSource } from "../frameworks/data-services/orm/data-source";
 import { expect,describe, test, afterAll, beforeAll } from 'vitest';
 import { MySqlContainer } from "testcontainers";
-import { incanGoldController } from "gateway/controllers/IncanGold.controller";
+import { IncanGoldController } from "../gateway/controllers/IncanGold.controller";
 import StartGameUseCase, { StartGameInput } from "../app/useCase/StartGameUseCase";
-import { MakeChoiceInput } from "app/useCase/MakeChoiceUseCase";
+import { MakeChoiceInput } from "../app/useCase/MakeChoiceUseCase";
 import { Choice } from "../../packages/incan-gold-core/src/domain/constant/Choice";
-import { IncanGoldData } from "frameworks/data-services/orm/IncanGoldData";
+import { IncanGoldData } from "../frameworks/data-services/orm/IncanGoldData";
 import { IncanGoldRepository } from "../frameworks/data-services/IncanGoldRepository";
+import { PlayerData } from "../frameworks/data-services/orm/PlayerData";
 
 
 describe("以controller的視角進行測試", ()=>{
@@ -31,22 +32,25 @@ describe("以controller的視角進行測試", ()=>{
 
     test('runGame', async () => {
         try{
+            
             await startGame('1',['a','b','c']); // 開始遊戲
             let m1 = makeChoice('1','a',Choice.Quit);    // a 選擇
             let m2 = makeChoice('1','b',Choice.Quit);    // b 選擇
             let m3 = makeChoice('1','c',Choice.KeepGoing); // c 選擇
             const arr = await Promise.all([m1,m2,m3]);
+            // console.log(JSON.stringify(arr[2].events));
+            // console.log(JSON.stringify(arr[1].events));
+            // console.log(JSON.stringify(arr[0].events));
             console.log(JSON.stringify(arr[2].game));
-            console.log(JSON.stringify(arr[2].events));
+            console.log(JSON.stringify(arr[1].game));
+            console.log(JSON.stringify(arr[0].game));
         }catch(e){
             console.log(e);
         }
-    });
-
+    },30000);
 })
 
-
-
+const incanGoldController = new IncanGoldController(IncanGoldRepository);
 
 async function startGame(roomID:string, plyerIDs:string[]){
     const input:StartGameInput = { roomID, plyerIDs };
