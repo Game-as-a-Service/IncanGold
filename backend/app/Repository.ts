@@ -9,8 +9,8 @@ export interface IRepository {
 
     update(game:IncanGold): Promise<void>;
 
-    executeTransaction():Promise<void>;
+    executeTransaction(callback:Function):Promise<void>;
 
-    setRunInTransaction(callback:Function):void;
+    // setRunInTransaction(callback:Function):void;
 }
 
