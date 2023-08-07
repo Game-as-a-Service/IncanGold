@@ -10,7 +10,6 @@ export interface GameStatus {
     deckLength: number
     players: PlayerDto[]
     tunnel: Room[]
-    // choiseTimer: timestamp
 }
 
 export interface PlayerDto {
@@ -32,7 +31,7 @@ export function toGameStatus(game:IncanGold):GameStatus{
     const gameStatus:GameStatus = {
         round: game.round,
         turn: game.turn,
-        deckLength: game.deck.numofCards,
+        deckLength: game.deck.numOfCards,
         players: game.players.map(player=>getPlayerDto(player)),
         tunnel: game.tunnel.cards.map(card=>getRoom(card))
     }

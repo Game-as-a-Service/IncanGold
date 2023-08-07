@@ -1,16 +1,10 @@
 import IncanGold from "../../packages/incan-gold-core/src/domain/entities/IncanGold";
 
-export interface IRepository {
-    creatGame(id: string, playerIDs:string[]):IncanGold;
+export interface IIncanGoldRepository {
+    create(id: string, playerIDs:string[]):IncanGold;
 
-    findGameById(gameId:string):Promise<IncanGold>;
+    findById(gameId:string):Promise<IncanGold>;
     
     save(game:IncanGold): Promise<void>;
-
-    update(game:IncanGold): Promise<void>;
-
-    executeTransaction(callback:Function):Promise<void>;
-
-    // setRunInTransaction(callback:Function):void;
 }
 

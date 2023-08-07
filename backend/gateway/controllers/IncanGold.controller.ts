@@ -1,26 +1,31 @@
 import StartGameUseCase,{ StartGameInput } from "../../app/useCase/StartGameUseCase";
-import MakeChoiceUseCase, { MakeChoiceInput } from "../../app/useCase/MakeChoiceUseCase";
-import { IRepository } from "app/Repository";
+import MakeChoiceUseCase, { MakeChoiceInput,MakeChoiceOutput } from "../../app/useCase/MakeChoiceUseCase";
+import { IIncanGoldRepository } from "../../app/Repository";
 
 
 export class IncanGoldController {
 
-    private _repoClass: new()=> IRepository;
+    private _repoClass: new()=> IIncanGoldRepository;
 
-    constructor(repoClass: new()=> IRepository){
+    constructor(repoClass: new()=> IIncanGoldRepository){
         this._repoClass = repoClass;
     }
 
     async StartGame(input:StartGameInput) {
-        const repository = new this._repoClass();
-        const useCase = new StartGameUseCase(repository);
+        const useCase = new StartGameUseCase(new this._repoClass());
         return await useCase.execute(input);
         
     }
 
     async MakeChoice(input:MakeChoiceInput) {
-        const repository = new this._repoClass();
-        const useCase = new MakeChoiceUseCase(repository);
-        return await useCase.execute(input);
+        const useCase = new MakeChoiceUseCase(new this._repoClass());
+        let result: MakeChoiceOutput;
+        try{
+            result = await useCase.execute(input);
+        }catch(err){
+            // todo : handle error;
+            result = await useCase.execute(input);
+        }
+        return result
     }
 }

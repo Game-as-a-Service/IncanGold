@@ -1,16 +1,16 @@
 import { EventDto,EventDtoTransformer } from "./EventDto";
-import GameoverEvent from "../../../../packages/incan-gold-core/src/domain/events/GameoverEvent";
+import GameOverEvent from "../../../../packages/incan-gold-core/src/domain/events/GameOverEvent";
 import Event from "../../../../packages/incan-gold-core/src/domain/events/Event";
 
-export class GameoverEventTransformer extends EventDtoTransformer {
+export class GameOverEventTransformer extends EventDtoTransformer {
     match(event: Event): boolean {
-        return (event instanceof GameoverEvent);
+        return (event instanceof GameOverEvent);
     }
 
     transformToEventDto(event: Event): EventDto {
-        const e = <GameoverEvent>event;
-        const eventDto:GameoverEventDto = {
-            name: 'Gameover',
+        const e = <GameOverEvent>event;
+        const eventDto:GameOverEventDto = {
+            name: 'GameOver',
             data: {
                 winnerID: e.winnerID,
                 players: e.players.map((elem)=>{
@@ -23,9 +23,9 @@ export class GameoverEventTransformer extends EventDtoTransformer {
 }
 
 
-interface GameoverEventDto extends EventDto
+interface GameOverEventDto extends EventDto
 {
-    name: 'Gameover'
+    name: 'GameOver'
     data: {
         winnerID:string;
         players: PlayerAndPoints[]

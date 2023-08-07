@@ -15,7 +15,26 @@ import { CardLocation } from "./orm/CardData";
 
 export class Domain_OrmEntity_Transformer {
 
-    updatePlayer(data:PlayerData, player:Player):void{
+    toDomain(data:IncanGoldData):IncanGold{
+        const { tunnel, deck, trashDeck } = this.setupCards(data);
+        const game = new IncanGold(data.id, data.players.map(player=>player.id),tunnel,deck,trashDeck);
+        game.round = data.round;
+        game.turn = data.turn;
+        data.players.forEach((playerData,index)=>this.toPlayer(playerData, game.players[index]));
+        return game;
+    }
+
+    updateIncanGoldData(game:IncanGold,data:IncanGoldData):void{
+        data.round = game.round;
+        data.turn = game.turn;
+        this.updatePlayers(game, data);
+        this.updateTunnel(game, data);
+        this.updateDeck(game, data);
+        this.updateTrashDeck(game, data);
+    }
+
+    // data -> player
+    private toPlayer(data:PlayerData, player:Player):void{
         player.choice = data.choice;
         player.inTent = data.inTent;
         player.putGemsInBag(Array(data.gemsInBag).fill(new Gem()));
@@ -27,16 +46,8 @@ export class Domain_OrmEntity_Transformer {
         })
     }
 
-    updatePlayerData(player:Player, data:PlayerData):void{
-        data.choice = player.choice;
-        data.inTent = player.inTent;
-        data.gemsInBag = player.bag.numOfGems,
-        data.totalPoints = player.points;
-        data.gemsInTent = player.tent.numOfGems;
-        data.artifacts = player.tent.artifactsNames
-    }
-
-    toCard(data:CardData):Card{
+    // data -> card
+    private toCard(data:CardData):Card{
         let card:Card;
         if(data.cardID.match(/^T.*/)){
             card = new TreasureCard(data.cardID,data.gems);
@@ -52,7 +63,40 @@ export class Domain_OrmEntity_Transformer {
         return card;
     }
 
-    updateCardData(card:Card, data:CardData):void{
+    // Put the cards in the correct locations in Domain
+    private setupCards(data: IncanGoldData) {
+        const deck: Card[] = [];
+        const tunnel: Card[] = [];
+        const trashDeck: Map<number, Card[]> = new Map();
+        [1, 2, 3, 4, 5].forEach(round => {
+            trashDeck.set(round, []);
+        });
+
+        data.cards.forEach(cardData => {
+            const card = this.toCard(cardData);
+            if (cardData.location === CardLocation.Deck) {
+                deck.push(card);
+            } else if (cardData.location === CardLocation.Tunnel) {
+                tunnel.push(card);
+            } else if (cardData.location === CardLocation.TrashDeck) {
+                trashDeck.set(cardData.whenInTrashDeck, (trashDeck.get(cardData.whenInTrashDeck) || []).concat(card));
+            }
+        });
+        return { tunnel, deck, trashDeck };
+    }
+
+    // player -> playerDate
+    private updatePlayerData(player:Player, data:PlayerData):void{
+        data.choice = player.choice;
+        data.inTent = player.inTent;
+        data.gemsInBag = player.bag.numOfGems,
+        data.totalPoints = player.points;
+        data.gemsInTent = player.tent.numOfGems;
+        data.artifacts = player.tent.artifactsNames
+    }
+
+    // card -> cardData
+    private updateCardData(card:Card, data:CardData):void{
         if(data.cardID.match(/^T.*/)){
             data.remainingGems = (<TreasureCard>card).numOfGems;
         }else if(data.cardID.match(/^A.*/)){
@@ -60,60 +104,37 @@ export class Domain_OrmEntity_Transformer {
         }
     }
 
-    toDomain(data:IncanGoldData):IncanGold{
-        const deck:Card[] = [];
-        const tunnel:Card[] = [];
-        const trashDeck : Map<number, Card[]> = new Map();
-        [1,2,3,4,5].forEach(round=>{
-            trashDeck.set( round, []);
-        })
-
-        data.cards.forEach(cardData=>{
-            const card = this.toCard(cardData);
-            if(cardData.location === CardLocation.Deck){
-                deck.push(card);
-            }else if(cardData.location === CardLocation.Tunnel){
-                tunnel.push(card);
-            }else if(cardData.location === CardLocation.TrashDeck){
-                trashDeck.set( cardData.whenInTrashDeck , (trashDeck.get(cardData.whenInTrashDeck)||[]).concat(card));
-            }
-        });
-
-        const game = new IncanGold(data.id, data.players.map(player=>player.id),tunnel,deck,trashDeck);
-        game.round = data.round;
-        game.turn = data.turn;
-        data.players.forEach((playerData,index)=>this.updatePlayer(playerData, game.players[index]));
-        return game;
+    private updatePlayers(game: IncanGold, data: IncanGoldData) {
+        game.players.forEach((player, index) => this.updatePlayerData(player, data.players[index]));
     }
 
-    updateIncanGoldData(game:IncanGold,data:IncanGoldData):void{
-        data.round = game.round;
-        data.turn = game.turn;
-
-        game.players.forEach((player,index)=>this.updatePlayerData(player, data.players[index]));
-
-        game.tunnel.cards.forEach(card=>{
-            const cardData = this.findCard(card.cardID,data);
-            this.updateCardData(card, cardData);
-            cardData.location = CardLocation.Tunnel;
-        });
-
-        game.deck.cards.forEach(card=>{
-            const cardData = this.findCard(card.cardID,data);
-            this.updateCardData(card, cardData);
-            cardData.location = CardLocation.Deck;
-        });
-
-        [1,2,3,4,5].forEach(round =>{
+    private updateTrashDeck(game: IncanGold, data: IncanGoldData) {
+        [1, 2, 3, 4, 5].forEach(round => {
             const cards = game.trashDeck.cards.get(round);
-            if(cards.length){
-                cards.forEach((card)=>{
-                    const cardData = this.findCard(card.cardID,data);
+            if (cards.length) {
+                cards.forEach((card) => {
+                    const cardData = this.findCard(card.cardID, data);
                     this.updateCardData(card, cardData);
                     cardData.location = CardLocation.TrashDeck;
                     cardData.whenInTrashDeck = round;
                 });
             }
+        });
+    }
+
+    private updateDeck(game: IncanGold, data: IncanGoldData) {
+        game.deck.cards.forEach(card => {
+            const cardData = this.findCard(card.cardID, data);
+            this.updateCardData(card, cardData);
+            cardData.location = CardLocation.Deck;
+        });
+    }
+
+    private updateTunnel(game: IncanGold, data: IncanGoldData) {
+        game.tunnel.cards.forEach(card => {
+            const cardData = this.findCard(card.cardID, data);
+            this.updateCardData(card, cardData);
+            cardData.location = CardLocation.Tunnel;
         });
     }
 
