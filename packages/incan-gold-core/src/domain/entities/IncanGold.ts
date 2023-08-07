@@ -9,7 +9,7 @@ import Event from "../events/Event"
 import RoundEndEvent from "../events/RoundEndEvent"
 import {PlayerMadeChoiceEvent,AllPlayersMadeChoiceEvent} from "../events/MadeChoiceEvent"
 import DistributeGemsAndArtifactsToPlayersEvent from "../events/DistributeGemsAndArtifactsToPlayersEvent";
-import GameoverEvent from "../events/GameoverEvent";
+import GameOverEvent from "../events/GameOverEvent";
 import Card from "./Card/Card";
 
 export default class IncanGold {
@@ -135,7 +135,7 @@ export default class IncanGold {
         if(winner)
             this.winnerID = winner.id;
         this.gameover = true;
-        yield new GameoverEvent(this);
+        yield new GameOverEvent(this);
     }
 
     public putCardsBackIntoDeck(): void {

@@ -7,5 +7,5 @@ export enum EventName {
     DistributeGemsAndArtifactsToPlayers = 'DistributeGemsAndArtifactsToPlayers',
     RoundEnd ='RoundEnd',
     TurnEnd = 'TurnEnd',
-    Gameover = 'Gameover',
+    GameOver = 'GameOver',
 }

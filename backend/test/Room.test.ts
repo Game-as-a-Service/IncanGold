@@ -6,9 +6,9 @@ import { boostrap } from "../index";
 // import { createServer } from "http";
 
 
-function waitForEvent(client:Socket, event:string) {
+function waitForEvent(client:Socket, eventType:string) {
     return new Promise(resolve => {
-        client.on(event, msg => resolve(msg));
+        client.on(eventType, resolve);
     });
 }
 

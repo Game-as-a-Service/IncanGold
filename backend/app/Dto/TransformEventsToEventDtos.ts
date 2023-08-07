@@ -2,7 +2,7 @@ import { EventDto, EventDtoTransformer } from "./EventDto/EventDto";
 import { PlayerMadeChoiceEventTransformer } from "./EventDto/PlayerMadeChoiceEventDto";
 import { AllPlayersMadeChoiceEventTransformer } from "./EventDto/AllPlayersMadeChoiceEventDto";
 import { DistributeGemsAndArtifactsToPlayersEventTransformer } from "./EventDto/DistributeGemsAndArtifactsToPlayersEventDto";
-import { GameoverEventTransformer } from "./EventDto/GameoverEventDto";
+import { GameOverEventTransformer } from "./EventDto/GameOverEventDto";
 import { HazardCardEventTransformer } from "./EventDto/NewTurnHazardCardTriggeredEventDto";
 import { RoundEndEventTransformer } from "./EventDto/RoundEndEventDto";
 import Event from "../../../packages/incan-gold-core/src/domain/events/Event";
@@ -15,7 +15,7 @@ export class TransformEventsToEventDtos {
             new PlayerMadeChoiceEventTransformer(),
             new AllPlayersMadeChoiceEventTransformer(),
             new DistributeGemsAndArtifactsToPlayersEventTransformer(),
-            new GameoverEventTransformer(),
+            new GameOverEventTransformer(),
             new HazardCardEventTransformer(),
             new RoundEndEventTransformer(),
         ];

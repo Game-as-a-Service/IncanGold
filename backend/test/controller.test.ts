@@ -38,9 +38,9 @@ describe("以controller的視角進行測試", ()=>{
             let m2 = makeChoice('1','b',Choice.Quit);    // b 選擇
             let m3 = makeChoice('1','c',Choice.KeepGoing); // c 選擇
             const arr = await Promise.all([m1,m2,m3]);
-            // console.log(JSON.stringify(arr[2].events));
-            // console.log(JSON.stringify(arr[1].events));
-            // console.log(JSON.stringify(arr[0].events));
+            console.log(JSON.stringify(arr[2].events));
+            console.log(JSON.stringify(arr[1].events));
+            console.log(JSON.stringify(arr[0].events));
             console.log(JSON.stringify(arr[2].game));
             console.log(JSON.stringify(arr[1].game));
             console.log(JSON.stringify(arr[0].game));

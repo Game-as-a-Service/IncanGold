@@ -16,7 +16,7 @@ export class Deck{
         }
     }
 
-    get numofCards():number{
+    get numOfCards():number{
         return this.cards.length;
     } 
 
@@ -50,7 +50,7 @@ export class TrashDeck{
         }
     }
 
-    get numofCards():number{
+    get numOfCards():number{
         let num = 0; 
         this.cards.forEach(cards=>{
             num += cards.length;

@@ -5,7 +5,7 @@ import HazardCard from '../src/domain/entities/Card/HazardCard';
 import { Choice } from '../src/domain/constant/Choice';
 import Player from '../src/domain/entities/Player';
 import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
-import GameoverEvent from '../src/domain/events/GameoverEvent'
+import GameoverEvent from '../src/domain/events/GameOverEvent'
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通道中的卡洗回牌堆",()=>{

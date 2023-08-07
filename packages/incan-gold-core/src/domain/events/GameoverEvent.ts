@@ -3,12 +3,12 @@ import { EventName } from "../constant/EventName";
 import IncanGold from "../entities/IncanGold";
 
 // 遊戲已結束
-export default class GameoverEvent extends Event{
+export default class GameOverEvent extends Event{
     public readonly winnerID:string;
     public players:PlayerAndPoints[];
 
     constructor(game:IncanGold){
-        super(EventName.Gameover);
+        super(EventName.GameOver);
         this.winnerID = game.winnerID !== "" ? game.winnerID : "平手" ;
 
         this.players = [...game.players]
