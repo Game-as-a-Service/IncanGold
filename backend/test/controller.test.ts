@@ -1,13 +1,11 @@
-import { configDataSource,AppDataSource } from "../frameworks/data-services/orm/data-source";
+import { configDataSource,AppDataSource } from "../src/frameworks/data-services/data-source";
 import { expect,describe, test, afterAll, beforeAll } from 'vitest';
 import { MySqlContainer } from "testcontainers";
-import { IncanGoldController } from "../gateway/controllers/IncanGold.controller";
-import StartGameUseCase, { StartGameInput } from "../app/useCase/StartGameUseCase";
-import { MakeChoiceInput } from "../app/useCase/MakeChoiceUseCase";
+import { IncanGoldController } from "../src/gateway/controllers/IncanGold.controller";
+import StartGameUseCase, { StartGameInput } from "../src/app/useCase/StartGameUseCase";
+import { MakeChoiceInput } from "../src/app/useCase/MakeChoiceUseCase";
 import { Choice } from "../../packages/incan-gold-core/src/domain/constant/Choice";
-import { IncanGoldData } from "../frameworks/data-services/orm/IncanGoldData";
-import { IncanGoldRepository } from "../frameworks/data-services/IncanGoldRepository";
-import { PlayerData } from "../frameworks/data-services/orm/PlayerData";
+import { IncanGoldRepository } from "../src/frameworks/data-services/IncanGold/IncanGoldRepository";
 
 
 describe("以controller的視角進行測試", ()=>{
@@ -32,7 +30,6 @@ describe("以controller的視角進行測試", ()=>{
 
     test('runGame', async () => {
         try{
-            
             await startGame('1',['a','b','c']); // 開始遊戲
             let m1 = makeChoice('1','a',Choice.Quit);    // a 選擇
             let m2 = makeChoice('1','b',Choice.Quit);    // b 選擇

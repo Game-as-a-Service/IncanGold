@@ -1,8 +1,8 @@
-import StartGameUseCase, { StartGameInput } from "../app/useCase/StartGameUseCase";
-import { IncanGoldRepository } from "../frameworks/data-services/IncanGoldRepository";
-import { AppDataSource,configDataSource } from "../frameworks/data-services/orm/data-source";
-import { Choice } from "../../packages/incan-gold-core/src/domain/constant/Choice";
-import MakeChoiceUseCase, { MakeChoiceInput } from "../app/useCase/MakeChoiceUseCase";
+import StartGameUseCase, { StartGameInput } from "app/IncanGold/useCase/StartGameUseCase";
+import { IncanGoldRepository } from "frameworks/data-services/IncanGold/IncanGoldRepository";
+import { AppDataSource,configDataSource } from "frameworks/data-services/data-source";
+import { Choice } from "domain/incan-gold-core/src/domain/constant/Choice";
+import MakeChoiceUseCase, {MakeChoiceInput} from "app/IncanGold/useCase/MakeChoiceUseCase";
 import { MySqlContainer } from "testcontainers"
 
 

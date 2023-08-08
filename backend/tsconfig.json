@@ -1,11 +1,15 @@
 {
     "compilerOptions": {
-      "baseUrl": "./",
       "lib": [
         "DOM",
         "es5",
         "es6"
       ],
+      "baseUrl": ".",
+      "paths": {
+        "frameworks/*": ["src/frameworks/*"],
+        "domain/*": ["../../packages/*"],
+      },
       "target": "ESNext",
       "module": "ESNext",
       "outDir": "./dist",
@@ -25,8 +29,7 @@
     "include": [
       "**/*.ts",
       "**/*.test.ts",
-      "../packages/incan-gold-core/src/domain/**/*.ts",
-      "D:/Gaas/IncanGold/packages/incan-gold-core/src/domain/entities/IncanGold.ts"
+      "../packages/**/*.ts",
     ]
   }
   
