@@ -1,6 +1,5 @@
-import DistributeGemsAndArtifactsToPlayersEvent from "domain/incan-gold-core/src/domain/events/DistributeGemsAndArtifactsToPlayersEvent"
-import Event from "domain/incan-gold-core/src/domain/events/Event"
 import { EventDto,EventDtoTransformer } from "./EventDto"
+import { Event,DistributeGemsAndArtifactsToPlayersEvent } from "../../../../domain/IncanGold"
 
 export class DistributeGemsAndArtifactsToPlayersEventTransformer extends EventDtoTransformer{
     match(event: Event): boolean {

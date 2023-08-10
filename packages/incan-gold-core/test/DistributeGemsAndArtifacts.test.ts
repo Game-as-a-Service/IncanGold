@@ -1,10 +1,10 @@
-import IncanGold from '../src/domain/entities/IncanGold';
-import TreasureCard from '../src/domain/entities/Card/TreasureCard'
-import HazardCard from '../src/domain/entities/Card/HazardCard';
-import { artifactName,artifactPoints } from '../src/domain/constant/CardInfo';
-import { Choice } from '../src/domain/constant/Choice';
-import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
-import DistributeGemsAndArtifactsToPlayersEvent from '../src/domain/events/DistributeGemsAndArtifactsToPlayersEvent'
+import IncanGold from '../src/entities/IncanGold';
+import TreasureCard from '../src/entities/Card/TreasureCard'
+import HazardCard from '../src/entities/Card/HazardCard';
+import { artifactName,artifactPoints } from '../src/constant/CardInfo';
+import { Choice } from '../src/constant/Choice';
+import ArtifactCard from '../src/entities/Card/ArtifactCard'
+import DistributeGemsAndArtifactsToPlayersEvent from '../src/events/DistributeGemsAndArtifactsToPlayersEvent'
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe('玩家選擇結束後，分配寶石&神器', ()=>{

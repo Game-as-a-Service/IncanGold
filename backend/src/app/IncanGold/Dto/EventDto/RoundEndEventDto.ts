@@ -1,5 +1,4 @@
-import Event from "domain/incan-gold-core/src/domain/events/Event"
-import RoundEndEvent from "domain/incan-gold-core/src/domain/events/RoundEndEvent"
+import { Event,RoundEndEvent } from "../../../../domain/IncanGold"
 import { EventDto,EventDtoTransformer } from "./EventDto"
 
 export class RoundEndEventTransformer extends EventDtoTransformer {

@@ -1,17 +1,8 @@
-import IncanGold from "domain/incan-gold-core/src/domain/entities/IncanGold";
-import Player from "domain/incan-gold-core/src/domain/entities/Player";
 import { IncanGoldData } from "./data/IncanGoldData";
 import { PlayerData } from "./data/PlayerData";
-import Gem from "domain/incan-gold-core/src/domain/entities/Gem";
-import Artifact from "domain/incan-gold-core/src/domain/entities/Artifact";
-import { artifactCards, hazardCards } from "domain/incan-gold-core/src/domain/constant/CardInfo";
-import Card from "domain/incan-gold-core/src/domain/entities/Card/Card";
-import TreasureCard from "domain/incan-gold-core/src/domain/entities/Card/TreasureCard";
-import ArtifactCard from "domain/incan-gold-core/src/domain/entities/Card/ArtifactCard";
-import HazardCard from "domain/incan-gold-core/src/domain/entities/Card/HazardCard";
-import { CardData } from "./data/CardData";
-import { CardLocation } from "./data/CardData";
-
+import { CardData,CardLocation } from "./data/CardData";
+import { IncanGold,Player,Gem,Artifact,Card,TreasureCard,ArtifactCard,HazardCard,CardInfo } from "../../../domain/IncanGold"
+const { artifactCards, hazardCards } = CardInfo;
 
 export class Domain_OrmEntity_Transformer {
 

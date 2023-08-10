@@ -1,4 +1,4 @@
-import Event from "domain/incan-gold-core/src/domain/events/Event"; 
+import { Event } from "../../../../domain/IncanGold"
 
 export abstract class EventDtoTransformer {
     abstract match(event:Event):boolean;

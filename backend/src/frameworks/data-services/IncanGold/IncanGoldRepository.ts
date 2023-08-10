@@ -1,12 +1,12 @@
-import { IIncanGoldRepository } from "app/IncanGold/Repository";
+import { IIncanGoldRepository } from "../../../app/IncanGold/Repository";
 import { AppDataSource } from "../data-source";
 import type { DataSource, QueryRunner } from "typeorm";
 import { Domain_OrmEntity_Transformer } from "./DomainEntityTransformer";
 import { IncanGoldData } from "./data/IncanGoldData";
 import { PlayerData } from "./data/PlayerData";
 import { CardData, CardLocation } from "./data/CardData";
-import IncanGold from "domain/incan-gold-core/src/domain/entities/IncanGold";
-import { treasureCards, hazardCards, artifactCards } from "domain/incan-gold-core/src/domain/constant/CardInfo";
+import { IncanGold, CardInfo } from "../../../domain/IncanGold";
+const { treasureCards, hazardCards, artifactCards } = CardInfo;
 
 export class IncanGoldRepository implements IIncanGoldRepository {
     private dataSource: DataSource;

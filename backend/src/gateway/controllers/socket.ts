@@ -1,6 +1,6 @@
 import type { Server, Socket, } from "socket.io";
 import { IncanGoldController } from "./IncanGold.controller";
-import { IncanGoldRepository } from "frameworks/data-services/IncanGold/IncanGoldRepository";
+import { IncanGoldRepository } from "../../frameworks/data-services/IncanGold/IncanGoldRepository";
 
 export default async function setupSocket(io:Server,socket:Socket){
 

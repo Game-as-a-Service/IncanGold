@@ -1,7 +1,5 @@
 import { EventDto,EventDtoTransformer } from "./EventDto"
-import { Choice } from "domain/incan-gold-core/src/domain/constant/Choice"
-import Event from "domain/incan-gold-core/src/domain/events/Event"
-import { AllPlayersMadeChoiceEvent } from "domain/incan-gold-core/src/domain/events/MadeChoiceEvent"
+import { Choice,Event,AllPlayersMadeChoiceEvent } from "../../../../domain/IncanGold"
 
 export class AllPlayersMadeChoiceEventTransformer extends EventDtoTransformer {
     match(event: Event): boolean {

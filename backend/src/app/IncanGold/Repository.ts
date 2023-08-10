@@ -1,4 +1,4 @@
-import IncanGold from "domain/incan-gold-core/src/domain/entities/IncanGold";
+import { IncanGold } from "../../domain/IncanGold";
 
 export interface IIncanGoldRepository {
     create(id: string, playerIDs:string[]):IncanGold;

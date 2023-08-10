@@ -51,6 +51,6 @@ export const boostrap = async function () {
     return io;
 }
 
-// boostrap();
+boostrap();
 
 

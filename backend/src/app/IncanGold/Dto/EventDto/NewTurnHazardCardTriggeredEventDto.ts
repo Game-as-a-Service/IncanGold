@@ -1,7 +1,5 @@
-import { EventDto } from "./EventDto";
-import Event from "domain/incan-gold-core/src/domain/events/Event";
-import { NewTurnHazardCardTriggeredEvent } from "domain/incan-gold-core/src/domain/events/NewTurnCardTriggeredEvent";
-import { EventDtoTransformer } from "./EventDto";
+import { EventDto,EventDtoTransformer } from "./EventDto";
+import { Event,NewTurnHazardCardTriggeredEvent } from "../../../../domain/IncanGold"
 
 export class HazardCardEventTransformer extends EventDtoTransformer{
     match(event:Event): boolean {

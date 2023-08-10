@@ -1,8 +1,4 @@
-import ArtifactCard from "domain/incan-gold-core/src/domain/entities/Card/ArtifactCard"
-import TreasureCard from "domain/incan-gold-core/src/domain/entities/Card/TreasureCard"
-import IncanGold from "domain/incan-gold-core/src/domain/entities/IncanGold"
-import Player from "domain/incan-gold-core/src/domain/entities/Player"
-import Card from "domain/incan-gold-core/src/domain/entities/Card/Card"
+import { IncanGold,Player,Card,TreasureCard,ArtifactCard } from "../../../domain/IncanGold"
 
 export interface GameStatus {
     round: number
@@ -27,7 +23,7 @@ export interface Room {
     remainingArtifact: boolean 
 }
 
-export function toGameStatus(game:IncanGold):GameStatus{
+export function toGameStatus(game: IncanGold):GameStatus{
     const gameStatus:GameStatus = {
         round: game.round,
         turn: game.turn,

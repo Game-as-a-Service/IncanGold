@@ -5,11 +5,7 @@
         "es5",
         "es6"
       ],
-      "baseUrl": ".",
-      "paths": {
-        "frameworks/*": ["src/frameworks/*"],
-        "domain/*": ["../../packages/*"],
-      },
+      "resolveJsonModule":true,
       "target": "ESNext",
       "module": "ESNext",
       "outDir": "./dist",
@@ -20,16 +16,14 @@
       "experimentalDecorators": true,
       "sourceMap": true,
     },
-    
     "ts-node": {
       "esm": true,
       "experimentalSpecifierResolution": "node"
     },
-
     "include": [
       "**/*.ts",
       "**/*.test.ts",
-      "../packages/**/*.ts",
+      "../../../packages/**/*.ts",
     ]
   }
   

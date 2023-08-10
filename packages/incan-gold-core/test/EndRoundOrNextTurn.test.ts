@@ -1,9 +1,9 @@
-import IncanGold from '../src/domain/entities/IncanGold';
-import TreasureCard from '../src/domain/entities/Card/TreasureCard'
-import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
-import HazardCard from '../src/domain/entities/Card/HazardCard';
-import { Choice } from '../src/domain/constant/Choice';
-import RoundEndEvent from '../src/domain/events/RoundEndEvent';
+import IncanGold from '../src/entities/IncanGold';
+import TreasureCard from '../src/entities/Card/TreasureCard'
+import ArtifactCard from '../src/entities/Card/ArtifactCard'
+import HazardCard from '../src/entities/Card/HazardCard';
+import { Choice } from '../src/constant/Choice';
+import RoundEndEvent from '../src/events/RoundEndEvent';
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe('',()=>{

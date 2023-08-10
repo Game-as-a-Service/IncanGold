@@ -2,9 +2,9 @@ import { configDataSource,AppDataSource } from "../src/frameworks/data-services/
 import { expect,describe, test, afterAll, beforeAll } from 'vitest';
 import { MySqlContainer } from "testcontainers";
 import { IncanGoldController } from "../src/gateway/controllers/IncanGold.controller";
-import StartGameUseCase, { StartGameInput } from "../src/app/useCase/StartGameUseCase";
-import { MakeChoiceInput } from "../src/app/useCase/MakeChoiceUseCase";
-import { Choice } from "../../packages/incan-gold-core/src/domain/constant/Choice";
+import StartGameUseCase, { StartGameInput } from "../src/app/IncanGold/useCase/StartGameUseCase";
+import { MakeChoiceInput } from "../src/app/IncanGold/useCase/MakeChoiceUseCase";
+import { Choice } from "../../packages/incan-gold-core/src/constant/Choice";
 import { IncanGoldRepository } from "../src/frameworks/data-services/IncanGold/IncanGoldRepository";
 
 
@@ -22,7 +22,7 @@ describe("以controller的視角進行測試", ()=>{
 
         configDataSource(container.getHost(),container.getMappedPort(3306));
         await AppDataSource.initialize();
-    },20000) 
+    },30000) 
 
     afterAll(async () => {
         await container.stop();

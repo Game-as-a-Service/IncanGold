@@ -1,7 +1,7 @@
-import IncanGold from '../src/domain/entities/IncanGold';
-import Card from '../src/domain/entities/Card/Card';
-import TreasureCard from '../src/domain/entities/Card/TreasureCard';
-import { NewTurnTreasureCardTriggeredEvent } from "../src/domain/events/NewTurnCardTriggeredEvent";
+import IncanGold from '../src/entities/IncanGold';
+import Card from '../src/entities/Card/Card';
+import TreasureCard from '../src/entities/Card/TreasureCard';
+import { NewTurnTreasureCardTriggeredEvent } from "../src/events/NewTurnCardTriggeredEvent";
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe('寶物卡將寶石平分給通道中的玩家', ()=>{

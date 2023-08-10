@@ -1,6 +1,6 @@
 import { Entity, PrimaryColumn, Column, ManyToOne,Relation } from "typeorm"
 import { IncanGoldData } from "./IncanGoldData"
-import { Choice } from "domain/incan-gold-core/src/domain/constant/Choice"
+import { Choice } from "../../../../domain/IncanGold"
 
 @Entity()
 export class PlayerData {

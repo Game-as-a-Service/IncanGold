@@ -1,11 +1,11 @@
-import IncanGold from '../src/domain/entities/IncanGold';
-import TreasureCard from '../src/domain/entities/Card/TreasureCard'
-import HazardCard from '../src/domain/entities/Card/HazardCard';
-import { Choice } from '../src/domain/constant/Choice';
-import Player from '../src/domain/entities/Player';
-import Event  from '../src/domain/events/Event';
-import { NewTurnHazardCardTriggeredEvent } from '../src/domain/events/NewTurnCardTriggeredEvent';
-import { AllPlayersMadeChoiceEvent } from '../src/domain/events/MadeChoiceEvent';
+import IncanGold from '../src/entities/IncanGold';
+import TreasureCard from '../src/entities/Card/TreasureCard'
+import HazardCard from '../src/entities/Card/HazardCard';
+import { Choice } from '../src/constant/Choice';
+import Player from '../src/entities/Player';
+import Event  from '../src/events/Event';
+import { NewTurnHazardCardTriggeredEvent } from '../src/events/NewTurnCardTriggeredEvent';
+import { AllPlayersMadeChoiceEvent } from '../src/events/MadeChoiceEvent';
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe("災難卡被放入通道",()=>{

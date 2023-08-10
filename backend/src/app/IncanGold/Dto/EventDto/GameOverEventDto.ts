@@ -1,6 +1,5 @@
 import { EventDto,EventDtoTransformer } from "./EventDto";
-import GameOverEvent from "domain/incan-gold-core/src/domain/events/GameOverEvent";
-import Event from "domain/incan-gold-core/src/domain/events/Event";
+import { Event,GameOverEvent } from "../../../../domain/IncanGold"
 
 export class GameOverEventTransformer extends EventDtoTransformer {
     match(event: Event): boolean {

@@ -5,7 +5,7 @@ import { DistributeGemsAndArtifactsToPlayersEventTransformer } from "./EventDto/
 import { GameOverEventTransformer } from "./EventDto/GameOverEventDto";
 import { HazardCardEventTransformer } from "./EventDto/NewTurnHazardCardTriggeredEventDto";
 import { RoundEndEventTransformer } from "./EventDto/RoundEndEventDto";
-import Event from "domain/incan-gold-core/src/domain/events/Event";
+import { Event } from "../../../domain/IncanGold";
 
 export class TransformEventsToEventDtos {
     private _transformers:EventDtoTransformer[];

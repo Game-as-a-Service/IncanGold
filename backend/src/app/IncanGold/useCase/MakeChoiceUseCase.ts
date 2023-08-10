@@ -1,10 +1,8 @@
 import { IIncanGoldRepository } from '../Repository';
 import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
 import { GameStatus, toGameStatus } from '../Dto/IncanGoldDto';
-import type IncanGold from '../../../../packages/incan-gold-core/src/domain/entities/IncanGold';
-import { Choice } from '../../../../packages/incan-gold-core/src/domain/constant/Choice';
-import Event from '../../../../packages/incan-gold-core/src/domain/events/Event';
 import { EventDto } from '../Dto/EventDto/EventDto';
+import { Event,IncanGold,Choice } from "../../../domain/IncanGold"
 
 export default class MakeChoiceUseCase {
     private _incanGoldRepository: IIncanGoldRepository;

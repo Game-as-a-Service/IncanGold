@@ -1,6 +1,6 @@
-import StartGameUseCase,{ StartGameInput } from "app/IncanGold/useCase/StartGameUseCase";
-import MakeChoiceUseCase, { MakeChoiceInput,MakeChoiceOutput } from "app/IncanGold/useCase/MakeChoiceUseCase";
-import { IIncanGoldRepository } from "app/IncanGold/Repository";
+import StartGameUseCase,{ StartGameInput } from "../../app/IncanGold/useCase/StartGameUseCase";
+import MakeChoiceUseCase, { MakeChoiceInput,MakeChoiceOutput } from "../../app/IncanGold/useCase/MakeChoiceUseCase";
+import { IIncanGoldRepository } from "../../app/IncanGold/Repository";
 
 
 export class IncanGoldController {

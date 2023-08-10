@@ -1,6 +1,5 @@
 import { EventDto,EventDtoTransformer } from "./EventDto";
-import Event from "domain/incan-gold-core/src/domain/events/Event";
-import { PlayerMadeChoiceEvent } from "domain/incan-gold-core/src/domain/events/MadeChoiceEvent";
+import { Event,PlayerMadeChoiceEvent } from "../../../../domain/IncanGold"
 
 
 export class PlayerMadeChoiceEventTransformer extends EventDtoTransformer{

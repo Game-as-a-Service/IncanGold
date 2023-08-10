@@ -1,11 +1,11 @@
-import IncanGold from '../src/domain/entities/IncanGold';
-import Card from '../src/domain/entities/Card/Card';
-import TreasureCard from '../src/domain/entities/Card/TreasureCard'
-import HazardCard from '../src/domain/entities/Card/HazardCard';
-import { Choice } from '../src/domain/constant/Choice';
-import Player from '../src/domain/entities/Player';
-import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
-import GameoverEvent from '../src/domain/events/GameOverEvent'
+import IncanGold from '../src/entities/IncanGold';
+import Card from '../src/entities/Card/Card';
+import TreasureCard from '../src/entities/Card/TreasureCard'
+import HazardCard from '../src/entities/Card/HazardCard';
+import { Choice } from '../src/constant/Choice';
+import Player from '../src/entities/Player';
+import ArtifactCard from '../src/entities/Card/ArtifactCard'
+import GameoverEvent from '../src/events/GameOverEvent'
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通道中的卡洗回牌堆",()=>{
@@ -37,7 +37,7 @@ describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通
         const event = <GameoverEvent>iterator.next().value; 
 
         // then 遊戲結束
-        expect(event.name).toBe('Gameover')
+        expect(event.name).toBe('GameOver')
     })
 
     it("遊戲回合數不等於 5 , 開始新回合新turn˙",()=>{

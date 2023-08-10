@@ -1,5 +1,5 @@
 import { IIncanGoldRepository } from '../Repository';
-import IncanGold from '../../../../packages/incan-gold-core/src/domain/entities/IncanGold';
+import type { IncanGold } from "../../../domain/IncanGold";
 import { GameStatus,toGameStatus } from '../Dto/IncanGoldDto';
 import { EventDto } from '../Dto/EventDto/EventDto';
 import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';

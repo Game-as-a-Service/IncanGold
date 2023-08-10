@@ -1,11 +1,11 @@
-import IncanGold from '../src/domain/entities/IncanGold';
-import TreasureCard from '../src/domain/entities/Card/TreasureCard'
-import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
-import HazardCard from '../src/domain/entities/Card/HazardCard';
-import { Choice } from '../src/domain/constant/Choice';
-import { EventName } from '../src/domain/constant/EventName';
-import Player from '../src/domain/entities/Player';
-import Event from "../src/domain/events/Event"
+import IncanGold from '../src/entities/IncanGold';
+import TreasureCard from '../src/entities/Card/TreasureCard'
+import ArtifactCard from '../src/entities/Card/ArtifactCard'
+import HazardCard from '../src/entities/Card/HazardCard';
+import { Choice } from '../src/constant/Choice';
+import { EventName } from '../src/constant/EventName';
+import Player from '../src/entities/Player';
+import Event from "../src/events/Event"
 
 interface PlayerAndChoice{
     player:Player,
