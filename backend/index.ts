@@ -1,9 +1,9 @@
 import express, { Express, Request, Response } from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
-import setupSocket from "./src/gateway/controllers/socket";
+import setupSocket from "./src/Shared_infra/socket";
 import { MySqlContainer } from "testcontainers";
-import { AppDataSource, configDataSource } from "./src/frameworks/data-services/data-source";
+import { AppDataSource, configDataSource } from "./src/Shared_infra/data-source";
 
 export const boostrap = async function () {
     const container = await new MySqlContainer()

@@ -1,11 +1,11 @@
-import { configDataSource,AppDataSource } from "../src/frameworks/data-services/data-source";
+import { configDataSource,AppDataSource } from "../src/Shared_infra/data-source";
 import { expect,describe, test, afterAll, beforeAll } from 'vitest';
 import { MySqlContainer } from "testcontainers";
 import { IncanGoldController } from "../src/gateway/controllers/IncanGold.controller";
 import StartGameUseCase, { StartGameInput } from "../src/app/IncanGold/useCase/StartGameUseCase";
 import { MakeChoiceInput } from "../src/app/IncanGold/useCase/MakeChoiceUseCase";
 import { Choice } from "../../packages/incan-gold-core/src/constant/Choice";
-import { IncanGoldRepository } from "../src/frameworks/data-services/IncanGold/IncanGoldRepository";
+import { IncanGoldRepository } from "../src/Shared_infra/data-services/IncanGold/IncanGoldRepository";
 
 
 describe("以controller的視角進行測試", ()=>{
