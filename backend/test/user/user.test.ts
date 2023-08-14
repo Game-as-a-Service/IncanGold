@@ -5,7 +5,6 @@ import { User } from "../../src/User/infra/User";
 import express, { Express } from "express";
 import { AuthRouter } from "../../src/User/adapter/Auth.router";
 import request from 'supertest'
-import bodyParser from 'body-parser'
 
 describe('Functions related to the user', async () => {
     var container: StartedTestContainer;
@@ -16,7 +15,7 @@ describe('Functions related to the user', async () => {
         await setupOrm(container.getHost(), container.getMappedPort(3306));
 
         server = express();
-        server.use(bodyParser.json()); // Restore JSON string back to an object
+        server.use(express.json()); // Restore JSON string back to an object
         server.use('/auth', AuthRouter());
         server.listen(3000,()=>{ console.log('listening in port:8000') })
 
@@ -31,7 +30,8 @@ describe('Functions related to the user', async () => {
         .send({ username: 'johndoe', password: 'password123' });
 
         expect(res.statusCode).toBe(200);
-        expect(res.body).toHaveProperty('access_token')
+        expect(res.body).toHaveProperty('access_token');
+        console.log(res.body['access_token'])
     })
 })
 

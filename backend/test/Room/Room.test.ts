@@ -5,6 +5,7 @@ import { bootstrap } from "../../index";
 import { AppDataSource } from "../../src/Shared_infra/data-source";
 import { User } from "../../src/User/infra/User";
 import request from 'supertest'
+import jwt from 'jsonwebtoken';
 // import express,{ Express } from "express";
 // import { createServer } from "http";
 
@@ -20,54 +21,37 @@ function waitForEvent(client: Socket, eventType: string) {
 describe('create Room', async () => {
     let client1: Socket;
     let server;
-    // client2: Socket;
 
     beforeAll(async () => {
         server = await bootstrap();
-        await insertSeedData();
     }, 30000)
 
-    afterAll(async () => {
-        client1.close();
-    }, 10000);
+    // afterAll(async () => {
+    //     client1.close();
+    // }, 10000);
 
 
     test('createRoom', async () => {
-        await login(server, client1, 'johndoe', 'password123');
+        await createRoom(server, client1, 'johndoe', 'room1');
 
     })
 })
 
-async function login(server: any, client1: Socket, username: string, password: string) {
-    const res = await request(server).post("/auth/login")
-        .send({ username, password });
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty('access_token');
+async function createRoom(server: any, client1: Socket, userId: string, roomName: string) {
+    const JWT_SECRET = 'secret'
+    const token = jwt.sign({ userId }, JWT_SECRET);
 
     client1 = io(`http://localhost:8000`, {
-        auth: {
-            token: res.body['access_token']
-        }
+        auth: { token }
     });
 
     await new Promise((resolve: any) => {
         client1.on('connect', resolve);
     });
 
-    const playerId = res.body['access_token'].playerId;
-    (client1 as any).id = playerId;
-}
+    const res = await request(server).post("/rooms")
+        .send({ playerId: userId, roomName });
 
-async function insertSeedData() {
-    const repo = AppDataSource.getRepository(User);
-    await repo.createQueryBuilder()
-        .insert()
-        .into(User)
-        .values([
-            { username: 'johndoe', passwd: 'password123', email: 'johndoe@example.com' },
-            { username: 'janedoe', passwd: 'password456', email: 'janedoe@example.com' },
-            { username: 'bobsmith', passwd: 'password789', email: 'bobsmith@example.com' }
-        ])
-        .execute();
+    console.log('room.test.ts 55')
+    console.log(JSON.stringify(res.body.room.players));
 }

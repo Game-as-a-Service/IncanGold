@@ -5,6 +5,7 @@ import { SocketConnection } from "./src/Shared_infra/socket";
 import { MySqlContainer } from "testcontainers";
 import { AppDataSource, configDataSource } from "./src/Shared_infra/data-source";
 import { AuthRouter } from "./src/User/adapter/Auth.router";
+import { RoomRouter } from "./src/Room/adapter/Room.router";
 
 export const bootstrap = async function () {
     const container = await new MySqlContainer()
@@ -30,6 +31,7 @@ export const bootstrap = async function () {
     });
 
     app.use('/auth', AuthRouter());
+    app.use('/rooms', RoomRouter());
 
     app.get("/", (req: Request, res: Response) => {
         res.end("Hellow handsome")

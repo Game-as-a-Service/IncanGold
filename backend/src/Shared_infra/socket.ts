@@ -41,7 +41,7 @@ type playerId = string
 export class SocketManager {
     private static socketManager: SocketManager | null = null;
     private _io: Server | null = null;
-    public sockets: Map<playerId, Socket>;
+    private sockets: Map<playerId, Socket>;
 
     private constructor() {
         this.sockets = new Map<playerId, Socket>();
@@ -59,8 +59,16 @@ export class SocketManager {
         this._io = io;
     }
 
-    getIo(): Server | null {
+    get io(): Server | null {
         return this._io;
+    }
+
+    joinRoom(id:playerId,roomId:string){
+        this.sockets.get(id).join(roomId);
+    }
+
+    leaveRoom(id:playerId,roomId:string){
+        this.sockets.get(id).leave(roomId);
     }
 
     static get manger(): SocketManager {
