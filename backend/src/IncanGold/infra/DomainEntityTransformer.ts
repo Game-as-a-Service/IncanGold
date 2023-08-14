@@ -1,37 +1,37 @@
 import { IncanGoldData } from "./data/IncanGoldData";
-import { PlayerData } from "./data/PlayerData";
+import { ExplorerData } from "./data/ExplorerData";
 import { CardData,CardLocation } from "./data/CardData";
-import { IncanGold,Player,Gem,Artifact,Card,TreasureCard,ArtifactCard,HazardCard,CardInfo } from "../domain/IncanGold"
+import { IncanGold,Explorer,Gem,Artifact,Card,TreasureCard,ArtifactCard,HazardCard,CardInfo } from "../domain/IncanGold"
 const { artifactCards, hazardCards } = CardInfo;
 
 export class Domain_OrmEntity_Transformer {
 
     toDomain(data:IncanGoldData):IncanGold{
         const { tunnel, deck, trashDeck } = this.setupCards(data);
-        const game = new IncanGold(data.id, data.players.map(player=>player.id),tunnel,deck,trashDeck);
+        const game = new IncanGold(data.id, data.explorers.map(explorer=>explorer.id),tunnel,deck,trashDeck);
         game.round = data.round;
         game.turn = data.turn;
-        data.players.forEach((playerData,index)=>this.toPlayer(playerData, game.players[index]));
+        data.explorers.forEach((explorerData,index)=>this.toExplorer(explorerData, game.explorers[index]));
         return game;
     }
 
     updateIncanGoldData(game:IncanGold,data:IncanGoldData):void{
         data.round = game.round;
         data.turn = game.turn;
-        this.updatePlayers(game, data);
+        this.updateExplorers(game, data);
         this.updateTunnel(game, data);
         this.updateDeck(game, data);
         this.updateTrashDeck(game, data);
     }
 
-    // data -> player
-    private toPlayer(data:PlayerData, player:Player):void{
-        player.choice = data.choice;
-        player.inTent = data.inTent;
-        player.putGemsInBag(Array(data.gemsInBag).fill(new Gem()));
-        player.tent.points = data.totalPoints;
-        player.tent.numOfGems = data.gemsInTent;
-        player.tent.artifacts = data.artifacts.map( artifactName =>{
+    // data -> explorer
+    private toExplorer(data:ExplorerData, explorer:Explorer):void{
+        explorer.choice = data.choice;
+        explorer.inTent = data.inTent;
+        explorer.putGemsInBag(Array(data.gemsInBag).fill(new Gem()));
+        explorer.tent.points = data.totalPoints;
+        explorer.tent.numOfGems = data.gemsInTent;
+        explorer.tent.artifacts = data.artifacts.map( artifactName =>{
             const {name,points} = artifactCards.find(card => card.name === artifactName );
             return new Artifact(name,points);
         })
@@ -76,14 +76,14 @@ export class Domain_OrmEntity_Transformer {
         return { tunnel, deck, trashDeck };
     }
 
-    // player -> playerDate
-    private updatePlayerData(player:Player, data:PlayerData):void{
-        data.choice = player.choice;
-        data.inTent = player.inTent;
-        data.gemsInBag = player.bag.numOfGems,
-        data.totalPoints = player.points;
-        data.gemsInTent = player.tent.numOfGems;
-        data.artifacts = player.tent.artifactsNames
+    // explorer -> explorerDate
+    private updateExplorerData(explorer:Explorer, data:ExplorerData):void{
+        data.choice = explorer.choice;
+        data.inTent = explorer.inTent;
+        data.gemsInBag = explorer.bag.numOfGems,
+        data.totalPoints = explorer.points;
+        data.gemsInTent = explorer.tent.numOfGems;
+        data.artifacts = explorer.tent.artifactsNames
     }
 
     // card -> cardData
@@ -95,8 +95,8 @@ export class Domain_OrmEntity_Transformer {
         }
     }
 
-    private updatePlayers(game: IncanGold, data: IncanGoldData) {
-        game.players.forEach((player, index) => this.updatePlayerData(player, data.players[index]));
+    private updateExplorers(game: IncanGold, data: IncanGoldData) {
+        game.explorers.forEach((explorer, index) => this.updateExplorerData(explorer, data.explorers[index]));
     }
 
     private updateTrashDeck(game: IncanGold, data: IncanGoldData) {

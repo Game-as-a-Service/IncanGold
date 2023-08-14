@@ -14,19 +14,19 @@ describe('',()=>{
         game.round = 3;
         game.turn = 3;
         game.resetHazardCardCounter();
-        game.makePlayersEnterTunnel();
-        game.players.forEach(player=>player.enterTunnel());
+        game.makeExplorersEnterTunnel();
+        game.explorers.forEach(explorer=>explorer.enterTunnel());
         game.tunnel.appendCard(new TreasureCard("T7(1)",7));
         game.tunnel.lastCard.trigger(game);
         game.tunnel.appendCard(new ArtifactCard("A1","artifact",5));
         game.tunnel.lastCard.trigger(game);
         game.tunnel.appendCard(new HazardCard("HF1","fire"));
         game.tunnel.lastCard.trigger(game);
-        game.makeChoice(game.playersInTunnel[0], Choice.Quit).next();
-        const iterator = game.makeChoice(game.playersInTunnel[1], Choice.Quit);
-        iterator.next(); // PlayerMadeChoiceEvent
-        iterator.next(); // AllPlayersMadeChoiceEvent
-        iterator.next(); // DistributeGemsAndArtifactsToPlayersEvent
+        game.makeChoice(game.explorersInTunnel[0], Choice.Quit).next();
+        const iterator = game.makeChoice(game.explorersInTunnel[1], Choice.Quit);
+        iterator.next(); // ExplorerMadeChoiceEvent
+        iterator.next(); // AllExplorersMadeChoiceEvent
+        iterator.next(); // DistributeGemsAndArtifactsToExplorersEvent
         iterator.next(); // new Event('TurnEnd');
         
         // when 通道中沒有玩家就結束回合 (詳見 IncanGold::*endTurn)
@@ -42,19 +42,19 @@ describe('',()=>{
         game.round = 3;
         game.turn = 3;
         game.resetHazardCardCounter();
-        game.makePlayersEnterTunnel();
-        game.players.forEach(player=>player.enterTunnel());
+        game.makeExplorersEnterTunnel();
+        game.explorers.forEach(explorer=>explorer.enterTunnel());
         game.tunnel.appendCard(new TreasureCard("T7(1)",7));
         game.tunnel.lastCard.trigger(game);
         game.tunnel.appendCard(new ArtifactCard("A1","artifact",5));
         game.tunnel.lastCard.trigger(game);
         game.tunnel.appendCard(new HazardCard("HF1","fire"));
         game.tunnel.lastCard.trigger(game);
-        game.makeChoice(game.playersInTunnel[0], Choice.Quit).next();
-        const iterator = game.makeChoice(game.playersInTunnel[1], Choice.KeepGoing);
-        iterator.next(); // PlayerMadeChoiceEvent
-        iterator.next(); // AllPlayersMadeChoiceEvent
-        iterator.next(); // DistributeGemsAndArtifactsToPlayersEvent
+        game.makeChoice(game.explorersInTunnel[0], Choice.Quit).next();
+        const iterator = game.makeChoice(game.explorersInTunnel[1], Choice.KeepGoing);
+        iterator.next(); // ExplorerMadeChoiceEvent
+        iterator.next(); // AllExplorersMadeChoiceEvent
+        iterator.next(); // DistributeGemsAndArtifactsToExplorersEvent
         iterator.next(); // new Event('TurnEnd');
         
         // when 通道中有玩家就開始新一Turn (詳見 IncanGold::*endTurn)

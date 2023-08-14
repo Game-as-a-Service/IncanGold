@@ -1,7 +1,7 @@
 import { EventDto, EventDtoTransformer } from "./EventDto/EventDto";
-import { PlayerMadeChoiceEventTransformer } from "./EventDto/PlayerMadeChoiceEventDto";
-import { AllPlayersMadeChoiceEventTransformer } from "./EventDto/AllPlayersMadeChoiceEventDto";
-import { DistributeGemsAndArtifactsToPlayersEventTransformer } from "./EventDto/DistributeGemsAndArtifactsToPlayersEventDto";
+import { ExplorerMadeChoiceEventTransformer } from "./EventDto/ExplorerMadeChoiceEventDto";
+import { AllExplorersMadeChoiceEventTransformer } from "./EventDto/AllExplorersMadeChoiceEventDto";
+import { DistributeGemsAndArtifactsToExplorersEventTransformer } from "./EventDto/DistributeGemsAndArtifactsToExplorersEventDto";
 import { GameOverEventTransformer } from "./EventDto/GameOverEventDto";
 import { HazardCardEventTransformer } from "./EventDto/NewTurnHazardCardTriggeredEventDto";
 import { RoundEndEventTransformer } from "./EventDto/RoundEndEventDto";
@@ -12,9 +12,9 @@ export class TransformEventsToEventDtos {
 
     constructor(){
         this._transformers = [
-            new PlayerMadeChoiceEventTransformer(),
-            new AllPlayersMadeChoiceEventTransformer(),
-            new DistributeGemsAndArtifactsToPlayersEventTransformer(),
+            new ExplorerMadeChoiceEventTransformer(),
+            new AllExplorersMadeChoiceEventTransformer(),
+            new DistributeGemsAndArtifactsToExplorersEventTransformer(),
             new GameOverEventTransformer(),
             new HazardCardEventTransformer(),
             new RoundEndEventTransformer(),

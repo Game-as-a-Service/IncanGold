@@ -1,15 +1,15 @@
-import { IncanGold,Player,Card,TreasureCard,ArtifactCard } from "../../domain/IncanGold"
+import { IncanGold,Explorer,Card,TreasureCard,ArtifactCard } from "../../domain/IncanGold"
 
 export interface GameStatus {
     round: number
     turn: number
     deckLength: number
-    players: PlayerDto[]
+    explorers: ExplorerDto[]
     tunnel: Room[]
 }
 
-export interface PlayerDto {
-    playerId: string
+export interface ExplorerDto {
+    explorerId: string
     inTent: boolean   
     gems: number      
     totalPoints: number 
@@ -28,21 +28,21 @@ export function toGameStatus(game: IncanGold):GameStatus{
         round: game.round,
         turn: game.turn,
         deckLength: game.deck.numOfCards,
-        players: game.players.map(player=>getPlayerDto(player)),
+        explorers: game.explorers.map(explorer=>getexplorerDto(explorer)),
         tunnel: game.tunnel.cards.map(card=>getRoom(card))
     }
     return gameStatus;
 }
 
-function getPlayerDto(player:Player){
-    const playerDto:PlayerDto = {
-        playerId: player.id,
-        inTent: player.inTent,
-        gems: player.bag.numOfGems,
-        totalPoints: player.points,
-        artifacts: player.tent.artifactsNames
+function getexplorerDto(explorer:Explorer){
+    const explorerDto:ExplorerDto = {
+        explorerId: explorer.id,
+        inTent: explorer.inTent,
+        gems: explorer.bag.numOfGems,
+        totalPoints: explorer.points,
+        artifacts: explorer.tent.artifactsNames
     }
-    return playerDto;
+    return explorerDto;
 }
 
 function getRoom(card:Card){

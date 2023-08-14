@@ -3,7 +3,7 @@ import { AppDataSource } from "../../Shared_infra/data-source";
 import type { DataSource, QueryRunner } from "typeorm";
 import { Domain_OrmEntity_Transformer } from "./DomainEntityTransformer";
 import { IncanGoldData } from "./data/IncanGoldData";
-import { PlayerData } from "./data/PlayerData";
+import { ExplorerData } from "./data/ExplorerData";
 import { CardData, CardLocation } from "./data/CardData";
 import { IncanGold, CardInfo } from "../domain/IncanGold";
 const { treasureCards, hazardCards, artifactCards } = CardInfo;
@@ -19,14 +19,14 @@ export class IncanGoldRepository implements IIncanGoldRepository {
         this.dataSource = AppDataSource;
     }
 
-    create(id: string, playerIDs: string[]): IncanGold {
+    create(id: string, explorerIDs: string[]): IncanGold {
         this.isGameInDB = false;
         this._incanGoldData = new IncanGoldData();
         this._incanGoldData.id = id;
-        this.createPlayers(playerIDs);
+        this.createExplorers(explorerIDs);
         this.createCards();
 
-        const incanGold = new IncanGold(id, playerIDs);
+        const incanGold = new IncanGold(id, explorerIDs);
         return incanGold;
     }
 
@@ -55,7 +55,7 @@ export class IncanGoldRepository implements IIncanGoldRepository {
         if (this.isGameInDB) {
             try {
                 await this.updateCards();
-                await this.updatePlayers();
+                await this.updateExplorers();
                 await this.updateGame();
                 await this.queryRunner.commitTransaction();
             } catch (err) {
@@ -78,18 +78,18 @@ export class IncanGoldRepository implements IIncanGoldRepository {
         });
     }
 
-    private async updatePlayers() {
-        const playerPromise = this._incanGoldData.players.map(player => {
-            const { id, choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts } = player;
+    private async updateExplorers() {
+        const explorerPromise = this._incanGoldData.explorers.map(explorer => {
+            const { id, choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts } = explorer;
 
             this.queryRunner.manager
-                .getRepository(PlayerData)
+                .getRepository(ExplorerData)
                 .update(
                     { id },
                     { choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts }
                 );
         });
-        await Promise.all(playerPromise);
+        await Promise.all(explorerPromise);
     }
 
     private async updateCards() {
@@ -107,13 +107,13 @@ export class IncanGoldRepository implements IIncanGoldRepository {
         await Promise.all(cardPromise);
     }
 
-    private createPlayers(playerIDs: string[]) {
-        const players = playerIDs.map(playerID => {
-            const player = new PlayerData();
-            player.id = playerID;
-            return player;
+    private createExplorers(explorerIDs: string[]) {
+        const explorers = explorerIDs.map(explorerID => {
+            const explorer = new ExplorerData();
+            explorer.id = explorerID;
+            return explorer;
         });
-        this._incanGoldData.players = players;
+        this._incanGoldData.explorers = explorers;
     }
 
     private createCards() {

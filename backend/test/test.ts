@@ -1,8 +1,8 @@
-import StartGameUseCase, { StartGameInput } from "app/IncanGold/useCase/StartGameUseCase";
-import { IncanGoldRepository } from "frameworks/data-services/IncanGold/IncanGoldRepository";
-import { AppDataSource,configDataSource } from "frameworks/data-services/data-source";
-import { Choice } from "domain/incan-gold-core/src/domain/constant/Choice";
-import MakeChoiceUseCase, {MakeChoiceInput} from "app/IncanGold/useCase/MakeChoiceUseCase";
+import StartGameUseCase, {StartGameInput} from "../src/IncanGold/app/useCase/StartGameUseCase";
+import { IncanGoldRepository } from "../src/IncanGold/infra/IncanGoldRepository";
+import { configDataSource, AppDataSource } from "../src/Shared_infra/data-source";
+import { Choice } from "../src/IncanGold/domain/IncanGold";
+import MakeChoiceUseCase, {MakeChoiceInput} from "../src/IncanGold/app/useCase/MakeChoiceUseCase";
 import { MySqlContainer } from "testcontainers"
 
 
@@ -31,8 +31,8 @@ async function startGame(roomID:string, plyerIDs:string[]){
     // console.log(JSON.stringify(events));
 }
 
-async function makeChoice(gameId:string, playerId:string, choice:Choice){
-    const input:MakeChoiceInput = { gameId,playerId,choice };
+async function makeChoice(gameId:string, explorerId:string, choice:Choice){
+    const input:MakeChoiceInput = { gameId,explorerId,choice };
     const makeChoiceUseCase = new MakeChoiceUseCase(new IncanGoldRepository());
     const {game,events} = await makeChoiceUseCase.execute(input);
     // console.log(JSON.stringify(game));

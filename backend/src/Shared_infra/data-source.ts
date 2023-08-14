@@ -2,7 +2,7 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { IncanGoldData } from "../IncanGold/infra/data/IncanGoldData"
 import { CardData } from "../IncanGold/infra/data/CardData"
-import { PlayerData } from "../IncanGold/infra/data/PlayerData"
+import { ExplorerData } from "../IncanGold/infra/data/ExplorerData"
 import { User } from "../User/infra/User"
 
 export let AppDataSource : DataSource|null;
@@ -17,7 +17,7 @@ export function configDataSource(host:string,port:number):void {
         database: "test",
         synchronize: true,
         logging: false,
-        entities: [IncanGoldData,CardData,PlayerData,User],
+        entities: [IncanGoldData,CardData,ExplorerData,User],
         migrations: [],
         subscribers: [],
     })

@@ -2,10 +2,10 @@ import IncanGold from '../src/entities/IncanGold';
 import TreasureCard from '../src/entities/Card/TreasureCard'
 import HazardCard from '../src/entities/Card/HazardCard';
 import { Choice } from '../src/constant/Choice';
-import Player from '../src/entities/Player';
+import Explorer from '../src/entities/Explorer';
 import Event  from '../src/events/Event';
 import { NewTurnHazardCardTriggeredEvent } from '../src/events/NewTurnCardTriggeredEvent';
-import { AllPlayersMadeChoiceEvent } from '../src/events/MadeChoiceEvent';
+import { AllExplorersMadeChoiceEvent } from '../src/events/MadeChoiceEvent';
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
 describe("災難卡被放入通道",()=>{
@@ -21,9 +21,9 @@ describe("災難卡被放入通道",()=>{
         console.log(iterator.next().value); // NewTurnHazardCardTriggeredEvent
 
         // then 
-        let event = iterator.next().value; // new AllPlayersMadeChoiceEvent
-        expect(event.name).toBe("AllPlayersMadeChoice");
-        Object.values((<AllPlayersMadeChoiceEvent>event).allPlayersChoices)
+        let event = iterator.next().value; // new AllExplorersMadeChoiceEvent
+        expect(event.name).toBe("AllExplorersMadeChoice");
+        Object.values((<AllExplorersMadeChoiceEvent>event).allExplorersChoices)
         .forEach(choice=>expect(choice===Choice.KeepGoing));
     })
 
@@ -31,7 +31,7 @@ describe("災難卡被放入通道",()=>{
         // given 
         const game = new IncanGold('1',['1']);
         game.round = 1;
-        game.makePlayersEnterTunnel();
+        game.makeExplorersEnterTunnel();
         game.tunnel.appendCard(new HazardCard("HS1",'spider'));
         game.tunnel.lastCard.trigger(game);
         game.tunnel.appendCard(new HazardCard("HP1",'python'));
@@ -43,7 +43,7 @@ describe("災難卡被放入通道",()=>{
         console.log(iterator.next().value); // NewTurnHazardCardTriggeredEvent
 
         // then
-        const iterator2 = game.makeChoice(game.playersInTunnel[0],Choice.Quit);
+        const iterator2 = game.makeChoice(game.explorersInTunnel[0],Choice.Quit);
         iterator2.next();
         console.log(iterator2.next().value);
         expect(game.round).toBe(1) // 依然在第一回合
@@ -54,7 +54,7 @@ describe("災難卡被放入通道",()=>{
         const game = new IncanGold('1',['1','2']);
         game.round = 1;
         game.resetHazardCardCounter();
-        game.makePlayersEnterTunnel();
+        game.makeExplorersEnterTunnel();
         game.tunnel.appendCard(new TreasureCard("T4",4));
         game.tunnel.lastCard.trigger(game);
         game.tunnel.appendCard(new HazardCard("HS1",'spider'));
@@ -68,8 +68,8 @@ describe("災難卡被放入通道",()=>{
         console.log(iterator.next().value); // NewTurnHazardCardTriggeredEvent
 
         // then 玩家們皆回到營地；背包內的資源沒有被加入總分
-        game.players.forEach(player=>expect(player.inTent).toBe(true));
-        game.players.forEach(player=>expect(player.points).toBe(0))
+        game.explorers.forEach(explorer=>expect(explorer.inTent).toBe(true));
+        game.explorers.forEach(explorer=>expect(explorer.points).toBe(0))
         console.log(iterator.next().value); // RoundEndEvent
     })
 

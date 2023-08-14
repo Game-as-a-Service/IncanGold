@@ -18,7 +18,7 @@ export class NewTurnTreasureCardTriggeredEvent extends Event{
         this.currentRound = game.round;
         this.currentTurn = game.turn;
         this.cardPoints = (<TresasureCard>game.tunnel.lastCard).points;
-        this.numberOfGemsInBag = game.playersInTunnel[0].bag.numOfGems;
+        this.numberOfGemsInBag = game.explorersInTunnel[0].bag.numOfGems;
         this.numberOfGemsOnCard =  (<TresasureCard>game.tunnel.lastCard).numOfGems;
     }
 }

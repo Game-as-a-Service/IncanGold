@@ -3,7 +3,7 @@ import Card from '../src/entities/Card/Card';
 import TreasureCard from '../src/entities/Card/TreasureCard'
 import HazardCard from '../src/entities/Card/HazardCard';
 import { Choice } from '../src/constant/Choice';
-import Player from '../src/entities/Player';
+import Explorer from '../src/entities/Explorer';
 import ArtifactCard from '../src/entities/Card/ArtifactCard'
 import GameoverEvent from '../src/events/GameOverEvent'
 
@@ -16,8 +16,8 @@ describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通
         game.round = 5;
         game.turn = 3;
         game.resetHazardCardCounter();
-        game.makePlayersEnterTunnel();
-        game.players.forEach(player=>player.enterTunnel());
+        game.makeExplorersEnterTunnel();
+        game.explorers.forEach(explorer=>explorer.enterTunnel());
         game.tunnel.appendCard(new TreasureCard("T7(1)",7));
         game.tunnel.lastCard.trigger(game);
         game.tunnel.appendCard(new ArtifactCard("A1","artifact",5));
@@ -25,11 +25,11 @@ describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通
         game.tunnel.appendCard(new HazardCard("HF1","fire"));
         game.tunnel.lastCard.trigger(game);
 
-        game.makeChoice(game.playersInTunnel[0], Choice.Quit).next();
-        const iterator = game.makeChoice(game.playersInTunnel[1], Choice.Quit);
-        iterator.next(); // PlayerMadeChoiceEvent
-        iterator.next(); // AllPlayersMadeChoiceEvent
-        iterator.next(); // DistributeGemsAndArtifactsToPlayersEvent
+        game.makeChoice(game.explorersInTunnel[0], Choice.Quit).next();
+        const iterator = game.makeChoice(game.explorersInTunnel[1], Choice.Quit);
+        iterator.next(); // ExplorerMadeChoiceEvent
+        iterator.next(); // AllExplorersMadeChoiceEvent
+        iterator.next(); // DistributeGemsAndArtifactsToExplorersEvent
         iterator.next(); // new Event('TurnEnd')
         iterator.next(); // RoundEndEvent
 
@@ -45,8 +45,8 @@ describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通
         game.round = 4;
         game.turn = 3;
         game.resetHazardCardCounter();
-        game.makePlayersEnterTunnel();
-        game.players.forEach(player=>player.enterTunnel());
+        game.makeExplorersEnterTunnel();
+        game.explorers.forEach(explorer=>explorer.enterTunnel());
         game.tunnel.appendCard(new TreasureCard("T7(1)",7));
         game.tunnel.lastCard.trigger(game);
         game.tunnel.appendCard(new ArtifactCard("A1","artifact",5));
@@ -54,11 +54,11 @@ describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通
         game.tunnel.appendCard(new HazardCard("HF1","fire"));
         game.tunnel.lastCard.trigger(game);
 
-        game.makeChoice(game.playersInTunnel[0], Choice.Quit).next();
-        const iterator = game.makeChoice(game.playersInTunnel[1], Choice.Quit);
-        iterator.next(); // PlayerMadeChoiceEvent
-        iterator.next(); // AllPlayersMadeChoiceEvent
-        iterator.next(); // DistributeGemsAndArtifactsToPlayersEvent
+        game.makeChoice(game.explorersInTunnel[0], Choice.Quit).next();
+        const iterator = game.makeChoice(game.explorersInTunnel[1], Choice.Quit);
+        iterator.next(); // ExplorerMadeChoiceEvent
+        iterator.next(); // AllExplorersMadeChoiceEvent
+        iterator.next(); // DistributeGemsAndArtifactsToExplorersEvent
         iterator.next(); // new Event('TurnEnd')
         iterator.next(); // RoundEndEvent
 

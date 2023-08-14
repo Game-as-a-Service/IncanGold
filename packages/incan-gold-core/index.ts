@@ -1,7 +1,7 @@
-export { default as DistributeGemsAndArtifactsToPlayersEvent } from "./src/events/DistributeGemsAndArtifactsToPlayersEvent"
+export { default as DistributeGemsAndArtifactsToExplorersEvent } from "./src/events/DistributeGemsAndArtifactsToExplorersEvent"
 export { default as Event } from "./src/events/Event"
 export { default as GameOverEvent} from "./src/events/GameOverEvent"
-export { PlayerMadeChoiceEvent, AllPlayersMadeChoiceEvent } from "./src/events/MadeChoiceEvent"
+export { ExplorerMadeChoiceEvent, AllExplorersMadeChoiceEvent } from "./src/events/MadeChoiceEvent"
 export { NewTurnArtifactCardTriggeredEvent, NewTurnHazardCardTriggeredEvent, NewTurnTreasureCardTriggeredEvent } from "./src/events/NewTurnCardTriggeredEvent"
 export { default as RoundEndEvent } from "./src/events/RoundEndEvent"
 
@@ -15,7 +15,7 @@ export { default as Bag } from "./src/entities/Bag"
 export { default as Deck } from "./src/entities/Deck"
 export { default as Gem } from "./src/entities/Gem"
 export { default as IncanGold } from "./src/entities/IncanGold"
-export { default as Player } from "./src/entities/Player"
+export { default as Explorer } from "./src/entities/Explorer"
 export { default as Tent } from "./src/entities/Tent"
 export { default as Tunnel } from "./src/entities/Tunnel"
 
@@ -25,10 +25,10 @@ export { EventName } from "./src/constant/EventName"
 
 // export interface Events {
 //   Event: typeof Event;
-//   DistributeGemsAndArtifactsToPlayersEvent: typeof DistributeGemsAndArtifactsToPlayersEvent;
+//   DistributeGemsAndArtifactsToExplorersEvent: typeof DistributeGemsAndArtifactsToExplorersEvent;
 //   GameOverEvent: typeof GameOverEvent;
-//   PlayerMadeChoiceEvent: typeof PlayerMadeChoiceEvent;
-//   AllPlayersMadeChoiceEvent: typeof AllPlayersMadeChoiceEvent;
+//   ExplorerMadeChoiceEvent: typeof ExplorerMadeChoiceEvent;
+//   AllExplorersMadeChoiceEvent: typeof AllExplorersMadeChoiceEvent;
 //   NewTurnArtifactCardTriggeredEvent: typeof NewTurnArtifactCardTriggeredEvent;
 //   NewTurnHazardCardTriggeredEvent: typeof NewTurnHazardCardTriggeredEvent;
 //   NewTurnTreasureCardTriggeredEvent: typeof NewTurnTreasureCardTriggeredEvent;
@@ -37,8 +37,8 @@ export { EventName } from "./src/constant/EventName"
 
 // export const events: Events = {
 //   Event,
-//   DistributeGemsAndArtifactsToPlayersEvent, GameOverEvent,
-//   PlayerMadeChoiceEvent, AllPlayersMadeChoiceEvent,
+//   DistributeGemsAndArtifactsToExplorersEvent, GameOverEvent,
+//   ExplorerMadeChoiceEvent, AllExplorersMadeChoiceEvent,
 //   NewTurnArtifactCardTriggeredEvent, NewTurnHazardCardTriggeredEvent, NewTurnTreasureCardTriggeredEvent,
 //   RoundEndEvent
 // }
@@ -61,13 +61,13 @@ export { EventName } from "./src/constant/EventName"
 //   IncanGold: typeof IncanGold
 //   Gem: typeof Gem
 //   Artifact: typeof Artifact
-//   Player: typeof Player
+//   Explorer: typeof Explorer
 //   Tent: typeof Tent
 //   Tunnel: typeof Tunnel
 // }
 
 // export const entities: Entities = {
-//   cards, Bag, Deck, IncanGold, Gem, Artifact, Player, Tent, Tunnel
+//   cards, Bag, Deck, IncanGold, Gem, Artifact, Explorer, Tent, Tunnel
 // }
 
 // export interface Constant {

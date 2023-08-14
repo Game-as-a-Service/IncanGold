@@ -1,5 +1,5 @@
 import Card from "./Card";
-import Player from "../Player";
+import Explorer from "../Explorer";
 import IncanGold from "../IncanGold"; 
 import Event from "../../events/Event"
 import {NewTurnHazardCardTriggeredEvent} from "../../events/NewTurnCardTriggeredEvent"
@@ -27,9 +27,9 @@ export default class HazardCard extends Card {
     
     // 災難重複出現，就把玩家趕離通道
     if(this.appearsTwice(game)){
-      game.playersInTunnel.forEach(player=>{
-        player.clearBag()
-        player.leaveTunnel();
+      game.explorersInTunnel.forEach(explorer=>{
+        explorer.clearBag()
+        explorer.leaveTunnel();
       });
     }
     

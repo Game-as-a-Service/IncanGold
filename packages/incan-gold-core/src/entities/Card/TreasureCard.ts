@@ -1,6 +1,6 @@
 import Card from "./Card";
 import Gem from "../Gem";
-import Player from "../Player";
+import Explorer from "../Explorer";
 import IncanGold from "../IncanGold";
 import Event from "../../events/Event";
 import {NewTurnTreasureCardTriggeredEvent} from "../../events/NewTurnCardTriggeredEvent";
@@ -26,16 +26,16 @@ export default class TreasureCard extends Card {
     return this.gems.length;
   }
 
-  public devideGemsTo(players:Player[]): void {
-    var eachOneCanGet = Math.floor(this.numOfGems/players.length); 
-    var left = this.numOfGems- (eachOneCanGet*players.length);
-    players.forEach(player=>player.putGemsInBag(Array(eachOneCanGet).fill(new Gem())));
+  public devideGemsTo(explorers:Explorer[]): void {
+    var eachOneCanGet = Math.floor(this.numOfGems/explorers.length); 
+    var left = this.numOfGems- (eachOneCanGet*explorers.length);
+    explorers.forEach(explorer=>explorer.putGemsInBag(Array(eachOneCanGet).fill(new Gem())));
     this.gems = Array(left).fill(new Gem());
   }
 
   public trigger(game:IncanGold): Event {
     this.generateGems();
-    this.devideGemsTo(game.playersInTunnel);
+    this.devideGemsTo(game.explorersInTunnel);
     return new NewTurnTreasureCardTriggeredEvent(game);
   }
 }

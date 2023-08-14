@@ -4,7 +4,7 @@ import { GameStatus,toGameStatus } from '../Dto/IncanGoldDto';
 import { EventDto } from '../Dto/EventDto/EventDto';
 import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
 
-// Create a game entity using the room ID and the players' IDs 
+// Create a game entity using the room ID and the explorers' IDs 
 // (the game entity's ID will be the room ID), 
 // and start the game until the first round's first turn, which is the "selection" phase.
 export default class StartGameUseCase {

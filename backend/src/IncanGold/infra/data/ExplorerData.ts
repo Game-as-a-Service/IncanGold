@@ -3,7 +3,7 @@ import { IncanGoldData } from "./IncanGoldData"
 import { Choice } from "../../domain/IncanGold"
 
 @Entity()
-export class PlayerData {
+export class ExplorerData {
     @PrimaryColumn('uuid')
     id:string
 
@@ -29,6 +29,6 @@ export class PlayerData {
     @Column("simple-array",{nullable: true})
     artifacts: string[] 
 
-    @ManyToOne(()=>IncanGoldData,(incanGold)=>incanGold.players)
+    @ManyToOne(()=>IncanGoldData,(incanGold)=>incanGold.explorers)
     incanGold: Relation<IncanGoldData>
 }

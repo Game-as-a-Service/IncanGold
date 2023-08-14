@@ -3,23 +3,23 @@ import { EventName } from "../constant/EventName";
 import IncanGold from "../entities/IncanGold";
 
 // 幾號玩家已做出選擇
-export class PlayerMadeChoiceEvent extends Event{
-    public readonly playerWhoMadeChoice:string; 
+export class ExplorerMadeChoiceEvent extends Event{
+    public readonly explorerWhoMadeChoice:string; 
 
-    constructor(playerID:string){
-        super(EventName.PlayerMadeChoice);
-        this.playerWhoMadeChoice = playerID;
+    constructor(explorerID:string){
+        super(EventName.ExplorerMadeChoice);
+        this.explorerWhoMadeChoice = explorerID;
     }
 }
 
 // 通道中所有玩家皆已做出選擇
-export class AllPlayersMadeChoiceEvent extends Event{
-    public allPlayersChoices: Record<string, string> = {};
+export class AllExplorersMadeChoiceEvent extends Event{
+    public allExplorersChoices: Record<string, string> = {};
 
     constructor(game:IncanGold){
-        super(EventName.AllPlayersMadeChoice);
-        game.playersInTunnel.forEach(player=>{
-            this.allPlayersChoices[player.id] = player.choice;
+        super(EventName.AllExplorersMadeChoice);
+        game.explorersInTunnel.forEach(explorer=>{
+            this.allExplorersChoices[explorer.id] = explorer.choice;
         })
     }
 }

@@ -1,11 +1,11 @@
 import { configDataSource,AppDataSource } from "../src/Shared_infra/data-source";
 import { expect,describe, test, afterAll, beforeAll } from 'vitest';
 import { MySqlContainer } from "testcontainers";
-import { IncanGoldController } from "../src/gateway/controllers/IncanGold.controller";
-import StartGameUseCase, { StartGameInput } from "../src/app/IncanGold/useCase/StartGameUseCase";
-import { MakeChoiceInput } from "../src/app/IncanGold/useCase/MakeChoiceUseCase";
+import { IncanGoldController } from "../src/IncanGold/adapter/IncanGold.controller";
+import StartGameUseCase, {StartGameInput} from "../src/IncanGold/app/useCase/StartGameUseCase";
+import { MakeChoiceInput } from "../src/IncanGold/app/useCase/MakeChoiceUseCase";
 import { Choice } from "../../packages/incan-gold-core/src/constant/Choice";
-import { IncanGoldRepository } from "../src/Shared_infra/data-services/IncanGold/IncanGoldRepository";
+import { IncanGoldRepository } from "../src/IncanGold/infra/IncanGoldRepository";
 
 
 describe("以controller的視角進行測試", ()=>{
@@ -54,7 +54,7 @@ async function startGame(roomID:string, plyerIDs:string[]){
     return await incanGoldController.StartGame(input);
 }
 
-async function makeChoice(gameId:string, playerId:string, choice:string){
-    const input:MakeChoiceInput = { gameId,playerId,choice };
+async function makeChoice(gameId:string, explorerId:string, choice:string){
+    const input:MakeChoiceInput = { gameId,explorerId,choice };
     return await incanGoldController.MakeChoice(input);
 }

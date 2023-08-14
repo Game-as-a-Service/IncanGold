@@ -4,7 +4,7 @@ import Bag from "./Bag";
 import Gem from "./Gem";
 import Artifact from "./Artifact";
 
-export default class Player {
+export default class Explorer {
   public id: string;
   public choice: Choice = Choice.NotSelected;
   public inTent: boolean = true;

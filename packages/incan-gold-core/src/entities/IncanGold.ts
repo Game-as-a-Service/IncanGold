@@ -4,11 +4,11 @@ import {TrashDeck, Deck} from "./Deck"
 import Tunnel from "./Tunnel"
 import { Choice } from "../constant/Choice";
 import { EventName } from "../constant/EventName"
-import Player from "./Player"
+import Explorer from "./Explorer"
 import Event from "../events/Event"
 import RoundEndEvent from "../events/RoundEndEvent"
-import {PlayerMadeChoiceEvent,AllPlayersMadeChoiceEvent} from "../events/MadeChoiceEvent"
-import DistributeGemsAndArtifactsToPlayersEvent from "../events/DistributeGemsAndArtifactsToPlayersEvent";
+import {ExplorerMadeChoiceEvent,AllExplorersMadeChoiceEvent} from "../events/MadeChoiceEvent"
+import DistributeGemsAndArtifactsToExplorersEvent from "../events/DistributeGemsAndArtifactsToExplorersEvent";
 import GameOverEvent from "../events/GameOverEvent";
 import Card from "./Card/Card";
 
@@ -17,7 +17,7 @@ export default class IncanGold {
     public tunnel:Tunnel;
     public deck:Deck;
     public trashDeck:TrashDeck;
-    public players:Player[] = [];
+    public explorers:Explorer[] = [];
 
     public hazardCardCounter: Record<string, number> = {};
     public forceExplore:boolean = false;
@@ -28,7 +28,7 @@ export default class IncanGold {
 
     constructor(
         ID:string, 
-        playerIDs:string[],
+        explorerIDs:string[],
         tunnel:Card[]=[],
         deck:Card[]=[],
         trashDeck:Map<number,Card[]>= new Map())
@@ -38,18 +38,18 @@ export default class IncanGold {
         this.deck = new Deck(deck);
         this.trashDeck = new TrashDeck(trashDeck);
 
-        playerIDs.forEach(playerID=>{
-            this.players.push(new Player(playerID));
+        explorerIDs.forEach(explorerID=>{
+            this.explorers.push(new Explorer(explorerID));
         })
-        this.tunnel.players = this.players;
+        this.tunnel.explorers = this.explorers;
     }
 
-    get playersInTunnel():Player[] {
-        return this.tunnel.players;
+    get explorersInTunnel():Explorer[] {
+        return this.tunnel.explorers;
     }
 
-    get allPlayersMadeChoice():boolean {
-        return !(this.playersInTunnel.find(player=>(player.choice === Choice.NotSelected)))
+    get allExplorersMadeChoice():boolean {
+        return !(this.explorersInTunnel.find(explorer=>(explorer.choice === Choice.NotSelected)))
     }
 
     public *start():IterableIterator<Event>{
@@ -61,38 +61,38 @@ export default class IncanGold {
         this.putCardsBackIntoDeck();
         this.resetHazardCardCounter();
         // this.addArtifactCardAndShuffleDeck();
-        this.makePlayersEnterTunnel();
+        this.makeExplorersEnterTunnel();
         this.turn = 1;
         yield* this.startTurn();
     }
 
     public *startTurn():IterableIterator<Event> {
-        this.resetPlayersChoice();
+        this.resetExplorersChoice();
         this.putCardInTunnel();
         yield* this.triggerLastCardInTunnel();
         if(this.forceExplore)
-            yield* this.forceAllPlayersExplore();
+            yield* this.forceAllExplorersExplore();
     }
 
     public *triggerLastCardInTunnel(): IterableIterator<Event> {
         yield this.tunnel.lastCard.trigger(this);
-        if(this.tunnel.isAnyPlayerPresent == false)
+        if(this.tunnel.isAnyExplorerPresent == false)
             yield* this.endRound();
     }
 
-    public *forceAllPlayersExplore(): IterableIterator<Event> {
+    public *forceAllExplorersExplore(): IterableIterator<Event> {
         this.forceExplore = false;
-        this.playersInTunnel.forEach(player=>player.choice = Choice.KeepGoing)
-        yield new AllPlayersMadeChoiceEvent(this);
+        this.explorersInTunnel.forEach(explorer=>explorer.choice = Choice.KeepGoing)
+        yield new AllExplorersMadeChoiceEvent(this);
         yield* this.endTurn();
     }
 
-    public *makeChoice(player: Player, choice: Choice) {
-        player.choice = choice;
-        yield new PlayerMadeChoiceEvent(player.id);
+    public *makeChoice(explorer: Explorer, choice: Choice) {
+        explorer.choice = choice;
+        yield new ExplorerMadeChoiceEvent(explorer.id);
 
-        if (this.allPlayersMadeChoice) {
-            yield new AllPlayersMadeChoiceEvent(this);
+        if (this.allExplorersMadeChoice) {
+            yield new AllExplorersMadeChoiceEvent(this);
             yield* this.endTurn();
         }
     }
@@ -102,7 +102,7 @@ export default class IncanGold {
         this.turn++;
         yield new Event(EventName.TurnEnd);
     
-        if (this.tunnel.isAnyPlayerPresent) {
+        if (this.tunnel.isAnyExplorerPresent) {
             yield* this.startTurn();
             return;
         }
@@ -112,8 +112,8 @@ export default class IncanGold {
 
     public *getAndGo():IterableIterator<Event> {
         this.distributeResources();
-        yield new DistributeGemsAndArtifactsToPlayersEvent(this);
-        this.makePlayersLeaveTunnel();
+        yield new DistributeGemsAndArtifactsToExplorersEvent(this);
+        this.makeExplorersLeaveTunnel();
     }
 
     public *endRound(): IterableIterator<Event> {
@@ -153,12 +153,12 @@ export default class IncanGold {
         this.deck.shuffle();
     }
 
-    public makePlayersEnterTunnel(): void {
-        this.players.forEach(player=>player.enterTunnel());
+    public makeExplorersEnterTunnel(): void {
+        this.explorers.forEach(explorer=>explorer.enterTunnel());
     }
 
-    public resetPlayersChoice(): void {
-        this.playersInTunnel.forEach(player=>player.choice = Choice.NotSelected);
+    public resetExplorersChoice(): void {
+        this.explorersInTunnel.forEach(explorer=>explorer.choice = Choice.NotSelected);
     }
 
     public putCardInTunnel(): void {
@@ -166,20 +166,20 @@ export default class IncanGold {
         if(card) this.tunnel.appendCard(card);
     }
 
-    public findWinner(): Player|void {
-        let highestPoints = Math.max(...this.players.map((player) => player.points));
+    public findWinner(): Explorer|void {
+        let highestPoints = Math.max(...this.explorers.map((explorer) => explorer.points));
         if(!highestPoints) return;
-        let highestPointsPlayers = this.players.filter((player) => player.points === highestPoints);
+        let highestPointsExplorers = this.explorers.filter((explorer) => explorer.points === highestPoints);
         
-        let maxNumberOfHighestPointsPlayerArtifacts = Math.max(...
-            highestPointsPlayers.map((player) => player.numOfArtifacts)
+        let maxNumberOfHighestPointsExplorerArtifacts = Math.max(...
+            highestPointsExplorers.map((explorer) => explorer.numOfArtifacts)
         );
 
-        highestPointsPlayers = highestPointsPlayers.filter(
-            (player) => player.numOfArtifacts === maxNumberOfHighestPointsPlayerArtifacts
+        highestPointsExplorers = highestPointsExplorers.filter(
+            (explorer) => explorer.numOfArtifacts === maxNumberOfHighestPointsExplorerArtifacts
         );
-        if(highestPointsPlayers.length===1)
-            return highestPointsPlayers[0];
+        if(highestPointsExplorers.length===1)
+            return highestPointsExplorers[0];
         else
             return;
     }
@@ -189,16 +189,16 @@ export default class IncanGold {
         this.tunnel.distributeArtifacts();
     }
 
-    public makePlayersLeaveTunnel(): void {
-        this.tunnel.leavingPlayers.forEach(player=>player.leaveTunnel());
+    public makeExplorersLeaveTunnel(): void {
+        this.tunnel.leavingExplorers.forEach(explorer=>explorer.leaveTunnel());
     }
 
-    public getPlayer(id:string): Player {
-        let player =  this.players.find(player=>player.id === id);
-        if(player)
-            return player
+    public getExplorer(id:string): Explorer {
+        let explorer =  this.explorers.find(explorer=>explorer.id === id);
+        if(explorer)
+            return explorer
         else
-            throw new Error('This player is not in the game.');
+            throw new Error('This Explorer is not in the game.');
     }
 }
 

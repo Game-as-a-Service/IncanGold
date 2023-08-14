@@ -12,8 +12,8 @@ export class GameOverEventTransformer extends EventDtoTransformer {
             name: 'GameOver',
             data: {
                 winnerID: e.winnerID,
-                players: e.players.map((elem)=>{
-                    return {playerId:elem.playerID, totalPoints:elem.totalPoints};
+                explorers: e.explorers.map((elem)=>{
+                    return {explorerId:elem.explorerID, totalPoints:elem.totalPoints};
                 })
             }
         }
@@ -27,11 +27,11 @@ interface GameOverEventDto extends EventDto
     name: 'GameOver'
     data: {
         winnerID:string;
-        players: PlayerAndPoints[]
+        explorers: ExplorerAndPoints[]
     }
 }
 
-interface PlayerAndPoints {
-    playerId: string
+interface ExplorerAndPoints {
+    explorerId: string
     totalPoints:number
 }

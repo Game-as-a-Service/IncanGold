@@ -5,24 +5,24 @@ import IncanGold from "../entities/IncanGold";
 // 遊戲已結束
 export default class GameOverEvent extends Event{
     public readonly winnerID:string;
-    public players:PlayerAndPoints[];
+    public explorers:ExplorerAndPoints[];
 
     constructor(game:IncanGold){
         super(EventName.GameOver);
         this.winnerID = game.winnerID !== "" ? game.winnerID : "平手" ;
 
-        this.players = [...game.players]
+        this.explorers = [...game.explorers]
         .sort((p1,p2) => p2.points - p1.points )
-        .map ( player => new PlayerAndPoints(player.id,player.points))
+        .map ( explorer => new ExplorerAndPoints(explorer.id,explorer.points))
     }
 }
 
-class PlayerAndPoints{
-    public playerID:string;
+class ExplorerAndPoints{
+    public explorerID:string;
     public totalPoints:number;
 
     constructor(id:string, points:number){
-        this.playerID = id;
+        this.explorerID = id;
         this.totalPoints = points;
     }
 }

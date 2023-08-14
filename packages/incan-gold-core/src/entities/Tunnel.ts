@@ -2,7 +2,7 @@ import Card from "./Card/Card";
 import ArtifactCard from "./Card/ArtifactCard";
 import HazardCard from "./Card/HazardCard";
 import TreasureCard from "./Card/TreasureCard";
-import Player from "./Player";
+import Explorer from "./Explorer";
 import Bag from "./Bag";
 import { TrashDeck } from "./Deck";
 import Gem from "./Gem";
@@ -10,7 +10,7 @@ import { Choice } from "../constant/Choice";
 import IncanGold from "./IncanGold";
 
 class Tunnel {
-  private _players : Player[] = [];
+  private _explorers : Explorer[] = [];
   public cards : Card[];
 
   constructor(cards:Card[]){
@@ -20,20 +20,20 @@ class Tunnel {
       this.cards = [];
   }
 
-  set players(players:Player[]) {
-    this._players = players;
+  set explorers(explorers:Explorer[]) {
+    this._explorers = explorers;
   }
 
-  get players():Player[] {
-    return this._players.filter(player=>player.inTent === false);
+  get explorers():Explorer[] {
+    return this._explorers.filter(explorer=>explorer.inTent === false);
   }
 
-  get leavingPlayers(): Player[] {
-    return this.players.filter(player=>player.choice === Choice.Quit);
+  get leavingExplorers(): Explorer[] {
+    return this.explorers.filter(explorer=>explorer.choice === Choice.Quit);
   }
 
-  get isAnyPlayerPresent():boolean { 
-    return (this.players.length !== 0);
+  get isAnyExplorerPresent():boolean { 
+    return (this.explorers.length !== 0);
   }
 
   get lastCard():Card {
@@ -78,7 +78,7 @@ class Tunnel {
 
   // 分寶石給要離開的玩家
   public distributeAllGems():void{
-    let players = this.leavingPlayers;
+    let explorers = this.leavingExplorers;
     let sum = 0; // 總寶石數
     let record:Map<TreasureCard, number> = new Map(); // 備份每張寶物卡有多少顆寶石
     Array.from(this.cards)
@@ -91,9 +91,9 @@ class Tunnel {
             treasureCard.clear();
         })
 
-    let eachOneCanGet =  Math.floor(sum/players.length); // 離開的玩家各可以拿幾顆
-    let left = sum - eachOneCanGet*(players.length) // 分配後剩下的寶石數
-    players.forEach(player=>player.putGemsInBag(Array(eachOneCanGet).fill(new Gem())));
+    let eachOneCanGet =  Math.floor(sum/explorers.length); // 離開的玩家各可以拿幾顆
+    let left = sum - eachOneCanGet*(explorers.length) // 分配後剩下的寶石數
+    explorers.forEach(explorer=>explorer.putGemsInBag(Array(eachOneCanGet).fill(new Gem())));
 
     for(let [card,nums] of record){
         let numsOfGems = nums > left ? left : nums;
@@ -103,12 +103,12 @@ class Tunnel {
   }
 
   public distributeArtifacts():void{
-    if(this.leavingPlayers.length === 1){
+    if(this.leavingExplorers.length === 1){
       let artifacts = this.cards
       .filter(card=>(card instanceof ArtifactCard))
       .map(card => (<ArtifactCard>card).giveArtifact());
 
-      this.leavingPlayers[0].putInArtifactsInBag(artifacts);
+      this.leavingExplorers[0].putInArtifactsInBag(artifacts);
     }
   }
 }

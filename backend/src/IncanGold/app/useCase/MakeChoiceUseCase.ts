@@ -16,10 +16,10 @@ export default class MakeChoiceUseCase {
     async execute(input: MakeChoiceInput): Promise<MakeChoiceOutput> {
         // 查
         this._incanGold = await this._incanGoldRepository.findById(input.gameId);
-        const player = this._incanGold?.getPlayer(input.playerId);
+        const explorer = this._incanGold?.getExplorer(input.explorerId);
 
         // 改
-        this._events = Array.from(this._incanGold.makeChoice(player, input.choice as Choice));
+        this._events = Array.from(this._incanGold.makeChoice(explorer, input.choice as Choice));
 
         // 存
         await this._incanGoldRepository.save(this._incanGold);
@@ -34,7 +34,7 @@ export default class MakeChoiceUseCase {
 
 export interface MakeChoiceInput {
     gameId: string
-    playerId: string
+    explorerId: string
     choice: string
 }
 

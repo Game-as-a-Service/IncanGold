@@ -1,48 +1,72 @@
-import type { Server, Socket, } from "socket.io";
-import { IncanGoldController } from "../IncanGold/adapter/IncanGold.controller";
-import { IncanGoldRepository } from "../IncanGold/infra/IncanGoldRepository";
+import { Socket, Server } from "socket.io";
+import type { Server as httpServer } from "http";
+import jwt from 'jsonwebtoken';
 
-export default async function setupSocket(io:Server,socket:Socket){
+const JWT_SECRET = 'secret';
+export function SocketConnection(httpServer: httpServer) {
 
-    const incanGoldController = new IncanGoldController(IncanGoldRepository)
+    const io = new Server(httpServer, {
+        cors: {
+            origin: "*", 
+            methods: ["GET", "POST"], 
+            allowedHeaders: ["Content-Type"], 
+            credentials: true, 
+        },
+    });
 
-    // io.on("connection", (socket: Socket) => {
-        socket.on("create_room", (playerId:string, roomId:string) => {  
-            socket.join(roomId);
-            // todo : service : 讓 playerId 加入 room(roomId);
-            io.to(roomId).emit("room_created",`room ${roomId} is created by ${playerId}.`);
-        })
+    SocketManager.manger.io = io;
 
-        socket.on("join_room", (playerId:string, roomId:string) => {
-            socket.join(roomId);
-            // todo : service : 讓 playerId 加入 room(roomId);
-            io.to(roomId).emit("joined",`${playerId} join room: ${roomId}`);
-        })
-        
-        socket.on("message", (msg: string) => {
-            console.log(`message: ${msg}`);
-            io.emit("message", 'get your message');
-        })
-        
-        socket.on("disconnect", () => {
-            console.log(`server : user(${socket.id}) disconnected`);
-        })
-    
-        socket.on("player_choice",async (choise) => {
-            console.log(`message: ${choise}`);
-            io.emit("message", 'get your choise');
-            // io.emit('update_game_status', mockValue)
-            io.emit('update_game_status', await incanGoldController.MakeChoice(choise))
-        })
+    const jwtMiddleware = (socket: Socket, next: (err?: Error) => void) => {
+        const token = socket.handshake.auth.token;
 
-        socket.on("start_game", async (payload) => {
-            console.log(`message: ${JSON.stringify(payload)}`);
-            io.emit("message", await incanGoldController.StartGame({ roomID:payload.gameId, plyerIDs: payload.playerId}));
-        })
-        socket.on("player_ready", (payload) => {
-            console.log(`message: ${JSON.stringify(payload)}`);
-            io.emit("message", 'get player_ready');
-        })
-        
-    // })
+        if (!token) return next(new Error('No token'));
+
+        // 驗證 JWT 
+        const user = jwt.verify(token,JWT_SECRET);
+        const id:string = (user as any).userId;
+        (socket as any).userId = id;
+        next();
+    }
+
+    io.use(jwtMiddleware);
+
+    io.on('connect', (socket) => {
+        SocketManager.manger.add(socket);
+    });
+}
+
+
+type playerId = string
+
+export class SocketManager {
+    private static socketManager: SocketManager | null = null;
+    private _io: Server | null = null;
+    public sockets: Map<playerId, Socket>;
+
+    private constructor() {
+        this.sockets = new Map<playerId, Socket>();
+    }
+
+    add(socket: Socket) {
+        this.sockets.set((socket as any).userId, socket);
+    }
+
+    get(id: playerId) {
+        return this.sockets.get(id);
+    }
+
+    set io(io: Server) {
+        this._io = io;
+    }
+
+    getIo(): Server | null {
+        return this._io;
+    }
+
+    static get manger(): SocketManager {
+        if (!this.socketManager) {
+            this.socketManager = new SocketManager();
+        }
+        return this.socketManager;
+    }
 }

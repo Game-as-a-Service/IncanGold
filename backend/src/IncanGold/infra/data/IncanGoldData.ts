@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn,OneToMany,Relation } from "typeorm"
 import { CardData } from "./CardData"
-import { PlayerData } from "./PlayerData"
+import { ExplorerData } from "./ExplorerData"
 
 @Entity()
 export class IncanGoldData {
@@ -19,9 +19,9 @@ export class IncanGoldData {
     })
     cards: Relation<CardData>[]
 
-    @OneToMany(() => PlayerData, (player) => player.incanGold,{
+    @OneToMany(() => ExplorerData, (explorer) => explorer.incanGold,{
         cascade:true,
         eager: true,
     })
-    players: Relation<PlayerData>[]
+    explorers: Relation<ExplorerData>[]
 }
