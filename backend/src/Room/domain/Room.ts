@@ -2,13 +2,14 @@ import { Player } from "./Player";
 import { Event } from "./event/Event";
 import { Seat } from "./Seat";
 import { STATE } from "./constant/State";
+import { s } from "vitest/dist/types-198fd1d9";
 
 type PlayerId = string;
 
 export class Room {
     public id: string;
     public name: string;
-    public password: string;
+    public password: string | undefined = undefined;
     public host: PlayerId;
     public players: Player[];
     public seats: Map<number, Seat>;
@@ -23,22 +24,16 @@ export class Room {
         this.seats = seats;
     }
 
-
-    setHost(playerId: PlayerId) {
-        if (this.players.find(player => player.id == playerId))
-            this.host = playerId;
-    }
-
     get availableSeats(): number {
-        let unlockedSeats = 8;
+        let count = 0;
         this.seats.forEach(seat => {
-            unlockedSeats -= Number(seat.locked)
+            count += Number(seat.isAvailable)
         });
-        return unlockedSeats;
+        return count;
     }
 
     get isPrivate(): boolean {
-        return false;
+        return (!!this.password);
     }
 
     get seatedPlayerCount(): number {
@@ -56,20 +51,54 @@ export class Room {
         return (this.seatedPlayerCount >= 3 && this.allReady);
     }
 
+    sitDown(playerId: string, seatNumber?: number) {
+        const player = this.getPlayerById(playerId);
 
-
-    static create(roomId:string ,name: string, playerId: PlayerId, password: string) {
-        const room = new Room(roomId, name, playerId, password, [new Player(playerId,STATE.NOTREADY)], new Map<number, Seat>());
-        room.seats.set(1, { locked: false, playerId: playerId });
-
-        const event: Event = {
-            type: 'roomCreated',
-            data: { 
-                host: playerId, 
-                roomId: room.id,
+        if (!seatNumber) {
+            for (let [key, seat] of this.seats.entries()) {
+                if (seat.isAvailable) {
+                    seat.playerId = playerId;
+                    player.state = STATE.NOTREADY;
+                    break;
+                }
+            }
+        } else {
+            if (this.seats.get(seatNumber).isAvailable) {
+                this.seats.get(seatNumber).playerId = playerId;
+                player.state = STATE.NOTREADY;
             }
         }
-        return { room, event };
     }
 
+    *joinRoom(playerId: PlayerId, password: string) {
+        if (this.password !== null && this.password !== password) {
+            return this.makeEvent('joinRoomFailed', null);
+        }
+
+        this.players.push(new Player(playerId));
+        this.sitDown(playerId)
+        yield this.makeEvent('joinRoom', { playerId, roomId: this.id });
+
+        if (this.seatedPlayerCount === 1)
+            return yield this.setHost(playerId);
+    }
+
+    setHost(playerId: PlayerId) {
+        if (this.getPlayerById(playerId)) {
+            this.host = playerId;
+            return this.makeEvent('newHost', { host: playerId, roomId: this.id });
+        }
+    }
+
+    private makeEvent(type: string, data: any) {
+        const event: Event = { type, data };
+        return event;
+    }
+
+    private getPlayerById(playerId: string) {
+        const player = this.players.find(p => p.id === playerId);
+        if (!player)
+            throw new Error('Player not found');
+        return player;
+    }
 }

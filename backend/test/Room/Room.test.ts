@@ -52,6 +52,6 @@ async function createRoom(server: any, client1: Socket, userId: string, roomName
     const res = await request(server).post("/rooms")
         .send({ playerId: userId, roomName });
 
-    console.log('room.test.ts 55')
-    console.log(JSON.stringify(res.body.room.players));
+    console.log('todo: supplement sentences with expect. Now, just print result.')
+    console.log(res.body);
 }

@@ -1,50 +1,47 @@
 import type { Room } from "../domain/Room";
 import { RoomData } from "./RoomData";
 import { IRoomRepository } from "../app/Repository";
-import { DataSource, QueryRunner } from "typeorm";
+import { DataSource, QueryRunner, UpdateResult, EntityManager } from "typeorm";
 import { AppDataSource } from "../../Shared_infra/data-source";
 import { RoomMapper } from "./RoomMapper";
+import { Seat } from "../domain/Seat";
+import { PlayerData } from "./PlayerData";
+import { v4 as uuidv4 } from 'uuid';
 
 export class RoomRepository implements IRoomRepository {
 
     private dataSource: DataSource;
-    private queryRunner: QueryRunner | null;
+    private queryRunner: QueryRunner | null = null;
     private mapper: RoomMapper = new RoomMapper();
-    private room: RoomData | null;
+    private room: RoomData | null = null;
 
     constructor() {
         this.dataSource = AppDataSource;
     }
 
-    async findById(roomId: string): Promise<Room | undefined> {
-        this.queryRunner = this.dataSource.createQueryRunner();
-        await this.queryRunner.connect();
-        await this.queryRunner.startTransaction();
-
-        try {
-            this.room = await this.queryRunner.manager.getRepository(RoomData).findOne({
-                where: { id: roomId },
-                lock: { mode: "pessimistic_write" },
-            });
-        } catch (err) {
-            this.queryRunner.commitTransaction();
-            this.queryRunner.rollbackTransaction();
-            this.queryRunner.release();
-            throw err;
-        }
+    async create(roomName: string, password: string): Promise<Room> {
+        const room = this.createRoomData(roomName, password);
+        this.room = await this.dataSource.getRepository(RoomData).save(room, { reload: true });
         return this.mapper.toDomain(this.room);
     }
 
-    async save(domainRoom: Room): Promise<void> { // 回傳 room id
+    async findById(roomId: string): Promise<Room | undefined> {
+        this.room = await this.dataSource.getRepository(RoomData).findOneBy({ id: roomId });
+        return this.mapper.toDomain(this.room);
+    }
 
-        console.log("RoomRepository save 40");
+    async save(domainRoom: Room): Promise<void> {
+        const oldPlayers = this.room.players;
+        this.mapper.updateRoomData(domainRoom, this.room);
 
-        if (this.room) {
-            console.log("RoomRepository save 43");
+        if (oldPlayers.length) {
+            this.queryRunner = this.dataSource.createQueryRunner();
+            await this.queryRunner.connect();
+            await this.queryRunner.startTransaction();
+            const manager = this.queryRunner.manager;
             try {
-                this.mapper.updateRoomData(domainRoom, this.room);
-                await this.updateRoom();
-                // await this.updateRoom();
+                await this.modifyPlayers(manager, oldPlayers);
+                await this.updateRoom(manager);
                 await this.queryRunner.commitTransaction();
             } catch (err) {
                 await this.queryRunner.rollbackTransaction();
@@ -53,26 +50,87 @@ export class RoomRepository implements IRoomRepository {
                 await this.queryRunner.release();
             }
         } else {
-            console.log("RoomRepository save 55");
-            this.room = this.mapper.createRoomData(domainRoom);
-            console.log("RoomRepository save 57");
-            await this.dataSource.getRepository(RoomData).save(this.room);
-            console.log("RoomRepository save 59");
+            const manager = this.dataSource.manager;
+            await this.modifyPlayers(manager, oldPlayers);
+            await this.updateRoom(manager);
         }
     }
 
-    async updateRoom(): Promise<void> {
-        await this.queryRunner.manager.createQueryBuilder()
+    private createRoomData(roomName: string, password: string) {
+        const room = new RoomData();
+        room.id = uuidv4();
+        room.players = [];
+        room.seats = {};
+        [1, 2, 3, 4, 5, 6, 7, 8].forEach(index => {
+            room.seats[index] = new Seat(false, null);
+        });
+        room.name = roomName;
+        if (password)
+            room.passwd = password;
+        return room;
+    }
+
+    private async updateRoom(manager: EntityManager) {
+        const result = await manager.createQueryBuilder()
             .update(RoomData)
             .set({
-                players: this.room.players,
                 name: this.room.name,
                 passwd: this.room.passwd,
                 hostId: this.room.hostId,
                 seats: this.room.seats,
+
+                version: this.room.version + 1
             })
             .where("id = :id", { id: this.room.id })
+            .andWhere("version = :version", { version: this.room.version }) // Optimistic Lock
             .execute();
+
+        if (result.affected === 0) // Incorrect version
+            throw new Error('Concurrent modification error');
     }
+
+    private async modifyPlayers(manager: EntityManager, oldPlayers: PlayerData[]) {
+        let newPlayers = this.room.players;
+
+        const toUpdates = newPlayers.filter(p => this.isIncludeId(p.id, oldPlayers));
+        const toInserts = newPlayers.filter(p => !this.isIncludeId(p.id, oldPlayers));
+        const toDeletes = oldPlayers.filter(p => !this.isIncludeId(p.id, newPlayers));
+
+        const updatePromises = this.updatePlayers(toUpdates, manager);
+        const insertPromise = this.insertPlayers(toInserts, manager);
+        const deletePromises = this.deletePlayers(toDeletes, manager);
+
+        await Promise.all([...deletePromises, ...updatePromises, insertPromise]);
+    }
+
+    private insertPlayers(toInserts: PlayerData[], manager: EntityManager) {
+        return manager.getRepository(PlayerData).insert(toInserts);
+    }
+
+    private updatePlayers(toUpdates: PlayerData[], manager: EntityManager): Promise<UpdateResult>[] {
+        return toUpdates.map(player => {
+            const { state } = player;
+            return manager.createQueryBuilder()
+                .update(PlayerData)
+                .set({ state })
+                .where({ id: player.id })
+                .execute();
+        });
+    }
+
+    private deletePlayers(toDeletes: PlayerData[], manager: EntityManager) {
+        return toDeletes.map(player => {
+            manager.createQueryBuilder()
+                .delete()
+                .from(PlayerData)
+                .where({ id: player.id })
+                .execute();
+        });
+    }
+
+    private isIncludeId(id: string, players: PlayerData[]): boolean {
+        return !!(players.find(p => p.id === id));
+    }
+
 }
 

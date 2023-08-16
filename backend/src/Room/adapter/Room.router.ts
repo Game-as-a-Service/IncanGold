@@ -10,5 +10,8 @@ export function RoomRouter() {
     // createRoom
     router.post('/', controller.createRoom);
 
+    // joinRoom
+    router.post('/:roomId/players',controller.joinRoom);
+
     return router;
 }

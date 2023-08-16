@@ -9,10 +9,13 @@ export function flattenToDto(room:Room):RoomDto{
         availableSeats:room.availableSeats,
         host:room.host,
         isPrivate:room.isPrivate,
-        seats:room.seats,
+        seats:[],
         players:room.players,
         canStartGame:room.canStartGame,
     }
+    room.seats.forEach(seat => {
+        RoomDto.seats.push(JSON.stringify(seat)); 
+    });
     return RoomDto;
 }
 
@@ -22,7 +25,7 @@ export interface RoomDto{
     availableSeats:number;
     host:string; // playerId
     isPrivate:boolean; // private room
-    seats: Map<number,Seat>;
+    seats: any[]; 
     players:Player[];
     canStartGame:boolean;
 }

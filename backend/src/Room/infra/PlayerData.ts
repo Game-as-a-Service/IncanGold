@@ -1,4 +1,4 @@
-import { Entity,PrimaryColumn,Column,ManyToOne } from "typeorm";
+import { Entity,PrimaryColumn,Column,ManyToOne,Relation,JoinColumn } from "typeorm";
 import { RoomData } from "./RoomData";
 import { STATE } from "../domain/constant/State";
 
@@ -15,6 +15,7 @@ export class PlayerData {
   state: STATE;
 
   @ManyToOne(() => RoomData, room => room.players)
-  room: RoomData;
+  @JoinColumn({name:'roomId'})
+  room: Relation<RoomData>;
 
 }

@@ -1,11 +1,11 @@
-import { Entity, PrimaryColumn, Column, OneToMany } from "typeorm";
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn,Relation } from "typeorm";
 import { PlayerData } from "./PlayerData";
 import { Seat } from "../domain/Seat";
 
 @Entity()
 export class RoomData {
 
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('varchar', { length: 30 })
@@ -14,14 +14,18 @@ export class RoomData {
   @Column('varchar', { length: 8, nullable: true })
   passwd: string;
 
-  @Column('uuid')
+  @Column('uuid', { nullable: true })
   hostId: string;
 
   @OneToMany(() => PlayerData, player => player.room, {
-    cascade: true
+    cascade: true,
+    eager: true,
   })
-  players: PlayerData[];
+  players: Relation<PlayerData>[];
 
   @Column('json', { nullable: true })
   seats: Record<number, Seat>;
+
+  @Column('int', { default: 0 })
+  version: number;
 }
