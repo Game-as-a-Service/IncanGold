@@ -9,9 +9,10 @@ export class RoomMapper {
     toDomain(roomData: RoomData): Room {
         const seats = new Map<number, Seat>();
         [1, 2, 3, 4, 5, 6, 7, 8].forEach(index => {
+            const { locked, playerId} = roomData.seats[index];
             seats.set(
                 index,
-                roomData.seats[index]
+                new Seat(locked,playerId)
             );
         });
 

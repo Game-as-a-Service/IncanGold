@@ -4,7 +4,7 @@ import { flattenToDto,RoomDto } from "../dto/RoomDto";
 import { IRoomRepository } from "../Repository";
 import { IEventDispatcher } from "../EventDispatcher";
 
-export default class JoinRoomUseCase {
+export default class LeaveRoomUseCase {
 
     private roomRepository: IRoomRepository;
     private eventDispatcher: IEventDispatcher;
@@ -14,12 +14,12 @@ export default class JoinRoomUseCase {
         this.eventDispatcher = eventDispatcher;
     }
 
-    async execute(input: JoinRoomInput): Promise<JoinRoomOutput> {
+    async execute(input: LeaveRoomInput): Promise<LeaveRoomOutput> {
         // 查
         const room = await this.roomRepository.findById(input.roomId);
 
         // 改
-        const events = Array.from(room.joinRoom(input.playerId, input.password));
+        const events = Array.from(room.leaveRoom(input.playerId));
 
         // 存
         await this.roomRepository.save(room);
@@ -34,13 +34,13 @@ export default class JoinRoomUseCase {
     }
 }
 
-export interface JoinRoomInput {
+export interface LeaveRoomInput {
     roomId: string;
     playerId: string;
     password?: string;
 }
 
-export interface JoinRoomOutput {
+export interface LeaveRoomOutput {
     room: RoomDto;
     events: Event[];
 }

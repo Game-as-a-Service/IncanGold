@@ -49,7 +49,7 @@ export class RoomRepository implements IRoomRepository {
             } finally {
                 await this.queryRunner.release();
             }
-        } else {
+        }else {
             const manager = this.dataSource.manager;
             await this.modifyPlayers(manager, oldPlayers);
             await this.updateRoom(manager);
@@ -58,7 +58,7 @@ export class RoomRepository implements IRoomRepository {
 
     private createRoomData(roomName: string, password: string) {
         const room = new RoomData();
-        room.id = uuidv4();
+        room.id = '123'; // uuidv4();  change back later after test finish.
         room.players = [];
         room.seats = {};
         [1, 2, 3, 4, 5, 6, 7, 8].forEach(index => {

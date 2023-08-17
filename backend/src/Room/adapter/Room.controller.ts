@@ -40,5 +40,6 @@ export class RoomController {
         const output:JoinRoomOutput = await joinRoomUseCase.execute(input);
 
         this.broadcaster.broadcast(roomId,output);
+        res.sendStatus(200);
     }
 }

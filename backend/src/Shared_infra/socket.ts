@@ -49,7 +49,9 @@ export class SocketManager {
 
     add(socket: Socket) {
         this.sockets.set((socket as any).userId, socket);
+        console.log('add socket', socket.id);
     }
+    
 
     get(id: playerId) {
         return this.sockets.get(id);
@@ -64,6 +66,9 @@ export class SocketManager {
     }
 
     joinRoom(id:playerId,roomId:string){
+        console.log('socketManager joinRoom 69')
+        console.log(`player ${id} join socketRoom ${roomId}`)
+        console.log(`this player's socketId is ${this.sockets.get(id).id}`)
         this.sockets.get(id).join(roomId);
     }
 

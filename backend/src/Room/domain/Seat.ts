@@ -8,6 +8,6 @@ export class Seat{
     }
 
     get isAvailable (): boolean{
-        return !( this.locked || this.playerId );
+        return !(this.locked || this.playerId);
     }
 }

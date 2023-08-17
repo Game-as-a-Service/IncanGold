@@ -83,10 +83,42 @@ export class Room {
             return yield this.setHost(playerId);
     }
 
+    *leaveRoom(playerId: PlayerId) {
+        // Vacate the seat occupied by the leaving player
+        this.vacateSeat(playerId);
+
+        // remove player from room's player list
+        const playerIndex = this.players.findIndex(p => p.id === playerId);
+        if (playerIndex > -1)
+            this.players.splice(playerIndex, 1);
+
+        // Emit leave room event  
+        yield this.makeEvent('leaveRoom', { playerId, roomId: this.id });
+
+        // If leaving player was host, assign new host 
+        if (this.host === playerId)
+            yield this.setHost(this.getSeatedPlayerId());
+    }
+
     setHost(playerId: PlayerId) {
         if (this.getPlayerById(playerId)) {
             this.host = playerId;
             return this.makeEvent('newHost', { host: playerId, roomId: this.id });
+        }
+    }
+
+    private getSeatedPlayerId() {
+        for (const seat of this.seats.values()) {
+            if (seat.playerId) return seat.playerId;
+        }
+    }
+
+    private vacateSeat(playerId: string) {
+        for (const seat of this.seats.values()) {
+            if (seat.playerId === playerId) {
+                seat.playerId = null;
+                break;
+            }
         }
     }
 
