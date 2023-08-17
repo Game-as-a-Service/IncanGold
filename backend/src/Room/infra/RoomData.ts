@@ -1,6 +1,5 @@
 import { Entity, Column, OneToMany, PrimaryGeneratedColumn,Relation } from "typeorm";
-import { PlayerData } from "./PlayerData";
-import { Seat } from "../domain/Seat";
+import { SeatData } from "./SeatData";
 
 @Entity()
 export class RoomData {
@@ -17,14 +16,11 @@ export class RoomData {
   @Column('uuid', { nullable: true })
   hostId: string;
 
-  @OneToMany(() => PlayerData, player => player.room, {
+  @OneToMany(() => SeatData, seat => seat.room, {
     cascade: true,
     eager: true,
   })
-  players: Relation<PlayerData>[];
-
-  @Column('json', { nullable: true })
-  seats: Record<number, Seat>;
+  seats: Relation<SeatData>[];
 
   @Column('int', { default: 0 })
   version: number;

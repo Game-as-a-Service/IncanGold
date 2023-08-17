@@ -4,14 +4,13 @@ import { IRoomRepository } from "../app/Repository";
 import { DataSource, QueryRunner, UpdateResult, EntityManager } from "typeorm";
 import { AppDataSource } from "../../Shared_infra/data-source";
 import { RoomMapper } from "./RoomMapper";
-import { Seat } from "../domain/Seat";
-import { PlayerData } from "./PlayerData";
+import { SeatData } from "./SeatData";
 import { v4 as uuidv4 } from 'uuid';
+import { STATE } from "../domain/constant/State";
 
 export class RoomRepository implements IRoomRepository {
 
     private dataSource: DataSource;
-    private queryRunner: QueryRunner | null = null;
     private mapper: RoomMapper = new RoomMapper();
     private room: RoomData | null = null;
 
@@ -31,54 +30,47 @@ export class RoomRepository implements IRoomRepository {
     }
 
     async save(domainRoom: Room): Promise<void> {
-        const oldPlayers = this.room.players;
         this.mapper.updateRoomData(domainRoom, this.room);
 
-        if (oldPlayers.length) {
-            this.queryRunner = this.dataSource.createQueryRunner();
-            await this.queryRunner.connect();
-            await this.queryRunner.startTransaction();
-            const manager = this.queryRunner.manager;
-            try {
-                await this.modifyPlayers(manager, oldPlayers);
-                await this.updateRoom(manager);
-                await this.queryRunner.commitTransaction();
-            } catch (err) {
-                await this.queryRunner.rollbackTransaction();
-                throw err;
-            } finally {
-                await this.queryRunner.release();
-            }
-        }else {
-            const manager = this.dataSource.manager;
-            await this.modifyPlayers(manager, oldPlayers);
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        const manager = queryRunner.manager;
+        try {
+            
+            await this.updateSeats(manager);
             await this.updateRoom(manager);
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            throw err;
+        } finally {
+            await queryRunner.release();
         }
     }
 
-    private createRoomData(roomName: string, password: string) {
-        const room = new RoomData();
-        room.id = '123'; // uuidv4();  change back later after test finish.
-        room.players = [];
-        room.seats = {};
-        [1, 2, 3, 4, 5, 6, 7, 8].forEach(index => {
-            room.seats[index] = new Seat(false, null);
-        });
-        room.name = roomName;
-        if (password)
-            room.passwd = password;
-        return room;
+    private async updateSeats(manager: EntityManager) {
+
+        const seatsPromise = this.room.seats.map(seat => {
+            const { locked, playerId, state } = seat;
+            return manager.createQueryBuilder()
+                .update(SeatData)
+                .set({ locked, playerId, state })
+                .where("position = :position", { position: seat.position })
+                .andWhere("roomId = :roomId", { roomId: this.room.id })
+                .execute();
+        })
+
+        await Promise.all(seatsPromise)
     }
 
     private async updateRoom(manager: EntityManager) {
+        const { passwd, hostId } = this.room;
+
         const result = await manager.createQueryBuilder()
             .update(RoomData)
             .set({
-                name: this.room.name,
-                passwd: this.room.passwd,
-                hostId: this.room.hostId,
-                seats: this.room.seats,
-
+                passwd, hostId,
                 version: this.room.version + 1
             })
             .where("id = :id", { id: this.room.id })
@@ -89,48 +81,24 @@ export class RoomRepository implements IRoomRepository {
             throw new Error('Concurrent modification error');
     }
 
-    private async modifyPlayers(manager: EntityManager, oldPlayers: PlayerData[]) {
-        let newPlayers = this.room.players;
+    private createRoomData(roomName: string, password: string) {
+        const room = new RoomData();
+        room.id = '123'; // uuidv4();  change back later after test finish.
+        room.name = roomName;
+        if (password)
+            room.passwd = password;
 
-        const toUpdates = newPlayers.filter(p => this.isIncludeId(p.id, oldPlayers));
-        const toInserts = newPlayers.filter(p => !this.isIncludeId(p.id, oldPlayers));
-        const toDeletes = oldPlayers.filter(p => !this.isIncludeId(p.id, newPlayers));
+        room.seats =
+            [1, 2, 3, 4, 5, 6, 7, 8].map(position => {
+                const seat = new SeatData();
+                seat.position = position;
+                seat.playerId = null;
+                seat.locked = false;
+                seat.state = STATE.NULL;
+                return seat;
+            });
 
-        const updatePromises = this.updatePlayers(toUpdates, manager);
-        const insertPromise = this.insertPlayers(toInserts, manager);
-        const deletePromises = this.deletePlayers(toDeletes, manager);
-
-        await Promise.all([...deletePromises, ...updatePromises, insertPromise]);
+        return room;
     }
-
-    private insertPlayers(toInserts: PlayerData[], manager: EntityManager) {
-        return manager.getRepository(PlayerData).insert(toInserts);
-    }
-
-    private updatePlayers(toUpdates: PlayerData[], manager: EntityManager): Promise<UpdateResult>[] {
-        return toUpdates.map(player => {
-            const { state } = player;
-            return manager.createQueryBuilder()
-                .update(PlayerData)
-                .set({ state })
-                .where({ id: player.id })
-                .execute();
-        });
-    }
-
-    private deletePlayers(toDeletes: PlayerData[], manager: EntityManager) {
-        return toDeletes.map(player => {
-            manager.createQueryBuilder()
-                .delete()
-                .from(PlayerData)
-                .where({ id: player.id })
-                .execute();
-        });
-    }
-
-    private isIncludeId(id: string, players: PlayerData[]): boolean {
-        return !!(players.find(p => p.id === id));
-    }
-
 }
 

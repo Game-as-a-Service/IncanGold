@@ -1,4 +1,3 @@
-import { Player } from "../../domain/Player";
 import { Room } from "../../domain/Room";
 import { Seat } from "../../domain/Seat";
 
@@ -9,12 +8,12 @@ export function flattenToDto(room:Room):RoomDto{
         availableSeats:room.availableSeats,
         host:room.host,
         isPrivate:room.isPrivate,
-        seats:[],
-        players:room.players,
+        seats:{},
         canStartGame:room.canStartGame,
     }
-    room.seats.forEach(seat => {
-        RoomDto.seats.push(JSON.stringify(seat)); 
+    const seats = [...room.seats.entries()];
+    seats.forEach(([key, seat]) => {
+        RoomDto.seats[key] = seat; 
     });
     return RoomDto;
 }
@@ -25,8 +24,7 @@ export interface RoomDto{
     availableSeats:number;
     host:string; // playerId
     isPrivate:boolean; // private room
-    seats: any[]; 
-    players:Player[];
+    seats: Record<number, Seat> 
     canStartGame:boolean;
 }
 

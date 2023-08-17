@@ -5,7 +5,7 @@ import { CardData } from "../IncanGold/infra/data/CardData"
 import { ExplorerData } from "../IncanGold/infra/data/ExplorerData"
 import { User } from "../User/infra/User"
 import { RoomData } from "../Room/infra/RoomData"
-import { PlayerData } from "../Room/infra/PlayerData"
+import { SeatData } from "../Room/infra/SeatData"
 
 export let AppDataSource : DataSource|null;
 
@@ -19,7 +19,7 @@ export function configDataSource(host:string,port:number):void {
         database: "test",
         synchronize: true,
         logging: false,
-        entities: [IncanGoldData,CardData,ExplorerData,User,RoomData,PlayerData],
+        entities: [IncanGoldData,CardData,ExplorerData,User,RoomData,SeatData],
         migrations: [],
         subscribers: [],
     })
