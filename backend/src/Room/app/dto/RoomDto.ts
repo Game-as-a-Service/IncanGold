@@ -5,7 +5,7 @@ export function flattenToDto(room:Room):RoomDto{
     const RoomDto:RoomDto = {
         id:room.id,
         name:room.name,
-        availableSeats:room.availableSeats,
+        unlockedSeats:room.unlockedSeats,
         host:room.host,
         isPrivate:room.isPrivate,
         seats:{},
@@ -21,7 +21,7 @@ export function flattenToDto(room:Room):RoomDto{
 export interface RoomDto{
     id:string;
     name:string;
-    availableSeats:number;
+    unlockedSeats:number;
     host:string; // playerId
     isPrivate:boolean; // private room
     seats: Record<number, Seat> 

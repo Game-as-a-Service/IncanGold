@@ -5,8 +5,11 @@ import { Event } from "../domain/event/Event";
 export class RoomEventDispatcher implements IEventDispatcher {
     dispatch(events: Event[]): void {
         for (const event of events) {
+            const { playerId, roomId } = event.data;
             if (event.type === "joinRoom") {
-                SocketManager.manger.joinRoom(event.data.playerId, event.data.roomId)
+                SocketManager.manger.joinRoom(playerId, roomId)
+            } else if (event.type === "leaveRoom") {
+                SocketManager.manger.leaveRoom(playerId, roomId)
             }
         }
     }

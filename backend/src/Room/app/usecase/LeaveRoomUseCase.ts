@@ -37,7 +37,6 @@ export default class LeaveRoomUseCase {
 export interface LeaveRoomInput {
     roomId: string;
     playerId: string;
-    password?: string;
 }
 
 export interface LeaveRoomOutput {

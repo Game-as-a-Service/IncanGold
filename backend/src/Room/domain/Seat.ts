@@ -24,4 +24,21 @@ export class Seat {
         this.playerId = null;
         this.state = STATE.NULL;
     }
+
+    ready(): void {
+        this.state = STATE.READY;
+    }
+
+    cancelReady(): void {
+        this.state = STATE.NOTREADY;
+    }
+
+    lock(){
+        this.locked = true;
+    }
+
+    unlock(){
+        this.locked = false;
+    }
+
 }

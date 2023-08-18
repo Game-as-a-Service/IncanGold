@@ -20,12 +20,8 @@ export class Room {
     }
 
     // Get number of available seats
-    get availableSeats(): number {
-        let count = 0;
-        this.seats.forEach(seat => {
-            count += Number(seat.isAvailable)
-        });
-        return count;
+    get unlockedSeats(): number {
+        return [...this.seats.values()].filter(seat => seat.locked === false).length;
     }
 
     // Check if room is private
@@ -84,9 +80,36 @@ export class Room {
     setHost(playerId: PlayerId) {
         if (this.playerIsSeated(playerId)) {
             this.host = playerId;
-            return this.makeEvent('newHost', { host: playerId, roomId: this.id });
+            return this.makeEvent('newHost', { host: playerId });
         }
     }
+
+    *ready(playerId: PlayerId) {
+        const seat = [...this.seats.values()].find(s => s.playerId === playerId);
+        seat.ready();
+        yield this.makeEvent('playerReady', { playerId });
+        if (this.canStartGame) yield this.makeEvent('canStartGame', null);
+    }
+
+    *cancelReady(playerId: PlayerId) {
+        const seat = [...this.seats.values()].find(s => s.playerId === playerId);
+        seat.cancelReady();
+        yield this.makeEvent('playerCancelReady', { playerId });
+    }
+
+    lockSeat(position: number) {
+        const seat = this.seats.get(position);
+        seat.lock();
+        return this.makeEvent('seatLocked', { seatNumber: position });
+    }
+    
+
+    unlockSeat(position: number) {
+        const seat = this.seats.get(position);
+        seat.unlock();
+        return this.makeEvent('seatUnlocked', { seatNumber: position });
+    }
+    
 
     // Get first seated player
     private get getSeatedPlayer(): Seat {
