@@ -28,5 +28,14 @@ export function RoomRouter() {
     // unlockSeat
     router.patch('/:roomId/seats/:seatNumber/unlock',controller.unlockSeat);
 
+    // changeHost
+    router.patch('/:roomId/host',controller.changeHost);
+
+    // setName
+    router.patch('/:roomId/name',controller.setName);
+
+    // setPassword
+    router.patch('/:roomId/password',controller.setPassword);
+
     return router;
 }

@@ -37,7 +37,6 @@ export class RoomRepository implements IRoomRepository {
         await queryRunner.startTransaction();
         const manager = queryRunner.manager;
         try {
-            
             await this.updateSeats(manager);
             await this.updateRoom(manager);
             await queryRunner.commitTransaction();

@@ -31,6 +31,9 @@ describe('create Room', async () => {
         await joinRoom(server, 'tke47');
         await ready(server, 'tke47');
         await cancelReady(server, 'tke47');
+        await changeHost(server, 'tke47');
+        await setName(server, "room2");
+        await setPassword(server, "passwd123");
         await lockSeat(server, 3);
         await unlockSeat(server, 3);
         await leaveRoom(server, 'tke47');
@@ -78,6 +81,24 @@ async function lockSeat(server: any, seatNumber: number) {
 async function unlockSeat(server: any, seatNumber: number) {
     const roomId = '123';
     await request(server).patch(`/rooms/${roomId}/seats/${seatNumber}/unlock`)
+}
+
+async function changeHost(server: any, newHostId: string) {
+    const roomId = '123';
+    await request(server).patch(`/rooms/${roomId}/host`)
+        .send({ playerId: newHostId })
+}
+
+async function setName(server: any, roomName: string) {
+    const roomId = '123';
+    await request(server).patch(`/rooms/${roomId}/name`)
+        .send({ roomName })
+}
+
+async function setPassword(server: any, password: string) {
+    const roomId = '123';
+    await request(server).patch(`/rooms/${roomId}/password`)
+        .send({ password })
 }
 
 async function establishConnection(userId: string) {

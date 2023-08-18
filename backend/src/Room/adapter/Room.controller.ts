@@ -5,6 +5,9 @@ import ReadyUseCase,{ReadyInput,ReadyOutput} from "../app/usecase/ReadyUseCase";
 import CancelReadyUseCase,{CancelReadyInput,CancelReadyOutput} from "../app/usecase/CancelReadyUseCase";
 import LockSeatUseCase, {LockSeatInput,LockSeatOutput} from "../app/usecase/LockSeatUseCase";
 import UnlockSeatUseCase, {UnlockSeatInput,UnlockSeatOutput} from "../app/usecase/UnlockSeatUseCase";
+import ChangeHostUseCase, {ChangeHostInput,ChangeHostOutput} from "../app/usecase/ChangeHostUseCase";
+import SetNameUseCase, {SetNameInput,SetNameOutput} from "../app/usecase/setNameUseCase";
+import SetPasswordUseCase, {SetPasswordInput,SetPasswordOutput} from "../app/usecase/SetPasswordUseCase";
 import type { Request, Response } from "express";
 import { IRoomRepository } from "../app/Repository";
 import { IEventDispatcher } from "../app/EventDispatcher";
@@ -100,6 +103,42 @@ export class RoomController {
 
         const unlockSeatUseCase = new UnlockSeatUseCase(this.newRepo);
         const output:UnlockSeatOutput = await unlockSeatUseCase.execute(input);
+
+        this.broadcaster.broadcast(roomId,output);
+        res.sendStatus(200);
+    }
+
+    changeHost = async (req: Request, res: Response) =>{
+        const { roomId } = req.params;
+        const { playerId } = req.body;
+        const input: ChangeHostInput = { roomId,playerId };
+
+        const changeHostUseCase = new ChangeHostUseCase(this.newRepo);
+        const output:ChangeHostOutput = await changeHostUseCase.execute(input);
+
+        this.broadcaster.broadcast(roomId,output);
+        res.sendStatus(200);
+    }
+
+    setName =  async (req: Request, res: Response) =>{
+        const { roomId } = req.params;
+        const { roomName } = req.body;
+        const input: SetNameInput = { roomId,roomName };
+
+        const setNameUseCase = new SetNameUseCase(this.newRepo);
+        const output:SetNameOutput = await setNameUseCase.execute(input);
+
+        this.broadcaster.broadcast(roomId,output);
+        res.sendStatus(200);
+    }
+
+    setPassword = async (req: Request, res: Response) =>{
+        const { roomId } = req.params;
+        const { password } = req.body;
+        const input: SetPasswordInput = { roomId,password };
+
+        const setPasswordUseCase = new SetPasswordUseCase(this.newRepo);
+        const output:SetPasswordOutput = await setPasswordUseCase.execute(input);
 
         this.broadcaster.broadcast(roomId,output);
         res.sendStatus(200);

@@ -84,6 +84,16 @@ export class Room {
         }
     }
 
+    setPassword(password: string) {
+        this.password = password;
+        return this.makeEvent('password was set', null);
+    }
+
+    setName(name: string) {
+        this.name = name;
+        return this.makeEvent('name was changed', {name});
+    }
+
     *ready(playerId: PlayerId) {
         const seat = [...this.seats.values()].find(s => s.playerId === playerId);
         seat.ready();

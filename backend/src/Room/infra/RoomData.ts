@@ -10,7 +10,7 @@ export class RoomData {
   @Column('varchar', { length: 30 })
   name: string;
 
-  @Column('varchar', { length: 8, nullable: true })
+  @Column('varchar', { length: 30, nullable: true })
   passwd: string;
 
   @Column('uuid', { nullable: true })
