@@ -2,30 +2,33 @@ import Card from "./Card";
 import IncanGold from "../IncanGold";
 import Event from "../../events/Event"
 import Artifact from "../Artifact";
-import {NewTurnArtifactCardTriggeredEvent} from "../../events/NewTurnCardTriggeredEvent"
+import { artifactCards } from "../../constant/CardInfo";
+import { NewTurnArtifactCardTriggeredEvent } from "../../events/NewTurnCardTriggeredEvent"
 
 export default class ArtifactCard extends Card {
 
-  public readonly name : string;
-  public readonly points : number;
-  public artifact : Artifact;
-  public isArtifactPresent : boolean;
+  public readonly name: string;
+  public readonly points: number;
+  public artifact: Artifact | null = null;
+  public isArtifactPresent: boolean;
 
-  constructor(cardID:string, name:string,points:number) {
-    super(cardID);
+  constructor(id: string, isArtifactPresent: boolean = true) {
+    super(id);
+    const { name, points } = artifactCards[id];
     this.name = name;
     this.points = points;
-    this.artifact = new Artifact(name,points);
-    this.isArtifactPresent = true;
+    this.isArtifactPresent = isArtifactPresent;
+    this.artifact = isArtifactPresent ? new Artifact(name, points) : null;
   }
-  
-  public trigger(game:IncanGold): Event {
+
+  public trigger(game: IncanGold): Event {
     return new NewTurnArtifactCardTriggeredEvent(game);
   }
 
   public giveArtifact(): Artifact {
     this.isArtifactPresent = false;
-    return this.artifact;
+    if (this.artifact) return this.artifact;
+    throw new Error("Artifact is not present");
   }
 
 }

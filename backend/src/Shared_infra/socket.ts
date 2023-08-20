@@ -16,44 +16,49 @@ export function SocketConnection(httpServer: httpServer) {
 
     SocketManager.manger.io = io;
 
-    const jwtMiddleware = (socket: Socket, next: (err?: Error) => void) => {
-        const token = socket.handshake.auth.token;
+    // const jwtMiddleware = (socket: Socket, next: (err?: Error) => void) => {
+    //     const token = socket.handshake.auth.token;
 
-        if (!token) return next(new Error('No token'));
+    //     if (!token) return next(new Error('No token'));
 
-        // 驗證 JWT 
-        const user = jwt.verify(token,JWT_SECRET);
-        const id:string = (user as any).userId;
-        (socket as any).userId = id;
-        next();
-    }
+    //     // 驗證 JWT 
+    //     const user = jwt.verify(token,JWT_SECRET);
+    //     const id:string = (user as any).userId;
+    //     // (socket as any).userId = id;
+    //     // next();
+    // }
 
-    io.use(jwtMiddleware);
+    // io.use(jwtMiddleware);
 
     io.on('connect', (socket) => {
-        SocketManager.manger.add(socket);
+        const token = socket.handshake.auth.token;
+        // todo : 處理沒有token的情況
+        if (!token)  throw new Error('No token')
+        // 驗證 JWT 
+        const user = jwt.verify(token,JWT_SECRET);
+        const playerId:string = (user as any).userId;
+        SocketManager.manger.add(playerId,socket);
     });
 }
 
 
-type playerId = string
+type PlayerId = string
 
 export class SocketManager {
     private static socketManager: SocketManager | null = null;
     private _io: Server | null = null;
-    private sockets: Map<playerId, Socket>;
+    private sockets: Map<PlayerId, Socket>;
 
     private constructor() {
-        this.sockets = new Map<playerId, Socket>();
+        this.sockets = new Map<PlayerId, Socket>();
     }
 
-    add(socket: Socket) {
-        this.sockets.set((socket as any).userId, socket);
+    add(playerId: PlayerId,  socket: Socket) {
+        this.sockets.set(playerId, socket);
         console.log(`server put socket ${socket.id} in socketManger.`);
     }
-    
 
-    get(id: playerId) {
+    get(id: PlayerId) {
         return this.sockets.get(id);
     }
 
@@ -65,13 +70,13 @@ export class SocketManager {
         return this._io;
     }
 
-    joinRoom(id:playerId,roomId:string){
+    joinRoom(id:PlayerId,roomId:string){
         console.log(`player ${id} join socketRoom ${roomId}`)
         console.log(`this player's socketId is ${this.sockets.get(id).id}`)
         this.sockets.get(id).join(roomId);
     }
 
-    leaveRoom(id:playerId,roomId:string){
+    leaveRoom(id:PlayerId,roomId:string){
         this.sockets.get(id).leave(roomId);
     }
 

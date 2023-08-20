@@ -1,39 +1,14 @@
-import { Entity, PrimaryColumn, Column, ManyToOne,JoinColumn,Relation } from "typeorm"
-import { IncanGoldData } from "./IncanGoldData"
-
-export enum CardLocation {
-    Deck = "deck",
-    TrashDeck = "trashDeck",
-    Tunnel = "tunnel",
-    Temple = "temple"
-}
-
-@Entity()
 export class CardData {
+    id: string;
+    remainingGems: number;
+    remainingArtifact: boolean;
 
-    @PrimaryColumn("varchar")
-    cardID:string
-    
-    @Column("int",{nullable: true})
-    gems :number
+    constructor(cardId: string, remainingGems?: number, remainingArtifact?: boolean) {
+        this.id = cardId;
 
-    @Column("int",{nullable: true})
-    remainingGems :number
+        this.remainingGems = (remainingGems === undefined) ? 0 : remainingGems;
 
-    @Column("bool",{nullable: true})
-    remainingArtifact:boolean
-
-    @Column({
-        type:"enum",
-        enum:CardLocation,
-    })
-    location:CardLocation
-
-    @Column("int",{nullable: true})
-    whenInTrashDeck:number
-
-    @PrimaryColumn({ type: 'varchar', name: 'incanGoldId' })
-    @ManyToOne(() => IncanGoldData, (incanGold) => incanGold.cards)
-    @JoinColumn({name:'incanGoldId'})
-    incanGold: Relation<IncanGoldData>
+        if (remainingArtifact === undefined)
+            this.remainingArtifact = cardId.startsWith("A") ? true : false;
+    }
 }

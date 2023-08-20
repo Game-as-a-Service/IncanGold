@@ -1,130 +1,108 @@
 import { IIncanGoldRepository } from "../app/Repository";
 import { AppDataSource } from "../../Shared_infra/data-source";
 import type { DataSource, QueryRunner } from "typeorm";
-import { Domain_OrmEntity_Transformer } from "./DomainEntityTransformer";
+import { IncanGoldMapper } from "./IncanGoldMapper";
 import { IncanGoldData } from "./data/IncanGoldData";
 import { ExplorerData } from "./data/ExplorerData";
-import { CardData, CardLocation } from "./data/CardData";
-import { IncanGold, CardInfo } from "../domain/IncanGold";
+import { CardData } from "./data/CardData";
+import { IncanGold, CardInfo, Choice } from "../domain/IncanGold";
 const { treasureCards, hazardCards, artifactCards } = CardInfo;
 
 export class IncanGoldRepository implements IIncanGoldRepository {
     private dataSource: DataSource;
-    private queryRunner: QueryRunner | null;
-    private transformer = new Domain_OrmEntity_Transformer();
-    private _incanGoldData: IncanGoldData | null;
-    private isGameInDB: boolean = true
+    private mapper: IncanGoldMapper;
+    private dataVersion: number = 0;
 
     constructor() {
         this.dataSource = AppDataSource;
+        this.mapper = new IncanGoldMapper();
     }
 
-    create(id: string, explorerIDs: string[]): IncanGold {
-        this.isGameInDB = false;
-        this._incanGoldData = new IncanGoldData();
-        this._incanGoldData.id = id;
-        this.createExplorers(explorerIDs);
-        this.createCards();
-
-        const incanGold = new IncanGold(id, explorerIDs);
-        return incanGold;
+    async create(id: string, explorerIDs: string[]): Promise<IncanGold> {
+        const incanGoldData = this.createIncanGoldData(explorerIDs, id);
+        await this.dataSource.getRepository(IncanGoldData).save(incanGoldData);
+        this.dataVersion = incanGoldData.version;
+        return this.mapper.toDomain(incanGoldData);
     }
 
     async findById(gameId: string): Promise<IncanGold> {
-        this.queryRunner = this.dataSource.createQueryRunner();
-        await this.queryRunner.connect();
-        await this.queryRunner.startTransaction();
-
-        try {
-            this._incanGoldData = await this.queryRunner.manager.getRepository(IncanGoldData).findOne({
-                where: { id: gameId },
-                lock: { mode: "pessimistic_write" },
-            });
-        } catch (err) {
-            this.queryRunner.commitTransaction();
-            this.queryRunner.rollbackTransaction();
-            this.queryRunner.release();
-            throw err;
-        }
-        return this.transformer.toDomain(this._incanGoldData);
+        const incanGoldData = await this.dataSource.getRepository(IncanGoldData).findOneBy({ id: gameId });
+        this.dataVersion = incanGoldData.version;
+        return this.mapper.toDomain(incanGoldData);
     }
 
     async save(game: IncanGold): Promise<void> {
-        this.transformer.updateIncanGoldData(game, this._incanGoldData);
+        const incanGoldData = this.mapper.toData(game);
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
 
-        if (this.isGameInDB) {
-            try {
-                await this.updateCards();
-                await this.updateExplorers();
-                await this.updateGame();
-                await this.queryRunner.commitTransaction();
-            } catch (err) {
-                await this.queryRunner.rollbackTransaction();
-                throw err;
-            } finally {
-                await this.queryRunner.release();
-            }
-        } else {
-            await this.dataSource.getRepository(IncanGoldData).save(this._incanGoldData);
-            this.isGameInDB = true;
+        // console.log(42, incanGoldData)
+
+        try {
+            await this.updateExplorers(incanGoldData.explorers, queryRunner);
+            await this.updateGame(incanGoldData, queryRunner);
+            await queryRunner.commitTransaction();
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+            throw err;
+        } finally {
+            await queryRunner.release();
         }
-
     }
 
-    private async updateGame() {
-        await this.queryRunner.manager.getRepository(IncanGoldData).update({ id: this._incanGoldData.id }, {
-            round: this._incanGoldData.round,
-            turn: this._incanGoldData.turn,
-        });
+    private async updateGame(incanGoldData: IncanGoldData, runner: QueryRunner) {
+        const { id, round, turn, tunnel, deck, trashDeck } = incanGoldData;
+        const result = await runner.manager.createQueryBuilder()
+            .update(IncanGoldData)
+            .set({
+                round, turn, tunnel, deck, trashDeck,
+                version: this.dataVersion + 1
+            })
+            .where("id = :id", { id })
+            .andWhere("version = :version", { version: this.dataVersion }) // Optimistic Lock
+            .execute();
+
+        if (result.affected === 0) // Incorrect version
+            throw new Error('Concurrent modification error');
     }
 
-    private async updateExplorers() {
-        const explorerPromise = this._incanGoldData.explorers.map(explorer => {
+    private async updateExplorers(explorers: ExplorerData[], runner: QueryRunner) {
+        const explorerPromise = explorers.map(explorer => {
             const { id, choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts } = explorer;
 
-            this.queryRunner.manager
-                .getRepository(ExplorerData)
-                .update(
-                    { id },
-                    { choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts }
-                );
+            runner.manager.createQueryBuilder()
+                .update(ExplorerData)
+                .set({ choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts })
+                .where("id = :id", { id })
+                .execute();
         });
         await Promise.all(explorerPromise);
     }
 
-    private async updateCards() {
-        const cardPromise = this._incanGoldData.cards.map(card => {
-            const { cardID, gems, remainingGems, remainingArtifact, location, whenInTrashDeck } = card;
-
-            this.queryRunner.manager
-                .createQueryBuilder()
-                .update(CardData)
-                .set({ gems, remainingGems, remainingArtifact, location, whenInTrashDeck })
-                .where({ cardID })
-                .andWhere("incanGoldId = :incanGoldId", { incanGoldId: this._incanGoldData.id })
-                .execute();
-        });
-        await Promise.all(cardPromise);
+    private createIncanGoldData(explorerIDs: string[], id: string) {
+        const explorers = this.createExplorers(explorerIDs);
+        const deck = this.createDeck();
+        const trashDeck: Record<number, CardData[]> = {};
+        [1, 2, 3, 4, 5].forEach(round => {
+            trashDeck[round] = [];
+        })
+        const incanGoldData = IncanGoldData.generateBy(id, 0, 0, [], deck, trashDeck, explorers, 0);
+        return incanGoldData;
     }
 
     private createExplorers(explorerIDs: string[]) {
-        const explorers = explorerIDs.map(explorerID => {
-            const explorer = new ExplorerData();
-            explorer.id = explorerID;
-            return explorer;
-        });
-        this._incanGoldData.explorers = explorers;
+        return explorerIDs.map(id => ExplorerData.generateBy(id, Choice.NotSelected, true, 0, 0, 0, []));
     }
 
-    private createCards() {
-        const cards: CardData[] = [];
-        [...treasureCards, ...hazardCards, ...artifactCards].forEach(card => {
-            const cardData = new CardData();
-            cardData.cardID = card.ID;
-            cardData.location = card.ID[0] === 'A' ? CardLocation.Temple : CardLocation.Deck;
-            cards.push(cardData);
-        });
-        this._incanGoldData.cards = cards;
+    private createDeck() {
+        const treasureCardsData = [...Object.entries(treasureCards)]
+            .map(c => new CardData(c[0]));
+
+        const hazardCardsData = [...Object.entries(hazardCards)]
+            .map(c => new CardData(c[0]));
+
+        return [...treasureCardsData, ...hazardCardsData];
     }
 
 }

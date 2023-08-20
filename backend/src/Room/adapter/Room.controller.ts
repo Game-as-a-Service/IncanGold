@@ -13,7 +13,6 @@ import { IRoomRepository } from "../app/Repository";
 import { IEventDispatcher } from "../app/EventDispatcher";
 import { RoomEventDispatcher } from "../infra/RoomEventDispatcher";
 import { IBroadcaster } from "./IBroadcaster";
-import { Broadcaster } from "../infra/Broadcaster";
 
 export class RoomController {
 
@@ -21,10 +20,10 @@ export class RoomController {
     private eventDispatcher: IEventDispatcher;
     private broadcaster: IBroadcaster;
 
-    constructor(repoClass: new() => IRoomRepository) {
+    constructor(repoClass: new() => IRoomRepository, broadcaster:IBroadcaster) {
         this.repoClass = repoClass;
         this.eventDispatcher =  new RoomEventDispatcher();
-        this.broadcaster = new Broadcaster();
+        this.broadcaster = broadcaster;
     }
 
     createRoom = async (req: Request, res: Response) =>{

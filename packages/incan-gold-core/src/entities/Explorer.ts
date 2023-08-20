@@ -6,13 +6,17 @@ import Artifact from "./Artifact";
 
 export default class Explorer {
   public id: string;
-  public choice: Choice = Choice.NotSelected;
+  public choice: Choice;
   public inTent: boolean = true;
-  public bag: Bag = new Bag();
-  public tent: Tent = new Tent();
-  
-  constructor(id: string) {
+  public bag: Bag;
+  public tent: Tent;
+
+  constructor(id: string, choice?: Choice, inTent?: boolean, bag?: Bag, tent?: Tent) {
     this.id = id;
+    this.choice = choice === undefined ? Choice.NotSelected : choice;
+    this.inTent = inTent === undefined ? true : inTent;
+    this.bag = bag === undefined ? new Bag() : bag;
+    this.tent = tent === undefined ? new Tent() : tent;
   }
 
   public enterTunnel(): void {
@@ -23,11 +27,11 @@ export default class Explorer {
   public leaveTunnel(): void {
     this.inTent = true;
     this.tent.update(this.bag);
-    this.clearBag();  
+    this.clearBag();
   }
 
   public clearBag(): void {
-    this.bag = new Bag();  
+    this.bag = new Bag();
   }
 
   public putGemsInBag(gems: Gem[]): void {
@@ -38,11 +42,11 @@ export default class Explorer {
     this.bag.putArtifactsIn(artifacts);
   }
 
-  get numOfArtifacts():number{
+  get numOfArtifacts(): number {
     return this.tent.artifacts.length;
   }
 
-  get points():number{
+  get points(): number {
     return this.tent.points;
   }
 

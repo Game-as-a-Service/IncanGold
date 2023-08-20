@@ -1,5 +1,5 @@
-import { IBroadcaster } from "../adapter/IBroadcaster";
-import { SocketManager } from "../../Shared_infra/socket";
+import { IBroadcaster } from "../Room/adapter/IBroadcaster";
+import { SocketManager } from "./socket";
 
 export class Broadcaster implements IBroadcaster {
     broadcast(roomId:string, payload: any): void{

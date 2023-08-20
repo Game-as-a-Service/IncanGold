@@ -1,31 +1,50 @@
-import StartGameUseCase,{ StartGameInput } from "../app/useCase/StartGameUseCase";
-import MakeChoiceUseCase, { MakeChoiceInput,MakeChoiceOutput } from "../app/useCase/MakeChoiceUseCase";
+import type { Request, Response } from "express";
+import StartGameUseCase, { StartGameInput, StartGameOutput } from "../app/useCase/StartGameUseCase";
+import MakeChoiceUseCase, { MakeChoiceInput, MakeChoiceOutput } from "../app/useCase/MakeChoiceUseCase";
 import { IIncanGoldRepository } from "../app/Repository";
+import { IBroadcaster } from "./IBroadcaster";
 
 
 export class IncanGoldController {
 
-    private _repoClass: new()=> IIncanGoldRepository;
+    private Repository: new () => IIncanGoldRepository;
+    private broadcaster: IBroadcaster;
 
-    constructor(repoClass: new()=> IIncanGoldRepository){
-        this._repoClass = repoClass;
+    constructor(Repository: new () => IIncanGoldRepository, broadcaster: IBroadcaster) {
+        this.Repository = Repository;
+        this.broadcaster = broadcaster;
     }
 
-    async StartGame(input:StartGameInput) {
-        const useCase = new StartGameUseCase(new this._repoClass());
-        return await useCase.execute(input);
-        
+    StartGame = async (req: Request, res: Response) => {
+        const { roomId } = req.params;
+        const { playerIds } = req.body;
+        const input: StartGameInput = { roomId, playerIds };
+
+        const createRoomUseCase = new StartGameUseCase(this.newRepo);
+        const output: StartGameOutput = await createRoomUseCase.execute(input);
+
+        this.broadcaster.broadcast(roomId, output);
+        res.sendStatus(200);
     }
 
-    async MakeChoice(input:MakeChoiceInput) {
-        const useCase = new MakeChoiceUseCase(new this._repoClass());
-        let result: MakeChoiceOutput;
-        try{
-            result = await useCase.execute(input);
-        }catch(err){
-            // todo : handle error;
-            result = await useCase.execute(input);
+    MakeChoice = async (req: Request, res: Response)=> {
+        const { gameId } = req.params;
+        const { explorerId, choice } = req.body;
+        const input: MakeChoiceInput = { gameId, explorerId, choice };
+
+        const makeChoiceUseCase = new MakeChoiceUseCase(this.newRepo);
+        let output: MakeChoiceOutput;
+        try {
+            output = await makeChoiceUseCase.execute(input);
+        } catch (err) {
+            output = await makeChoiceUseCase.execute(input);
         }
-        return result
+
+        this.broadcaster.broadcast(gameId, output);
+        res.sendStatus(200);
+    }
+
+    private get newRepo() {
+        return new this.Repository();
     }
 }

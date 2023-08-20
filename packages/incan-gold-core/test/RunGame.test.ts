@@ -1,3 +1,4 @@
+import { describe,expect,it } from 'vitest';
 import IncanGold from '../src/entities/IncanGold';
 import TreasureCard from '../src/entities/Card/TreasureCard'
 import ArtifactCard from '../src/entities/Card/ArtifactCard'
@@ -15,9 +16,10 @@ interface ExplorerAndChoice{
 describe('',()=>{
 
     it("玩家隨機決定,跑完整場遊戲",async ()=>{
-        const game = new IncanGold('1',['a','b','c']);
+        const explorers = ['a','b','c'].map(id=>new Explorer(id));
+        const game = new IncanGold('1',0,0,explorers);
         const iterator = playGame(game,explorersAndChoices(game));
-        while(!game.gameover){
+        while(!game.gameOver){
             let event = iterator.next().value;
             console.log(event);
             if(event?.name === EventName.TurnEnd) display(game);
@@ -28,7 +30,7 @@ describe('',()=>{
 function* playGame(game:IncanGold, explorersAndChoices:Iterator<ExplorerAndChoice>) {
     yield* game.start(); // user_cmd
     
-    while (!game.gameover) {
+    while (!game.gameOver) {
         const { explorer, choice } = explorersAndChoices.next().value;
         if(explorer.inTent === false)
             yield* game.makeChoice(explorer, choice); // user_cmd

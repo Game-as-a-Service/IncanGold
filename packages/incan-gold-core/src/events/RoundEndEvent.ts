@@ -13,6 +13,6 @@ export default class RoundEndEvent extends Event{
 
         this.discardedCardsID = 
         game.trashDeck.cards.get(this.currentRound)
-        ?.map(card => card.cardID) || [];
+        ?.map(card => card.id) || [];
     }
 }

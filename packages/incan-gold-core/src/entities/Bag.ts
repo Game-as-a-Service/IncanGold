@@ -2,19 +2,24 @@ import Artifact from "./Artifact";
 import Gem from "./Gem";
 
 class Bag {
-  private _points: number = 0;
+  private _points: number;
   public artifacts: Artifact[] = [];
-  public gems: Gem[] = [];
+  public gems: Gem[];
 
-  get points(){
+  constructor(points: number = 0) {
+    this._points = points;
+    this.gems = Array(points).fill(new Gem);
+  }
+
+  get points() {
     return this._points;
   }
 
-  get numOfGems(){
+  get numOfGems() {
     return this.gems.length;
   }
 
-  get numOfArtifacts(){
+  get numOfArtifacts() {
     return this.artifacts.length;
   }
 
@@ -24,7 +29,7 @@ class Bag {
   }
 
   public putArtifactsIn(artifacts: Artifact[]): void {
-    artifacts.forEach(artifact=>{this._points += artifact.points;})
+    artifacts.forEach(artifact => { this._points += artifact.points; })
     this.artifacts = this.artifacts.concat(artifacts);
 
   }

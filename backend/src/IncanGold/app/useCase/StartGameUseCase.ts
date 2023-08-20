@@ -1,6 +1,6 @@
 import { IIncanGoldRepository } from '../Repository';
 import type { IncanGold } from "../../domain/IncanGold";
-import { GameStatus,toGameStatus } from '../Dto/IncanGoldDto';
+import { GameStatus, toGameStatus } from '../Dto/IncanGoldDto';
 import { EventDto } from '../Dto/EventDto/EventDto';
 import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
 
@@ -13,11 +13,11 @@ export default class StartGameUseCase {
     constructor(incanGoldRepository: IIncanGoldRepository) {
         this._incanGoldRepository = incanGoldRepository;
     }
-  
-    async execute(input:StartGameInput):Promise<StartGameOutput>{
+
+    async execute(input: StartGameInput): Promise<StartGameOutput> {
         // 創(沒得查，因為還沒有game)
-        var incanGold = this._incanGoldRepository.create(input.roomID, input.plyerIDs);
-        
+        var incanGold = await this._incanGoldRepository.create(input.roomId, input.playerIds);
+
         // 改
         const events = Array.from(incanGold.start());
 
@@ -26,18 +26,18 @@ export default class StartGameUseCase {
 
         // 推
         return {
-            game:toGameStatus(incanGold),
+            game: toGameStatus(incanGold),
             events: transformEventsToEventDtos.execute(events)
         };
     }
 }
 
 export interface StartGameInput {
-    roomID: string;
-    plyerIDs: string[];
+    roomId: string;
+    playerIds: string[];
 }
 
-interface StartGameOutput {
+export interface StartGameOutput {
     game: GameStatus;
-    events:EventDto[];
+    events: EventDto[];
 }

@@ -1,9 +1,6 @@
 import { test, describe, beforeAll, afterAll, expect, } from "vitest";
-import { Server } from "socket.io";
 import { io, Socket } from "socket.io-client"
 import { bootstrap } from "../../index";
-import { AppDataSource } from "../../src/Shared_infra/data-source";
-import { User } from "../../src/User/infra/User";
 import request from 'supertest'
 import jwt from 'jsonwebtoken';
 
@@ -25,7 +22,7 @@ describe('create Room', async () => {
 
 
     test('createRoom', async () => {
-        // const sp1 = socketPromise(client1);
+        const sp1 = socketPromise(client1);
         const sp2 = socketPromise(client2);
         await createRoom(server, 'johndoe', 'room1');
         await joinRoom(server, 'tke47');
@@ -37,8 +34,8 @@ describe('create Room', async () => {
         await lockSeat(server, 3);
         await unlockSeat(server, 3);
         await leaveRoom(server, 'tke47');
-        await sp2;
-        // await Promise.all([sp1, sp2]);
+        // await sp2;
+        await Promise.all([sp1, sp2]);
     })
 })
 
@@ -116,6 +113,7 @@ function socketPromise(client: Socket) {
     // Once Socket.io receives the message event, it executes the listener function, which calls socketCallback.
     client.on('message', (msg: any) => {
         console.log('on Message :\n', msg.events, '\n', msg.room.seats);
+        console.log('client : ',client.id);
         socketCallback(msg);
     });
     // This binds the message event to the Promise.

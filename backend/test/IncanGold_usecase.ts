@@ -17,17 +17,17 @@ async function app(){
     await AppDataSource.initialize();
 
     await startGame('2',['a','b','c']);
-    makeChoice('2','a',Choice.Quit);
-    makeChoice('2','b',Choice.KeepGoing);
-    makeChoice('2','c',Choice.Quit);
+    await makeChoice('2','a',Choice.Quit);
+    await makeChoice('2','b',Choice.KeepGoing);
+    await makeChoice('2','c',Choice.Quit);
 }
 
 
-async function startGame(roomID:string, plyerIDs:string[]){
-    const input:StartGameInput = { roomID, plyerIDs };
+async function startGame(roomId:string, playerIds:string[]){
+    const input:StartGameInput = { roomId, playerIds };
     const startGameUseCase = new StartGameUseCase(new IncanGoldRepository());
     const {game,events} = await startGameUseCase.execute(input);
-    console.log(JSON.stringify(game));
+    console.log(JSON.stringify(game),"\n");
     // console.log(JSON.stringify(events));
 }
 
@@ -36,8 +36,7 @@ async function makeChoice(gameId:string, explorerId:string, choice:Choice){
     const makeChoiceUseCase = new MakeChoiceUseCase(new IncanGoldRepository());
     const {game,events} = await makeChoiceUseCase.execute(input);
     // console.log(JSON.stringify(game));
-    console.log(JSON.stringify(events));
+    console.log(JSON.stringify(events),"\n");
 }
-
 
 app();

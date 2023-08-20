@@ -1,39 +1,36 @@
 import Card from "./Card";
 import Explorer from "../Explorer";
-import IncanGold from "../IncanGold"; 
+import IncanGold from "../IncanGold";
 import Event from "../../events/Event"
-import {NewTurnHazardCardTriggeredEvent} from "../../events/NewTurnCardTriggeredEvent"
+import { NewTurnHazardCardTriggeredEvent } from "../../events/NewTurnCardTriggeredEvent"
+import { hazardCards } from "../../constant/CardInfo";
 
 export default class HazardCard extends Card {
 
   public readonly name: string;
 
-  constructor(cardID:string, name: string) {
-    super(cardID);
-    this.name = name;
+  constructor(id: string) {
+    super(id);
+    this.name = hazardCards[id];
   }
 
-  public appearsTwice(game:IncanGold): boolean {
-    return !!(Object.values(game.hazardCardCounter).find(times=>(times===2)));
-  }
-
-  public trigger(game:IncanGold): Event {
-    game.hazardCardCounter[this.name] += 1 ;  
+  public trigger(game: IncanGold): Event {
+    const isHazardCardDuplicated = game.tunnel.isHazardCardDuplicated;
 
     // first turn, first card is hazardCard
-    if(game.turn == 1 && game.tunnel.cards[0] instanceof HazardCard){
-      game.forceExplore = true; 
+    if (game.turn == 1 && game.tunnel.cards[0] instanceof HazardCard) {
+      game.forceExplore = true;
     }
-    
+
     // 災難重複出現，就把玩家趕離通道
-    if(this.appearsTwice(game)){
-      game.explorersInTunnel.forEach(explorer=>{
+    if (isHazardCardDuplicated) {
+      game.explorersInTunnel.forEach(explorer => {
         explorer.clearBag()
         explorer.leaveTunnel();
       });
     }
-    
-    return new NewTurnHazardCardTriggeredEvent(game,this.appearsTwice(game));
+
+    return new NewTurnHazardCardTriggeredEvent(game, isHazardCardDuplicated);
   }
 
 }
