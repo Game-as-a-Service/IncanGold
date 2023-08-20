@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  incan-gold-core:
+    specifier: workspace:^
+    version: link:../packages/incan-gold-core
   normalize.css:
     specifier: ^8.0.1
     version: 8.0.1
