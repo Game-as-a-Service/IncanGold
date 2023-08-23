@@ -22,9 +22,6 @@ export class IncanGoldData {
     @Column("simple-json", { nullable: true })
     trashDeck: Record<number, CardData[]>
 
-    @Column('int', { default: 0 })
-    version: number;
-
     @OneToMany(() => ExplorerData, (explorer) => explorer.incanGold, {
         cascade: true,
         eager: true,
@@ -39,7 +36,6 @@ export class IncanGoldData {
         deck: CardData[],
         trashDeck: Record<number, CardData[]>,
         explorers: ExplorerData[],
-        version: number = 0
     ) {
         const incanGold = new IncanGoldData()
         incanGold.id = id
@@ -49,7 +45,6 @@ export class IncanGoldData {
         incanGold.deck = deck
         incanGold.trashDeck = trashDeck
         incanGold.explorers = explorers
-        incanGold.version = version
         return incanGold
     }
 }

@@ -173,6 +173,7 @@ export default class IncanGold {
         highestPointsExplorers = highestPointsExplorers.filter(
             (explorer) => explorer.numOfArtifacts === maxNumberOfHighestPointsExplorerArtifacts
         );
+
         if (highestPointsExplorers.length === 1)
             return highestPointsExplorers[0];
         else

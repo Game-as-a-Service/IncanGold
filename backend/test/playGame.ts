@@ -24,12 +24,12 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
 
     // 開始遊戲
     await startGame(server, '123', ['johndoe', 'tke47', 'Jayyy'])
-    // const choicesPromises = ['johndoe', 'tke47', 'Jayyy']
-    //     .map(Id => makeChoice(server, '123', Id, Choice.Quit))
-    // await Promise.all(choicesPromises)
-    await makeChoice(server, '123', 'johndoe', Choice.Quit)
-    await makeChoice(server, '123', 'tke47', Choice.Quit)
-    await makeChoice(server, '123', 'Jayyy', Choice.Quit)
+    const choicesPromises = ['johndoe', 'tke47', 'Jayyy']
+        .map(Id => makeChoice(server, '123', Id, Choice.Quit))
+    await Promise.all(choicesPromises)
+    // await makeChoice(server, '123', 'johndoe', Choice.Quit)
+    // await makeChoice(server, '123', 'tke47', Choice.Quit)
+    // await makeChoice(server, '123', 'Jayyy', Choice.Quit)
 
     // 確保socket處理函式有被執行
     // await Promise.all([sp1, sp2, sp3])

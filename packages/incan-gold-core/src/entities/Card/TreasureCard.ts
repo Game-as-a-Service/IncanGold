@@ -29,7 +29,7 @@ export default class TreasureCard extends Card {
     return this.gems.length;
   }
 
-  public devideGemsTo(explorers: Explorer[]): void {
+  public distributeGemsTo(explorers: Explorer[]): void {
     var eachOneCanGet = Math.floor(this.numOfGems / explorers.length);
     var left = this.numOfGems - (eachOneCanGet * explorers.length);
     explorers.forEach(explorer => explorer.putGemsInBag(Array(eachOneCanGet).fill(new Gem())));
@@ -38,7 +38,7 @@ export default class TreasureCard extends Card {
 
   public trigger(game: IncanGold): Event {
     this.generateGems();
-    this.devideGemsTo(game.explorersInTunnel);
+    this.distributeGemsTo(game.explorersInTunnel);
     return new NewTurnTreasureCardTriggeredEvent(game);
   }
 }

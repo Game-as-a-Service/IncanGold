@@ -27,18 +27,29 @@ export class IncanGoldController {
         res.sendStatus(200);
     }
 
-    MakeChoice = async (req: Request, res: Response)=> {
+    MakeChoice = async (req: Request, res: Response) => {
         const { gameId } = req.params;
         const { explorerId, choice } = req.body;
         const input: MakeChoiceInput = { gameId, explorerId, choice };
 
         const makeChoiceUseCase = new MakeChoiceUseCase(this.newRepo);
         let output: MakeChoiceOutput;
-        try {
-            output = await makeChoiceUseCase.execute(input);
-        } catch (err) {
-            output = await makeChoiceUseCase.execute(input);
+
+        let pass = false;
+        while (!pass) {
+            try {
+                output = await makeChoiceUseCase.execute(input);
+                pass = true;
+            } catch (err){
+                console.log(err);
+            }
         }
+
+        // try {
+        //     output = await makeChoiceUseCase.execute(input);
+        // } catch (err) {
+        //     output = await makeChoiceUseCase.execute(input);
+        // }
 
         this.broadcaster.broadcast(gameId, output);
         res.sendStatus(200);

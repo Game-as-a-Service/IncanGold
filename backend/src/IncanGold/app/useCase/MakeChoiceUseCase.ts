@@ -20,11 +20,11 @@ export default class MakeChoiceUseCase {
         const events = Array.from(incanGold.makeChoice(explorer, input.choice as Choice));
 
         // 存
-        try{
+        // try{
             await this._incanGoldRepository.save(incanGold);
-        }catch(err){
-            await this.execute(input);
-        }
+        // }catch(err){
+        //     await this.execute(input);
+        // }
 
         // 推
         return {

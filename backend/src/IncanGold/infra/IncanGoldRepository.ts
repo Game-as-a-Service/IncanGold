@@ -10,8 +10,8 @@ const { treasureCards, hazardCards, artifactCards } = CardInfo;
 
 export class IncanGoldRepository implements IIncanGoldRepository {
     private dataSource: DataSource;
+    private queryRunner: QueryRunner | null;
     private mapper: IncanGoldMapper;
-    private dataVersion: number = 0;
 
     constructor() {
         this.dataSource = AppDataSource;
@@ -21,63 +21,71 @@ export class IncanGoldRepository implements IIncanGoldRepository {
     async create(id: string, explorerIDs: string[]): Promise<IncanGold> {
         const incanGoldData = this.createIncanGoldData(explorerIDs, id);
         await this.dataSource.getRepository(IncanGoldData).save(incanGoldData);
-        this.dataVersion = incanGoldData.version;
         return this.mapper.toDomain(incanGoldData);
     }
 
     async findById(gameId: string): Promise<IncanGold> {
-        const incanGoldData = await this.dataSource.getRepository(IncanGoldData).findOneBy({ id: gameId });
-        this.dataVersion = incanGoldData.version;
+        this.queryRunner = await this.createQueryRunner();
+        let incanGoldData: IncanGoldData;
+
+        try {
+            incanGoldData = await this.queryRunner.manager.getRepository(IncanGoldData).findOne({
+                where: { id: gameId },
+                lock: { mode: "pessimistic_write" },
+            });
+        } catch (err) {
+            this.queryRunner.commitTransaction();
+            this.queryRunner.rollbackTransaction();
+            this.queryRunner.release();
+            throw err;
+        }
+
         return this.mapper.toDomain(incanGoldData);
     }
 
     async save(game: IncanGold): Promise<void> {
         const incanGoldData = this.mapper.toData(game);
-        const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
-        await queryRunner.startTransaction();
-
-        // console.log(42, incanGoldData)
+        this.queryRunner = this.queryRunner ?? await this.createQueryRunner();
 
         try {
-            await this.updateExplorers(incanGoldData.explorers, queryRunner);
-            await this.updateGame(incanGoldData, queryRunner);
-            await queryRunner.commitTransaction();
+            await this.updateExplorers(incanGoldData.explorers);
+            await this.updateGame(incanGoldData);
+            await this.queryRunner.commitTransaction();
         } catch (err) {
-            await queryRunner.rollbackTransaction();
+            await this.queryRunner.rollbackTransaction();
             throw err;
         } finally {
-            await queryRunner.release();
+            await this.queryRunner.release();
         }
     }
 
-    private async updateGame(incanGoldData: IncanGoldData, runner: QueryRunner) {
+    private async updateGame(incanGoldData: IncanGoldData) {
         const { id, round, turn, tunnel, deck, trashDeck } = incanGoldData;
-        const result = await runner.manager.createQueryBuilder()
+        await this.queryRunner.manager.createQueryBuilder()
             .update(IncanGoldData)
-            .set({
-                round, turn, tunnel, deck, trashDeck,
-                version: this.dataVersion + 1
-            })
+            .set({ round, turn, tunnel, deck, trashDeck })
             .where("id = :id", { id })
-            .andWhere("version = :version", { version: this.dataVersion }) // Optimistic Lock
             .execute();
-
-        if (result.affected === 0) // Incorrect version
-            throw new Error('Concurrent modification error');
     }
 
-    private async updateExplorers(explorers: ExplorerData[], runner: QueryRunner) {
+    private async updateExplorers(explorers: ExplorerData[]) {
         const explorerPromise = explorers.map(explorer => {
             const { id, choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts } = explorer;
 
-            runner.manager.createQueryBuilder()
+            this.queryRunner.manager.createQueryBuilder()
                 .update(ExplorerData)
                 .set({ choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts })
                 .where("id = :id", { id })
                 .execute();
         });
         await Promise.all(explorerPromise);
+    }
+
+    private async createQueryRunner() { 
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        return queryRunner;
     }
 
     private createIncanGoldData(explorerIDs: string[], id: string) {
@@ -87,7 +95,7 @@ export class IncanGoldRepository implements IIncanGoldRepository {
         [1, 2, 3, 4, 5].forEach(round => {
             trashDeck[round] = [];
         })
-        const incanGoldData = IncanGoldData.generateBy(id, 0, 0, [], deck, trashDeck, explorers, 0);
+        const incanGoldData = IncanGoldData.generateBy(id, 0, 0, [], deck, trashDeck, explorers);
         return incanGoldData;
     }
 
