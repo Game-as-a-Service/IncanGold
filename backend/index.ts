@@ -1,9 +1,9 @@
 import express, { Express, Request, Response } from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
-import { SocketConnection } from "./src/Shared_infra/socket";
+import { SocketConnection } from "./src/Shared/infra/socket";
 import { MySqlContainer } from "testcontainers";
-import { AppDataSource, configDataSource } from "./src/Shared_infra/data-source";
+import { AppDataSource, configDataSource } from "./src/Shared/infra/data-source";
 import { AuthRouter } from "./src/User/adapter/Auth.router";
 import { RoomRouter } from "./src/Room/adapter/Room.router";
 import { IncanGoldRouter } from "./src/IncanGold/adapter/IncanGold.router";

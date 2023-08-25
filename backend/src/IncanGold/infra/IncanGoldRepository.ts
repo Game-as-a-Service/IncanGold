@@ -1,5 +1,5 @@
 import { IIncanGoldRepository } from "../app/Repository";
-import { AppDataSource } from "../../Shared_infra/data-source";
+import { AppDataSource } from "../../Shared/infra/data-source";
 import type { DataSource, QueryRunner } from "typeorm";
 import { IncanGoldMapper } from "./IncanGoldMapper";
 import { IncanGoldData } from "./data/IncanGoldData";

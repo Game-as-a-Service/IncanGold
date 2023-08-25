@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { RoomController } from "./Room.controller";
 import { RoomRepository } from "../infra/RoomRepository";
-import { Broadcaster } from "../../Shared_infra/Broadcaster";
+import { RoomEventDispatcher } from "../infra/RoomEventDispatcher";
 
 export function RoomRouter() {
 
     const router = Router();
-    const controller = new RoomController(RoomRepository, new Broadcaster);
+    const controller = new RoomController(RoomRepository, new RoomEventDispatcher);
 
     // createRoom
     router.post('/', controller.createRoom);

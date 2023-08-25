@@ -112,8 +112,8 @@ function socketPromise(client: Socket) {
     const socketPromise = new Promise((resolve: (obj) => void) => (socketCallback = resolve));
     // Once Socket.io receives the message event, it executes the listener function, which calls socketCallback.
     client.on('message', (msg: any) => {
-        console.log('on Message :\n', msg.events, '\n', msg.room.seats);
-        console.log('client : ',client.id);
+        console.log('on Message :\n', msg);
+        console.log('client : ',client.id, "\n");
         socketCallback(msg);
     });
     // This binds the message event to the Promise.

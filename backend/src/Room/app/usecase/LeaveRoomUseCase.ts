@@ -1,8 +1,9 @@
 import { Room } from "../../domain/Room";
+import { Output } from "../dto/Output";
 import { Event } from "../../domain/event/Event";
 import { flattenToDto,RoomDto } from "../dto/RoomDto";
 import { IRoomRepository } from "../Repository";
-import { IEventDispatcher } from "../EventDispatcher";
+import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
 
 export default class LeaveRoomUseCase {
 
@@ -14,7 +15,7 @@ export default class LeaveRoomUseCase {
         this.eventDispatcher = eventDispatcher;
     }
 
-    async execute(input: LeaveRoomInput): Promise<LeaveRoomOutput> {
+    async execute(input: LeaveRoomInput): Promise<void> {
         // 查
         const room = await this.roomRepository.findById(input.roomId);
 
@@ -25,21 +26,11 @@ export default class LeaveRoomUseCase {
         await this.roomRepository.save(room);
 
         // 推
-        this.eventDispatcher.dispatch(events);
-
-        return {
-            room: flattenToDto(room),
-            events
-        }
+        this.eventDispatcher.emit('room', Output(flattenToDto(room), events));
     }
 }
 
 export interface LeaveRoomInput {
     roomId: string;
     playerId: string;
-}
-
-export interface LeaveRoomOutput {
-    room: RoomDto;
-    events: Event[];
 }

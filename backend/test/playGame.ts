@@ -23,12 +23,11 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
     await joinRoom(server, '123', 'Jayyy');
 
     // 開始遊戲
-    await startGame(server, '123', ['johndoe', 'tke47', 'Jayyy'])
-    const choicesPromises = ['johndoe', 'tke47', 'Jayyy']
-        .map(Id => makeChoice(server, '123', Id, Choice.Quit))
-    await Promise.all(choicesPromises)
-    // await makeChoice(server, '123', 'johndoe', Choice.Quit)
-    // await makeChoice(server, '123', 'tke47', Choice.Quit)
+    await startGame(server, '123', ['johndoe', 'tke47', 'Jayyy']);
+    await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    await makeChoice(server, '123', 'johndoe', Choice.KeepGoing)
+    await makeChoice(server, '123', 'tke47', Choice.KeepGoing)
     // await makeChoice(server, '123', 'Jayyy', Choice.Quit)
 
     // 確保socket處理函式有被執行
@@ -36,6 +35,11 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
     await Promise.all([sp3])
 
 })();
+
+async function enforcePlayerChoicesUseCase(server: any, roomId: string, round:number, turn:number) {
+    await request(server).patch(`/games/${roomId}/enforceChoices`)
+        .send({ round,turn });
+}
 
 async function startGame(server: any, roomId: string, playerIds: string[]) {
     await request(server).post(`/games/${roomId}/start`)

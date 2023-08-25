@@ -86,7 +86,7 @@ export default class IncanGold {
         yield* this.endTurn();
     }
 
-    public *makeChoice(explorer: Explorer, choice: Choice) {
+    public *makeChoice(explorer: Explorer, choice: Choice): IterableIterator<Event> {
         explorer.choice = choice;
         yield new ExplorerMadeChoiceEvent(explorer.id);
 
@@ -135,6 +135,14 @@ export default class IncanGold {
             this.winnerID = winner.id;
         this.gameOver = true;
         yield new GameOverEvent(this);
+    }
+
+    public *enforcePlayerChoices(): IterableIterator<Event> {
+        const unselectedExplorers = this.explorersInTunnel
+            .filter(explorer => explorer.choice === Choice.NotSelected);
+        for (const explorer of unselectedExplorers) {
+            yield* this.makeChoice(explorer, Choice.KeepGoing);
+        }
     }
 
     public putCardsBackIntoDeck(): void {

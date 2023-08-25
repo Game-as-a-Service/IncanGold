@@ -1,12 +1,12 @@
 import { IIncanGoldRepository } from '../Repository';
-import { toGameStatus } from '../Dto/IncanGoldDto';
 import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
+import { toGameStatus } from '../Dto/IncanGoldDto';
 import { EventDto } from '../Dto/EventDto/EventDto';
 import { Event, IncanGold, Choice } from "../../domain/IncanGold"
 import { Output } from '../Dto/UseCaseOutput';
 import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
 
-export default class MakeChoiceUseCase {
+export default class EnforcePlayerChoicesUseCase {
     private incanGoldRepository: IIncanGoldRepository;
     private eventDispatcher: IEventDispatcher;
 
@@ -15,14 +15,13 @@ export default class MakeChoiceUseCase {
         this.eventDispatcher = eventDispatcher;
     }
 
-    async execute(input: MakeChoiceInput): Promise<void> {
-        const { gameId, explorerId, choice } = input;
+    async execute(input: EnforcePlayerChoicesInput): Promise<void> {
+        const { gameId } = input;
         // 查
         const incanGold = await this.incanGoldRepository.findById(gameId);
-        const explorer = incanGold.getExplorer(explorerId);
 
         // 改
-        const events = Array.from(incanGold.makeChoice(explorer, choice as Choice));
+        const events = Array.from(incanGold.enforcePlayerChoices());
 
         // 存
         await this.incanGoldRepository.save(incanGold);
@@ -30,12 +29,12 @@ export default class MakeChoiceUseCase {
         // 推
         const game = toGameStatus(incanGold);
         const eventDtos = transformEventsToEventDtos.execute(events);
-        this.eventDispatcher.emit('IncanGold', gameId, Output(game,eventDtos))
+        this.eventDispatcher.emit('IncanGold', gameId, Output(game, eventDtos))
     }
 }
 
-export interface MakeChoiceInput {
-    gameId: string
-    explorerId: string
-    choice: string
+export interface EnforcePlayerChoicesInput {
+    gameId: string,
+    round: number,
+    turn: number
 }

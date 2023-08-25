@@ -1,31 +1,33 @@
 import type { Room } from "../../domain/Room";
+import { Output } from "../dto/Output";
 import { Event } from "../../domain/event/Event";
 import { flattenToDto,RoomDto } from "../dto/RoomDto";
 import { IRoomRepository } from "../Repository";
+import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
+
 
 export default class UnlockSeatUseCase {
 
     private roomRepository: IRoomRepository;
+    private eventDispatcher: IEventDispatcher;
 
-    constructor(roomRepository: IRoomRepository) {
+    constructor(roomRepository: IRoomRepository, eventDispatcher: IEventDispatcher) {
         this.roomRepository = roomRepository;
+        this.eventDispatcher = eventDispatcher;
     }
 
-    async execute(input: UnlockSeatInput): Promise<UnlockSeatOutput> {
+    async execute(input: UnlockSeatInput): Promise<void> {
         // 查
         const room:Room = await this.roomRepository.findById(input.roomId);
 
         // 改
-        const events = room.unlockSeat(input.seatNumber);
+        const event = room.unlockSeat(input.seatNumber);
 
         // 存
         await this.roomRepository.save(room);
 
         // 推
-        return {
-            room: flattenToDto(room),
-            events:[events]
-        }
+        this.eventDispatcher.emit('room', Output(flattenToDto(room), [event]));
     }
 }
 
@@ -34,7 +36,3 @@ export interface UnlockSeatInput {
     seatNumber: number;
 }
 
-export interface UnlockSeatOutput {
-    room: RoomDto;
-    events: Event[];
-}

@@ -1,6 +1,7 @@
 import StartGameUseCase, {StartGameInput} from "../src/IncanGold/app/useCase/StartGameUseCase";
+import EnforcePlayerChoicesUseCase, {EnforcePlayerChoicesInput} from "../src/IncanGold/app/useCase/EnforcePlayerChoicesUseCase";
 import { IncanGoldRepository } from "../src/IncanGold/infra/IncanGoldRepository";
-import { configDataSource, AppDataSource } from "../src/Shared_infra/data-source";
+import { configDataSource, AppDataSource } from "../src/Shared/infra/data-source";
 import { Choice } from "../src/IncanGold/domain/IncanGold";
 import MakeChoiceUseCase, {MakeChoiceInput} from "../src/IncanGold/app/useCase/MakeChoiceUseCase";
 import { MySqlContainer } from "testcontainers"
@@ -20,14 +21,20 @@ async function app(){
     // const date2:Date = new Date();
     // const diff = date2.getTime() - date1.getTime();
     // console.log(Math.round(diff)); // 65
-    let date3 = await makeChoice('2','a',Choice.Quit);
-    const date4:Date = new Date();
-    const diff = date4.getTime() - date3.getTime();
-    console.log(Math.round(diff)); // 21
-    // await makeChoice('2','b',Choice.KeepGoing);
-    // await makeChoice('2','c',Choice.Quit);
+
+    let p1 = await makeChoice('2','a',Choice.Quit);
+    const p2 = await makeChoice('2','b',Choice.KeepGoing);
+    // const p3 = makeChoice('2','c',Choice.Quit);
+    // await Promise.all([p1,p2,p3]);
+    await enforcePlayerChoices('2');
 }
 
+async function enforcePlayerChoices(gameId:string){
+    const usecase = new EnforcePlayerChoicesUseCase(new IncanGoldRepository());
+    const {game,events} = await usecase.execute({gameId:'2'});
+    console.log(JSON.stringify(game),"\n")
+    console.log(JSON.stringify(events));
+}
 
 async function startGame(roomId:string, playerIds:string[]){
     const date = new Date();
@@ -45,7 +52,7 @@ async function makeChoice(gameId:string, explorerId:string, choice:Choice){
     const makeChoiceUseCase = new MakeChoiceUseCase(new IncanGoldRepository());
     const {game,events} = await makeChoiceUseCase.execute(input);
     // console.log(JSON.stringify(game));
-    // console.log(JSON.stringify(events),"\n");
+    console.log(JSON.stringify(events),"\n");
     return date;
 }
 

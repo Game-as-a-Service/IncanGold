@@ -1,6 +1,6 @@
 import { test, describe, beforeAll, afterAll, expect, } from "vitest";
 import { GenericContainer, StartedTestContainer } from "testcontainers";
-import { configDataSource, AppDataSource } from "../../src/Shared_infra/data-source";
+import { configDataSource, AppDataSource } from "../../src/Shared/infra/data-source";
 import { User } from "../../src/User/infra/User";
 import express, { Express } from "express";
 import { AuthRouter } from "../../src/User/adapter/Auth.router";

@@ -1,5 +1,5 @@
 import { GenericContainer, StartedTestContainer } from "testcontainers";
-import { configDataSource, AppDataSource } from "../../src/Shared_infra/data-source";
+import { configDataSource, AppDataSource } from "../../src/Shared/infra/data-source";
 import { User } from "../../src/User/infra/User";
 import { MySqlContainer } from "testcontainers";
 

@@ -1,19 +1,22 @@
 import { Router } from "express";
 import { IncanGoldController } from "./IncanGold.controller";
 import { IncanGoldRepository } from "../infra/IncanGoldRepository";
-import { Broadcaster } from "../../Shared_infra/Broadcaster";
+import { IncanGoldEventDispatcher } from "../infra/IncanGoldEventDispatcher";
 
 
 export function IncanGoldRouter() {
 
     const router = Router();
-    const controller = new IncanGoldController(IncanGoldRepository, new Broadcaster);
+    const controller = new IncanGoldController(IncanGoldRepository, new IncanGoldEventDispatcher);
 
     // startGame
-    router.post('/:roomId/start', controller.StartGame);
+    router.post('/:roomId/start', controller.startGame);
 
     // makeChoice
-    router.patch('/:gameId/choice',controller.MakeChoice);
+    router.patch('/:gameId/choice',controller.makeChoice);
+
+    // enforcePlayerChoices
+    router.patch('/:gameId/enforceChoices',controller.enforcePlayerChoices);
 
     return router;
 }

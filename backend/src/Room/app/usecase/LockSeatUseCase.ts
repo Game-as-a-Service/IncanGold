@@ -1,40 +1,36 @@
 import type { Room } from "../../domain/Room";
+import { Output } from "../dto/Output";
 import { Event } from "../../domain/event/Event";
 import { flattenToDto,RoomDto } from "../dto/RoomDto";
 import { IRoomRepository } from "../Repository";
+import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
 
 export default class LockSeatUseCase {
 
     private roomRepository: IRoomRepository;
+    private eventDispatcher: IEventDispatcher;
 
-    constructor(roomRepository: IRoomRepository) {
+    constructor(roomRepository: IRoomRepository, eventDispatcher: IEventDispatcher) {
         this.roomRepository = roomRepository;
+        this.eventDispatcher = eventDispatcher;
     }
 
-    async execute(input: LockSeatInput): Promise<LockSeatOutput> {
+    async execute(input: LockSeatInput): Promise<void> {
         // 查
         const room:Room = await this.roomRepository.findById(input.roomId);
 
         // 改
-        const events = room.lockSeat(input.seatNumber);
+        const event = room.lockSeat(input.seatNumber);
 
         // 存
         await this.roomRepository.save(room);
 
         // 推
-        return {
-            room: flattenToDto(room),
-            events:[events]
-        }
+        this.eventDispatcher.emit('room', Output(flattenToDto(room), [event]));
     }
 }
 
 export interface LockSeatInput {
     roomId: string;
     seatNumber: number;
-}
-
-export interface LockSeatOutput {
-    room: RoomDto;
-    events: Event[];
 }

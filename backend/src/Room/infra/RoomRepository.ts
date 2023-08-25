@@ -2,7 +2,7 @@ import type { Room } from "../domain/Room";
 import { RoomData } from "./RoomData";
 import { IRoomRepository } from "../app/Repository";
 import { DataSource, QueryRunner, UpdateResult, EntityManager } from "typeorm";
-import { AppDataSource } from "../../Shared_infra/data-source";
+import { AppDataSource } from "../../Shared/infra/data-source";
 import { RoomMapper } from "./RoomMapper";
 import { SeatData } from "./SeatData";
 import { v4 as uuidv4 } from 'uuid';

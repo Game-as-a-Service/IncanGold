@@ -1,57 +1,59 @@
 import type { Request, Response } from "express";
-import StartGameUseCase, { StartGameInput, StartGameOutput } from "../app/useCase/StartGameUseCase";
-import MakeChoiceUseCase, { MakeChoiceInput, MakeChoiceOutput } from "../app/useCase/MakeChoiceUseCase";
+import StartGameUseCase, { StartGameInput } from "../app/useCase/StartGameUseCase";
+import MakeChoiceUseCase, { MakeChoiceInput } from "../app/useCase/MakeChoiceUseCase";
+import EnforcePlayerChoicesUseCase, { EnforcePlayerChoicesInput } from "../app/useCase/EnforcePlayerChoicesUseCase";
 import { IIncanGoldRepository } from "../app/Repository";
-import { IBroadcaster } from "./IBroadcaster";
-
+import { IEventDispatcher } from "../../Shared/interface/EventDispatcher";
+import { TimeoutCoordinator } from "../app/TimeoutCoordinatorCoordinator";
 
 export class IncanGoldController {
 
     private Repository: new () => IIncanGoldRepository;
-    private broadcaster: IBroadcaster;
+    private eventDispatcher: IEventDispatcher;
+    private timeoutCoordinator: TimeoutCoordinator
 
-    constructor(Repository: new () => IIncanGoldRepository, broadcaster: IBroadcaster) {
+    constructor(Repository: new () => IIncanGoldRepository, eventDispatcher: IEventDispatcher) {
         this.Repository = Repository;
-        this.broadcaster = broadcaster;
+        this.eventDispatcher = eventDispatcher;
+        this.timeoutCoordinator = new TimeoutCoordinator(Repository,eventDispatcher);
     }
 
-    StartGame = async (req: Request, res: Response) => {
+    startGame = async (req: Request, res: Response) => {
         const { roomId } = req.params;
         const { playerIds } = req.body;
         const input: StartGameInput = { roomId, playerIds };
 
-        const createRoomUseCase = new StartGameUseCase(this.newRepo);
-        const output: StartGameOutput = await createRoomUseCase.execute(input);
+        const createRoomUseCase = new StartGameUseCase(this.newRepo, this.eventDispatcher);
+        await createRoomUseCase.execute(input);
 
-        this.broadcaster.broadcast(roomId, output);
         res.sendStatus(200);
     }
 
-    MakeChoice = async (req: Request, res: Response) => {
+    makeChoice = async (req: Request, res: Response) => {
         const { gameId } = req.params;
         const { explorerId, choice } = req.body;
         const input: MakeChoiceInput = { gameId, explorerId, choice };
 
-        const makeChoiceUseCase = new MakeChoiceUseCase(this.newRepo);
-        let output: MakeChoiceOutput;
+        const makeChoiceUseCase = new MakeChoiceUseCase(this.newRepo, this.eventDispatcher);
 
         let pass = false;
         while (!pass) {
             try {
-                output = await makeChoiceUseCase.execute(input);
+                await makeChoiceUseCase.execute(input);
                 pass = true;
-            } catch (err){
+            } catch (err) {
                 console.log(err);
             }
         }
+        res.sendStatus(200);
+    }
 
-        // try {
-        //     output = await makeChoiceUseCase.execute(input);
-        // } catch (err) {
-        //     output = await makeChoiceUseCase.execute(input);
-        // }
+    enforcePlayerChoices = async (req: Request, res: Response) => {
+        const { gameId } = req.params;
+        const { round, turn } = req.body;
+        const input: EnforcePlayerChoicesInput = { gameId, round, turn };
 
-        this.broadcaster.broadcast(gameId, output);
+        this.timeoutCoordinator.addCountdownTimerTask(input);
         res.sendStatus(200);
     }
 
