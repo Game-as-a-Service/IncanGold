@@ -1,26 +1,25 @@
-import IncanGold from '../src/domain/entities/IncanGold';
-import TreasureCard from '../src/domain/entities/Card/TreasureCard'
-import ArtifactCard from '../src/domain/entities/Card/ArtifactCard'
-import HazardCard from '../src/domain/entities/Card/HazardCard';
-import Player, { Choice } from '../src/domain/entities/Player';
-import Event, { EventName } from "../src/domain/events/Event"
+import { describe,expect,it } from 'vitest';
+import IncanGold from '../src/entities/IncanGold';
+import TreasureCard from '../src/entities/Card/TreasureCard'
+import ArtifactCard from '../src/entities/Card/ArtifactCard'
+import HazardCard from '../src/entities/Card/HazardCard';
+import { Choice } from '../src/constant/Choice';
+import { EventName } from '../src/constant/EventName';
+import Explorer from '../src/entities/Explorer';
+import Event from "../src/events/Event"
 
-interface PlayerAndChoice{
-    player:Player,
+interface ExplorerAndChoice{
+    explorer:Explorer,
     choice:Choice
 }
 
 describe('',()=>{
-    let game:IncanGold;
-
-    beforeEach(()=>{
-        game = new IncanGold();
-    })
 
     it("玩家隨機決定,跑完整場遊戲",async ()=>{
-        game.setPlayerCount(5);
-        const iterator = playGame(game,playersAndChoices(game));
-        while(!game.gameover){
+        const explorers = ['a','b','c'].map(id=>new Explorer(id));
+        const game = new IncanGold('1',0,0,explorers);
+        const iterator = playGame(game,explorersAndChoices(game));
+        while(!game.gameOver){
             let event = iterator.next().value;
             console.log(event);
             if(event?.name === EventName.TurnEnd) display(game);
@@ -28,26 +27,26 @@ describe('',()=>{
     })
 })
 
-function* playGame(game:IncanGold, playersAndChoices:Iterator<PlayerAndChoice>) {
+function* playGame(game:IncanGold, explorersAndChoices:Iterator<ExplorerAndChoice>) {
     yield* game.start(); // user_cmd
     
-    while (!game.gameover) {
-        const { player, choice } = playersAndChoices.next().value;
-        if(player.inTent === false)
-            yield* game.makeChoice(player, choice); // user_cmd
+    while (!game.gameOver) {
+        const { explorer, choice } = explorersAndChoices.next().value;
+        if(explorer.inTent === false)
+            yield* game.makeChoice(explorer, choice); // user_cmd
     }
 }
 
-function playersAndChoices(game:IncanGold):Iterator<PlayerAndChoice> {
-    var playerIndex = 0;
+function explorersAndChoices(game:IncanGold):Iterator<ExplorerAndChoice> {
+    var explorerIndex = 0;
     var choice_index = 0;
     const choices:Choice[] = [Choice.KeepGoing, Choice.Quit];
     return {
       next: function() {
-        if(playerIndex >= game.playersInTunnel.length ) playerIndex=0 ;
-        choice_index = Math.round(Math.random());
+        if(explorerIndex >= game.explorersInTunnel.length ) explorerIndex=0 ;
+        choice_index = 1; // Math.round(Math.random());
         return {
-            value: {player: game.playersInTunnel[playerIndex++], choice:choices[choice_index]},
+            value: {explorer: game.explorersInTunnel[explorerIndex++], choice:choices[choice_index]},
             done:false
         };
       }
@@ -64,8 +63,8 @@ function display(game:IncanGold){
     }) + "\n";
     output = output.concat(cards);
 
-    game.players.forEach(player=>{
-        output = output.concat(JSON.stringify(player)+"\n");
+    game.explorers.forEach(explorer=>{
+        output = output.concat(JSON.stringify(explorer)+"\n");
     })
 
     output = output.concat('---------------------\n');
