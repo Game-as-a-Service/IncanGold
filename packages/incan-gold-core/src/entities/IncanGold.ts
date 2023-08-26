@@ -59,7 +59,7 @@ export default class IncanGold {
 
     public *startRound(): IterableIterator<Event> {
         this.putCardsBackIntoDeck();
-        // this.addArtifactCardAndShuffleDeck();
+        this.addArtifactCardAndShuffleDeck();
         this.makeExplorersEnterTunnel();
         this.turn = 1;
         yield* this.startTurn();
