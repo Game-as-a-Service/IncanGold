@@ -25,9 +25,10 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
     // 開始遊戲
     await startGame(server, '123', ['johndoe', 'tke47', 'Jayyy']);
     await enforcePlayerChoicesUseCase(server, '123', 3, 2);
-    await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
     await makeChoice(server, '123', 'johndoe', Choice.KeepGoing)
-    await makeChoice(server, '123', 'tke47', Choice.KeepGoing)
+    // await makeChoice(server, '123', 'tke47', Choice.KeepGoing)
     // await makeChoice(server, '123', 'Jayyy', Choice.Quit)
 
     // 確保socket處理函式有被執行
@@ -75,7 +76,7 @@ function socketPromise(client: Socket) {
     const socketPromise = new Promise((resolve: (obj) => void) => (socketCallback = resolve));
     // Once Socket.io receives the message event, it executes the listener function, which calls socketCallback.
     client.on('message', (msg: any) => {
-        console.log('on Message :\n', msg);
+        console.log('on Message :\n', msg?.event);
         console.log('client : ', client.id);
         socketCallback(msg);
     });
