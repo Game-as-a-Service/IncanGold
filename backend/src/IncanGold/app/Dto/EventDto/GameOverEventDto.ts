@@ -1,37 +1,31 @@
-import { EventDto,EventDtoTransformer } from "./EventDto";
-import { Event,GameOverEvent } from "../../../domain/IncanGold"
+import { EventDto } from "./EventDto";
+import { Event, GameOverEvent } from "../../../domain/IncanGold"
 
-export class GameOverEventTransformer extends EventDtoTransformer {
-    match(event: Event): boolean {
-        return (event instanceof GameOverEvent);
-    }
-
-    transformToEventDto(event: Event): EventDto {
-        const e = <GameOverEvent>event;
-        const eventDto:GameOverEventDto = {
-            name: 'GameOver',
-            data: {
-                winnerID: e.winnerID,
-                explorers: e.explorers.map((elem)=>{
-                    return {explorerId:elem.explorerID, totalPoints:elem.totalPoints};
-                })
-            }
-        }
-        return eventDto;
-    }
-}
-
-
-interface GameOverEventDto extends EventDto
-{
-    name: 'GameOver'
-    data: {
-        winnerID:string;
-        explorers: ExplorerAndPoints[]
-    }
+export function toGameOverEventDto(event: Event): EventDto {
+    const { winnerId, explorers } = <GameOverEvent>event;
+    const explorerAndPoints = explorers.map(explorer => {
+        const { explorerId, totalPoints } = explorer
+        return { explorerId, totalPoints };
+    })
+    return GameOverEventDto(winnerId, explorerAndPoints);
 }
 
 interface ExplorerAndPoints {
     explorerId: string
-    totalPoints:number
+    totalPoints: number
+}
+
+interface GameOverEventDto extends EventDto {
+    name: 'GameOver'
+    data: {
+        winnerId: string;
+        explorers: ExplorerAndPoints[]
+    }
+}
+
+function GameOverEventDto(winnerId: string, explorers: ExplorerAndPoints[]): EventDto {
+    return {
+        name: 'GameOver',
+        data: { winnerId, explorers }
+    }
 }

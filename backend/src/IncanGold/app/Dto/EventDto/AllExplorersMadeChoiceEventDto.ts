@@ -1,36 +1,31 @@
-import { EventDto,EventDtoTransformer } from "./EventDto"
-import { Choice,Event,AllExplorersMadeChoiceEvent } from "../../../domain/IncanGold"
+import { EventDto } from "./EventDto"
+import { Choice, Event, AllExplorersMadeChoiceEvent } from "../../../domain/IncanGold"
 
-export class AllExplorersMadeChoiceEventTransformer extends EventDtoTransformer {
-    match(event: Event): boolean {
-        return (event instanceof AllExplorersMadeChoiceEvent);
-    }
+export function toAllExplorersMadeChoiceEventDto(event: Event): EventDto {
+    const allExplorersChoices = Object
+        .entries((<AllExplorersMadeChoiceEvent>event).allExplorersChoices)
+        .map(([explorerId, chosen]) => {
+            return { explorerId, chosen: <Choice>chosen };
+        });
 
-    transformToEventDto(event: Event): EventDto {
-        const eventDto:AllExplorersMadeChoiceEventDto = {
-            name: 'AllExplorersMadeChoice',
-            data: {
-                explorersChoices: 
-                    Object
-                    .entries((<AllExplorersMadeChoiceEvent>event).allExplorersChoices)
-                    .map((element)=>{
-                        return {explorerId:element[0],chosen:element[1] as Choice};
-                    })
-            }
-        }
-        return eventDto;
-    }
+    return AllExplorersMadeChoiceEventDto(allExplorersChoices);
 }
 
+interface ExplorerAndChoice {
+    explorerId: string
+    chosen: Choice
+}
 
-interface AllExplorersMadeChoiceEventDto extends EventDto{
+interface AllExplorersMadeChoiceEventDto extends EventDto {
     name: 'AllExplorersMadeChoice'
     data: {
         explorersChoices: ExplorerAndChoice[]
     }
 }
 
-interface ExplorerAndChoice {
-    explorerId: string
-    chosen: Choice 
+function AllExplorersMadeChoiceEventDto(explorersChoices: ExplorerAndChoice[]): EventDto {
+    return {
+        name: 'AllExplorersMadeChoice',
+        data: { explorersChoices }
+    }
 }

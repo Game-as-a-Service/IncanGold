@@ -1,5 +1,5 @@
 import { IIncanGoldRepository } from '../Repository';
-import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
+import { eventDtoMapper } from '../Dto/EventDtoMapper';
 import { toGameStatus } from '../Dto/IncanGoldDto';
 import { EventDto } from '../Dto/EventDto/EventDto';
 import { Event, IncanGold, Choice } from "../../domain/IncanGold"
@@ -8,7 +8,7 @@ import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
 
 export default class EnforcePlayerChoicesUseCase {
     private incanGoldRepository: IIncanGoldRepository;
-    private eventDispatcher: IEventDispatcher;
+    private eventDispatcher: IEventDispatcher; 
 
     constructor(incanGoldRepository: IIncanGoldRepository, eventDispatcher: IEventDispatcher) {
         this.incanGoldRepository = incanGoldRepository;
@@ -28,7 +28,7 @@ export default class EnforcePlayerChoicesUseCase {
 
         // 推
         const game = toGameStatus(incanGold);
-        const eventDtos = transformEventsToEventDtos.execute(events);
+        const eventDtos = eventDtoMapper.execute(events);
         this.eventDispatcher.emit('IncanGold', gameId, Output(game, eventDtos))
     }
 }

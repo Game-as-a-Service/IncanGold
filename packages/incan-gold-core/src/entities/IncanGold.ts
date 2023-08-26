@@ -22,7 +22,7 @@ export default class IncanGold {
     public explorers: Explorer[] = [];
 
     public forceExplore: boolean = false;
-    public winnerID: string = "";
+    public winnerId: string = "";
     public gameOver: boolean = false;
 
     constructor(
@@ -59,7 +59,7 @@ export default class IncanGold {
 
     public *startRound(): IterableIterator<Event> {
         this.putCardsBackIntoDeck();
-        this.addArtifactCardAndShuffleDeck();
+        // this.addArtifactCardAndShuffleDeck();
         this.makeExplorersEnterTunnel();
         this.turn = 1;
         yield* this.startTurn();
@@ -87,6 +87,7 @@ export default class IncanGold {
     }
 
     public *makeChoice(explorer: Explorer, choice: Choice): IterableIterator<Event> {
+        if (explorer.choice !== Choice.NotSelected) return;
         explorer.choice = choice;
         yield new ExplorerMadeChoiceEvent(explorer.id);
 
@@ -132,7 +133,7 @@ export default class IncanGold {
     public *end(): IterableIterator<Event> {
         const winner = this.findWinner();
         if (winner)
-            this.winnerID = winner.id;
+            this.winnerId = winner.id;
         this.gameOver = true;
         yield new GameOverEvent(this);
     }

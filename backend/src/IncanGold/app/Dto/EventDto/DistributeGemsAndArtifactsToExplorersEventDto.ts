@@ -1,37 +1,29 @@
-import { EventDto,EventDtoTransformer } from "./EventDto"
-import { Event,DistributeGemsAndArtifactsToExplorersEvent } from "../../../domain/IncanGold"
+import { EventDto } from "./EventDto"
+import { Event, DistributeGemsAndArtifactsToExplorersEvent } from "../../../domain/IncanGold"
 
-export class DistributeGemsAndArtifactsToExplorersEventTransformer extends EventDtoTransformer{
-    match(event: Event): boolean {
-        return (event instanceof DistributeGemsAndArtifactsToExplorersEvent);
-    }
+export function toDistributeGemsAndArtifactsToExplorersEventDto(event: Event): EventDto {
+    const { leavingExplorersID, numberOfGemsInLeavingExplorerBag, artifactsInBag }
+        = <DistributeGemsAndArtifactsToExplorersEvent>event;
 
-    transformToEventDto(event: Event): EventDto {
-        const e = <DistributeGemsAndArtifactsToExplorersEvent>event;
-        const eventDto:DistributeGemsAndArtifactsToExplorersEventDto = {
-            name: 'DistributeGemsAndArtifactsToExplorers',
-            data: {
-                explorers: {
-                    explorerId: e.leavingExplorersID,
-                    numberOfGemsInBag : e.numberOfGemsInLeavingExplorerBag,
-                    artifactsInBag : e.artifactsInBag
-                }
-            }
-        }
-        return eventDto;
-    }
+    return DistributeGemsAndArtifactsToExplorersEventDto(
+        leavingExplorersID, numberOfGemsInLeavingExplorerBag, artifactsInBag
+    )
 }
 
-interface DistributeGemsAndArtifactsToExplorersEventDto extends EventDto
-{
+interface DistributeGemsAndArtifactsToExplorersEventDto extends EventDto {
     name: 'DistributeGemsAndArtifactsToExplorers'
     data: {
-        explorers: ExplorerAndResource
+        leavingExplorersId: string[]
+        numberOfGemsInBag: number
+        artifactsInBag: string[]
     }
 }
 
-interface ExplorerAndResource {
-    explorerId: string[]
-    numberOfGemsInBag : number
-    artifactsInBag : string[]
+function DistributeGemsAndArtifactsToExplorersEventDto
+    (leavingExplorersId: string[], numberOfGemsInBag: number, artifactsInBag: string[])
+    : DistributeGemsAndArtifactsToExplorersEventDto {
+    return {
+        name: 'DistributeGemsAndArtifactsToExplorers',
+        data: { leavingExplorersId, numberOfGemsInBag, artifactsInBag }
+    }
 }

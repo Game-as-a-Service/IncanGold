@@ -1,15 +1,9 @@
-import { EventDto, EventDtoTransformer } from "./EventDto";
+import { EventDto } from "./EventDto";
 import { Event, NewTurnHazardCardTriggeredEvent } from "../../../domain/IncanGold"
 
-export class HazardCardEventTransformer extends EventDtoTransformer {
-    match(event: Event): boolean {
-        return (event instanceof NewTurnHazardCardTriggeredEvent);
-    }
-
-    transformToEventDto(event: Event): EventDto {
-        const { currentRound, currentTurn, cardName, appearsTwice } = (<NewTurnHazardCardTriggeredEvent>event);
-        return NewTurnHazardCardTriggeredEventDto(currentRound, currentTurn, cardName, appearsTwice);
-    }
+export function toNewTurnHazardCardTriggeredEventDto(event: Event): EventDto {
+    const { currentRound, currentTurn, cardName, appearsTwice } = (<NewTurnHazardCardTriggeredEvent>event);
+    return NewTurnHazardCardTriggeredEventDto(currentRound, currentTurn, cardName, appearsTwice);
 }
 
 interface NewTurnHazardCardTriggeredEventDto extends EventDto {

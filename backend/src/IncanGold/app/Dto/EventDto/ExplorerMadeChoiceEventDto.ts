@@ -1,27 +1,21 @@
-import { EventDto,EventDtoTransformer } from "./EventDto";
-import { Event,ExplorerMadeChoiceEvent } from "../../../domain/IncanGold"
+import { EventDto } from "./EventDto";
+import { Event, ExplorerMadeChoiceEvent } from "../../../domain/IncanGold"
 
-
-export class ExplorerMadeChoiceEventTransformer extends EventDtoTransformer{
-    match(event:Event): boolean {
-        return (event instanceof ExplorerMadeChoiceEvent);
-    }
-
-    transformToEventDto(event:Event):EventDto {
-        const eventDto:ExplorerMadeChoiceEventDto = {
-            name: 'ExplorerMadeChoice',
-            data:{
-                explorerWhoMadeChoice:(<ExplorerMadeChoiceEvent>event).explorerWhoMadeChoice
-            }
-        }
-        return eventDto;
-    }
+export function toExplorerMadeChoiceEventDto(event: Event): EventDto {
+    const {explorerWhoMadeChoice} = <ExplorerMadeChoiceEvent>event;
+    return ExplorerMadeChoiceEventDto(explorerWhoMadeChoice);
 }
-
 
 interface ExplorerMadeChoiceEventDto extends EventDto {
     name: 'ExplorerMadeChoice';
     data: {
         explorerWhoMadeChoice: string;
     };
+}
+
+function ExplorerMadeChoiceEventDto(explorerWhoMadeChoice: string): EventDto {
+    return {
+        name: 'ExplorerMadeChoice',
+        data: { explorerWhoMadeChoice }
+    }
 }

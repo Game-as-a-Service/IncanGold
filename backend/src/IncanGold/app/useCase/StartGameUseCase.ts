@@ -2,7 +2,7 @@ import { IIncanGoldRepository } from '../Repository';
 import type { IncanGold } from "../../domain/IncanGold";
 import { toGameStatus } from '../Dto/IncanGoldDto';
 import { EventDto } from '../Dto/EventDto/EventDto';
-import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
+import { eventDtoMapper } from '../Dto/EventDtoMapper';
 import { Output } from '../Dto/UseCaseOutput';
 import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
 
@@ -32,7 +32,7 @@ export default class StartGameUseCase {
 
         // 推
         const game = toGameStatus(incanGold);
-        const eventDtos = transformEventsToEventDtos.execute(events);
+        const eventDtos = eventDtoMapper.execute(events);
         this.eventDispatcher.emit('IncanGold', roomId, Output(game,eventDtos))
 
     }

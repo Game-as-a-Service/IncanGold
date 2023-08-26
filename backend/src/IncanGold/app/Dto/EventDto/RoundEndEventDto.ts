@@ -1,27 +1,21 @@
-import { Event,RoundEndEvent } from "../../../domain/IncanGold"
-import { EventDto,EventDtoTransformer } from "./EventDto"
+import { Event, RoundEndEvent } from "../../../domain/IncanGold"
+import { EventDto } from "./EventDto"
 
-export class RoundEndEventTransformer extends EventDtoTransformer {
-    match(event: Event): boolean {
-        return (event instanceof RoundEndEvent);
-    }
-
-    transformToEventDto(event: Event): EventDto {
-        const e = (<RoundEndEvent>event);
-        const eventDto:RoundEndEventDto = {
-            name: 'RoundEnd',
-            data: {
-                removedCards: e.discardedCardsID
-            }
-        }
-        return eventDto;
-    }
+export function toRoundEndEventDto(event: Event): EventDto {
+    const { discardedCardsId } = <RoundEndEvent>event;
+    return RoundEndEventDto(discardedCardsId);
 }
-
 
 interface RoundEndEventDto extends EventDto {
     name: 'RoundEnd'
     data: {
         removedCards: string[]
+    }
+}
+
+function RoundEndEventDto(removedCards: string[]): EventDto {
+    return {
+        name: 'RoundEnd',
+        data: { removedCards }
     }
 }

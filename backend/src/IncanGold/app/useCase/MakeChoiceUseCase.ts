@@ -1,6 +1,6 @@
 import { IIncanGoldRepository } from '../Repository';
 import { toGameStatus } from '../Dto/IncanGoldDto';
-import { transformEventsToEventDtos } from '../Dto/TransformEventsToEventDtos';
+import { eventDtoMapper } from '../Dto/EventDtoMapper';
 import { EventDto } from '../Dto/EventDto/EventDto';
 import { Event, IncanGold, Choice } from "../../domain/IncanGold"
 import { Output } from '../Dto/UseCaseOutput';
@@ -29,7 +29,7 @@ export default class MakeChoiceUseCase {
 
         // 推
         const game = toGameStatus(incanGold);
-        const eventDtos = transformEventsToEventDtos.execute(events);
+        const eventDtos = eventDtoMapper.execute(events);
         this.eventDispatcher.emit('IncanGold', gameId, Output(game,eventDtos))
     }
 }
