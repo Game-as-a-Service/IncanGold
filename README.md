@@ -27,7 +27,7 @@ pnpm install
 pnpm dev:frontend
 ```
 
-## 專案啟動
+## 前後端一起啟動
 
 在根目錄輸入
 
