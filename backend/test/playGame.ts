@@ -27,6 +27,7 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
     await enforcePlayerChoicesUseCase(server, '123', 3, 2);
     // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
     // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    await waitSeconds(2);
     await makeChoice(server, '123', 'johndoe', Choice.KeepGoing)
     // await makeChoice(server, '123', 'tke47', Choice.KeepGoing)
     // await makeChoice(server, '123', 'Jayyy', Choice.Quit)
@@ -43,8 +44,8 @@ async function enforcePlayerChoicesUseCase(server: any, roomId: string, round:nu
 }
 
 async function startGame(server: any, roomId: string, playerIds: string[]) {
-    await request(server).post(`/games/${roomId}/start`)
-        .send({ playerIds });
+    await request(server).post(`/rooms/${roomId}/start`);
+        // .send({ playerIds });
 }
 
 async function makeChoice(server: any, roomId: string, explorerId: string, choice: string) {
@@ -76,11 +77,17 @@ function socketPromise(client: Socket) {
     const socketPromise = new Promise((resolve: (obj) => void) => (socketCallback = resolve));
     // Once Socket.io receives the message event, it executes the listener function, which calls socketCallback.
     client.on('message', (msg: any) => {
-        console.log('on Message :\n', msg?.event);
+        console.log('on Message :\n', msg?.events )
         console.log('client : ', client.id);
         socketCallback(msg);
     });
     // This binds the message event to the Promise.
     // Return the Promise, so that it can be awaited.
     return socketPromise;
+}
+
+async function waitSeconds(num:number){
+    return new Promise(resolve=>{
+        setTimeout(resolve,num*1000);
+    })
 }
