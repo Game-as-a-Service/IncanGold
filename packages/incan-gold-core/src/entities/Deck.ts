@@ -38,7 +38,7 @@ export class Deck {
 export class TrashDeck {
     public cards: Map<number, Card[]>;
 
-    public constructor(cards: Map<number, Card[]>) {
+    constructor(cards: Map<number, Card[]>) {
         const hasContent = [...cards.entries()].length !== 0;
         this.cards = hasContent ? cards : this.setupCards();
     }
@@ -49,8 +49,12 @@ export class TrashDeck {
             .reduce((num, len) => num + len, 0);
     }
 
-    public appendCards(currentRound: number, cards: Card[]): void {
+    appendCards(currentRound: number, cards: Card[]): void {
         this.cards.set(currentRound, (this.cards.get(currentRound) || []).concat(cards));
+    }
+
+    get(round: number) {
+        return this.cards.get(round);
     }
 
     private setupCards() {

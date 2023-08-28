@@ -7,16 +7,17 @@ import { IncanGoldEventDispatcher } from "../infra/IncanGoldEventDispatcher";
 export function IncanGoldRouter() {
 
     const router = Router();
-    const controller = new IncanGoldController(IncanGoldRepository, new IncanGoldEventDispatcher);
+    const incanGoldEventDispatcher = new IncanGoldEventDispatcher;
+    const controller = new IncanGoldController(IncanGoldRepository, incanGoldEventDispatcher);
 
     // startGame
-    router.post('/:roomId/start', controller.startGame);
+    incanGoldEventDispatcher.on('startGame', controller.startGame)
 
     // makeChoice
-    router.patch('/:gameId/choice',controller.makeChoice);
+    router.patch('/:gameId/choice', controller.makeChoice);
 
     // enforcePlayerChoices
-    router.patch('/:gameId/enforceChoices',controller.enforcePlayerChoices);
+    router.patch('/:gameId/enforceChoices', controller.enforcePlayerChoices);
 
     return router;
 }

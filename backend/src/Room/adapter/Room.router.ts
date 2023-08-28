@@ -8,6 +8,9 @@ export function RoomRouter() {
     const router = Router();
     const controller = new RoomController(RoomRepository, new RoomEventDispatcher);
 
+    // startGame
+    router.post('/:roomId/start', controller.startGame);
+
     // createRoom
     router.post('/', controller.createRoom);
 

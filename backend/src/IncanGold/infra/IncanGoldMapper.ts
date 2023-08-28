@@ -55,12 +55,12 @@ export class IncanGoldMapper {
     }
 
     toData(game: IncanGold): IncanGoldData {
-        const { gameID, round, turn, explorers, tunnel, deck, trashDeck } = game;
+        const { gameId, round, turn, explorers, tunnel, deck, trashDeck } = game;
         const explorersData = explorers.map(e => this.toExplorerData(e));
         const tunnelData = tunnel.cards.map(c => this.toCardData(c));
         const deckData = deck.cards.map(c => this.toCardData(c));
         const trashDeckData = this.toTrashDeckData(trashDeck);
-        return IncanGoldData.generateBy(gameID, round, turn, tunnelData, deckData, trashDeckData, explorersData);
+        return IncanGoldData.generateBy(gameId, round, turn, tunnelData, deckData, trashDeckData, explorersData);
     }
 
     private toExplorerData(explorer: Explorer): ExplorerData {

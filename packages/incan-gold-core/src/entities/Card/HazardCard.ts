@@ -1,7 +1,7 @@
 import Card from "./Card";
 import Explorer from "../Explorer";
 import IncanGold from "../IncanGold";
-import Event from "../../events/Event"
+import { Event } from "../../events/Event"
 import { NewTurnHazardCardTriggeredEvent } from "../../events/NewTurnCardTriggeredEvent"
 import { hazardCards } from "../../constant/CardInfo";
 
@@ -30,7 +30,7 @@ export default class HazardCard extends Card {
       });
     }
 
-    return new NewTurnHazardCardTriggeredEvent(game, isHazardCardDuplicated);
+    return NewTurnHazardCardTriggeredEvent(game, isHazardCardDuplicated);
   }
 
 }

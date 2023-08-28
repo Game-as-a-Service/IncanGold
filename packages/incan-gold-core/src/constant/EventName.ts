@@ -8,4 +8,5 @@ export enum EventName {
     RoundEnd ='RoundEnd',
     TurnEnd = 'TurnEnd',
     GameOver = 'GameOver',
+    Error = 'Error'
 }

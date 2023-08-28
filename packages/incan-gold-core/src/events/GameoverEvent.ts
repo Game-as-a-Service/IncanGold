@@ -1,28 +1,32 @@
-import  Event from "./Event";
+import { Event } from "./Event";
 import { EventName } from "../constant/EventName";
 import IncanGold from "../entities/IncanGold";
 
-// 遊戲已結束
-export default class GameOverEvent extends Event{
-    public readonly winnerId:string;
-    public explorers:ExplorerAndPoints[];
+interface ExplorerAndPoints {
+    id: string,
+    totalPoints: number
+}
 
-    constructor(game:IncanGold){
-        super(EventName.GameOver);
-        this.winnerId = game.winnerId !== "" ? game.winnerId : "平手" ;
+function ExplorerAndPoints(id: string, totalPoints: number): ExplorerAndPoints {
+    return { id, totalPoints };
+}
 
-        this.explorers = [...game.explorers]
-        .sort((p1,p2) => p2.points - p1.points )
-        .map ( explorer => new ExplorerAndPoints(explorer.id,explorer.points))
+export interface GameOverEvent extends Event {
+    name: EventName.GameOver,
+    data: {
+        winnerId: string,
+        explorers: ExplorerAndPoints[],
     }
 }
 
-class ExplorerAndPoints{
-    public explorerId:string;
-    public totalPoints:number;
+export function GameOverEvent(game: IncanGold): Event {
+    const name = EventName.GameOver;
 
-    constructor(id:string, points:number){
-        this.explorerId = id;
-        this.totalPoints = points;
-    }
+    const winnerId = game.winnerId ?? "none(draw)";
+
+    const explorers = [...game.explorers]
+        .sort((e1, e2) => e2.points - e1.points)
+        .map(({ id, points }) => ExplorerAndPoints(id, points))
+
+    return Event(name, { winnerId, explorers })
 }

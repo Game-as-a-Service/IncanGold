@@ -1,10 +1,10 @@
 import { EventName } from "../constant/EventName";
 
-export default class Event {
-    public name:EventName;
-
-    constructor(name:EventName){
-        this.name = name;
-    }
+export interface Event {
+    name: EventName,
+    data: any;
 }
 
+export function Event(name: EventName, data: any): Event {
+    return { name, data };
+}

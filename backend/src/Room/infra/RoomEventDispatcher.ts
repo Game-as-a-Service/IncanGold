@@ -10,17 +10,17 @@ export class RoomEventDispatcher implements IEventDispatcher {
     constructor() {
         this.eventDispatcher = EventDispatcher.dispatcher;
 
-        this.eventDispatcher.on("joinRoom", (data) => {
+        this.on("joinRoom", (data) => {
             const { playerId, roomId } = data;
             SocketManager.manger.joinRoom(playerId, roomId)
         })
 
-        this.eventDispatcher.on("leaveRoom", (data) => {
+        this.on("leaveRoom", (data) => {
             const { playerId, roomId } = data;
             SocketManager.manger.leaveRoom(playerId, roomId)
         })
 
-        this.eventDispatcher.on("room", (useCaseOutput: Output) => {
+        this.on("room", (useCaseOutput: Output) => {
             for (let event of useCaseOutput.events) {
                 if (event.type === "joinRoom")
                     this.emit('joinRoom', event.data);
@@ -28,6 +28,8 @@ export class RoomEventDispatcher implements IEventDispatcher {
                     this.emit('leaveRoom', event.data);
                     SocketManager.manger.unicast(event.data.playerId, "you leaved room.");
                 }
+                if (event.type === "startGame") 
+                    this.emit('startGame', event.data);
             }
             const { id: roomId } = useCaseOutput.room;
             SocketManager.manger.broadcast(roomId, useCaseOutput);
@@ -36,6 +38,10 @@ export class RoomEventDispatcher implements IEventDispatcher {
 
     emit(eventName: string = 'room', ...args: any[]): boolean {
         return this.eventDispatcher.emit(eventName, ...args);
+    }
+
+    on(eventName: string , listener: (...args: any[]) => void){
+        this.eventDispatcher.on(eventName, listener);
     }
 
 }

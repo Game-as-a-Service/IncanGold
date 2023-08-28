@@ -5,15 +5,15 @@ import Tunnel from "./Tunnel"
 import { Choice } from "../constant/Choice";
 import { EventName } from "../constant/EventName"
 import Explorer from "./Explorer"
-import Event from "../events/Event"
-import RoundEndEvent from "../events/RoundEndEvent"
+import { Event } from "../events/Event"
+import { RoundEndEvent } from "../events/RoundEndEvent"
 import { ExplorerMadeChoiceEvent, AllExplorersMadeChoiceEvent } from "../events/MadeChoiceEvent"
-import DistributeGemsAndArtifactsToExplorersEvent from "../events/DistributeGemsAndArtifactsToExplorersEvent";
-import GameOverEvent from "../events/GameOverEvent";
+import { DistributeGemsAndArtifactsToExplorersEvent } from "../events/DistributeGemsAndArtifactsToExplorersEvent";
+import { GameOverEvent } from "../events/GameOverEvent";
 import Card from "./Card/Card";
 
 export default class IncanGold {
-    public gameID: string;
+    public gameId: string;
     public round: number;
     public turn: number;
     public tunnel: Tunnel;
@@ -22,7 +22,7 @@ export default class IncanGold {
     public explorers: Explorer[] = [];
 
     public forceExplore: boolean = false;
-    public winnerId: string = "";
+    public winnerId: string | null = null;
     public gameOver: boolean = false;
 
     constructor(
@@ -34,7 +34,7 @@ export default class IncanGold {
         deck: Card[] = [],
         trashDeck: Map<number, Card[]> = new Map()
     ) {
-        this.gameID = id;
+        this.gameId = id;
         this.round = round;
         this.turn = turn;
         this.tunnel = new Tunnel(tunnel);
@@ -82,25 +82,34 @@ export default class IncanGold {
     public *forceAllExplorersExplore(): IterableIterator<Event> {
         this.forceExplore = false;
         this.explorersInTunnel.forEach(explorer => explorer.choice = Choice.KeepGoing)
-        yield new AllExplorersMadeChoiceEvent(this);
+        yield AllExplorersMadeChoiceEvent(this);
         yield* this.endTurn();
     }
 
-    public *makeChoice(explorer: Explorer, choice: Choice): IterableIterator<Event> {
-        if (explorer.choice !== Choice.NotSelected) return;
-        explorer.choice = choice;
-        yield new ExplorerMadeChoiceEvent(explorer.id);
+    public *makeChoice(explorerId: string, choice: Choice): IterableIterator<Event> {
+        const explorer = this.explorersInTunnel.find(e => e.id === explorerId);
+        if (!explorer)
+            yield Event(EventName.Error, { desc: 'NotFoundInTunnel', explorerId });
+        else {
+            if (explorer.choice !== Choice.NotSelected)
+                yield Event(EventName.Error, { desc: 'AlreadySelected', explorerId });
 
-        if (this.allExplorersMadeChoice) {
-            yield new AllExplorersMadeChoiceEvent(this);
-            yield* this.endTurn();
+            explorer.choice = choice;
+            yield ExplorerMadeChoiceEvent(explorer.id);
+
+            if (this.allExplorersMadeChoice) {
+                yield AllExplorersMadeChoiceEvent(this);
+                yield* this.endTurn();
+            }
         }
     }
 
     public *endTurn(): IterableIterator<Event> {
         yield* this.getAndGo();
+
+        const { round, turn } = this;
+        yield Event(EventName.TurnEnd, { round, turn });
         this.turn++;
-        yield new Event(EventName.TurnEnd);
 
         if (this.tunnel.isAnyExplorerPresent) {
             yield* this.startTurn();
@@ -112,14 +121,14 @@ export default class IncanGold {
 
     public *getAndGo(): IterableIterator<Event> {
         this.distributeResources();
-        yield new DistributeGemsAndArtifactsToExplorersEvent(this);
+        yield DistributeGemsAndArtifactsToExplorersEvent(this);
         this.makeExplorersLeaveTunnel();
     }
 
     public *endRound(): IterableIterator<Event> {
         this.tunnel.discardCards(this);
         this.tunnel.remove();
-        yield new RoundEndEvent(this);
+        yield RoundEndEvent(this);
         this.round++;
 
         if (this.round <= 5) {
@@ -135,15 +144,16 @@ export default class IncanGold {
         if (winner)
             this.winnerId = winner.id;
         this.gameOver = true;
-        yield new GameOverEvent(this);
+        yield GameOverEvent(this);
     }
 
     public *enforcePlayerChoices(): IterableIterator<Event> {
-        const unselectedExplorers = this.explorersInTunnel
-            .filter(explorer => explorer.choice === Choice.NotSelected);
-        for (const explorer of unselectedExplorers) {
-            yield* this.makeChoice(explorer, Choice.KeepGoing);
-        }
+        const unselectedExplorerIds = this.explorersInTunnel
+            .filter(explorer => explorer.choice === Choice.NotSelected)
+            .map(explorer => explorer.id);
+        for (const id of unselectedExplorerIds)
+            yield* this.makeChoice(id, Choice.KeepGoing);
+
     }
 
     public putCardsBackIntoDeck(): void {

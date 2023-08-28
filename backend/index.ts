@@ -48,6 +48,6 @@ export const bootstrap = async function () {
     return httpServer;
 }
 
-bootstrap();
+// bootstrap();
 
 

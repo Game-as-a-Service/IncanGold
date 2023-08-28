@@ -1,8 +1,4 @@
 import { IIncanGoldRepository } from '../Repository';
-import type { IncanGold } from "../../domain/IncanGold";
-import { toGameStatus } from '../Dto/IncanGoldDto';
-import { EventDto } from '../Dto/EventDto/EventDto';
-import { eventDtoMapper } from '../Dto/EventDtoMapper';
 import { Output } from '../Dto/UseCaseOutput';
 import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
 
@@ -22,7 +18,7 @@ export default class StartGameUseCase {
         const { roomId, playerIds } = input;
 
         // 創(沒得查，因為還沒有game)
-        var incanGold = await this.incanGoldRepository.create(roomId, playerIds);
+        const incanGold = await this.incanGoldRepository.create(roomId, playerIds);
 
         // 改
         const events = Array.from(incanGold.start());
@@ -31,10 +27,7 @@ export default class StartGameUseCase {
         await this.incanGoldRepository.save(incanGold);
 
         // 推
-        const game = toGameStatus(incanGold);
-        const eventDtos = eventDtoMapper.execute(events);
-        this.eventDispatcher.emit('IncanGold', roomId, Output(game,eventDtos))
-
+        this.eventDispatcher.emit('IncanGold', roomId, Output(incanGold, events))
     }
 }
 

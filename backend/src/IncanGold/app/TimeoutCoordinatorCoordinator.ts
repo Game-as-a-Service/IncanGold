@@ -35,7 +35,7 @@ export class TimeoutCoordinator {
             const timeId = setTimeout(async () => {
                 const useCase = new EnforcePlayerChoicesUseCase(this.newRepo, this.eventDispatcher);
                 await useCase.execute(enforcePlayerChoicesInput);
-            }, 1000); // 15000
+            }, 4000); // 15000
 
             this.manager.set(gameId, GameTask(round, turn, Number(timeId)));
         }
