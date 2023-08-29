@@ -1,7 +1,6 @@
-import { EventDto } from "./EventDto";
 import { Event, EventName } from "../../domain/IncanGold";
 
-class EventDtoMapper {
+class EventFilter {
 
     private eventNames = [
         EventName.AllExplorersMadeChoice,
@@ -13,18 +12,18 @@ class EventDtoMapper {
         EventName.Error
     ]
 
-    public filter(event: Event): EventDto | null {
+    public filter(event: Event): Event | null {
         if (this.eventNames.includes(event.name))
             return event;
         return null;
     }
 
-    public execute(events: Event[]): EventDto[] {
+    public execute(events: Event[]): Event[] {
         return events
             .map(event => this.filter(event))
             .filter(event => !!event);
     }
 }
 
-const eventDtoMapper = new EventDtoMapper();
-export { eventDtoMapper };
+const eventFilter = new EventFilter();
+export { eventFilter };
