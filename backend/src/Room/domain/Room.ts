@@ -36,7 +36,7 @@ export class Room {
 
     // Check if all players are ready
     get allReady(): boolean {
-        return !!([...this.seats.values()].filter(p => p.state === STATE.NOTREADY).length);
+        return !([...this.seats.values()].filter(p => p.state === STATE.NOTREADY).length);
     }
 
     // Check if game can be started

@@ -128,12 +128,9 @@ const handleStartGame = () => {
   // const params = {
   //   playerIds: Object.values(room.value.seats).filter(seat=>seat.state === 'READY').map(seat => seat.playerId),
   // }
-  useFetch(`http://localhost:8000/games/${roomId}/start`, {
+  useFetch(`http://localhost:8000/rooms/${roomId}/start`, {
     method: 'POST',
     // body: params
-  }).then((data) => {
-    console.log('start game:', data)
-    phase.value = 'PLAYING'
   })
 
 }
