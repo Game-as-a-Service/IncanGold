@@ -1,3 +1,4 @@
+import StartGameUseCase, { StartGameInput } from "../app/usecase/StartGameUseCase";
 import CreateRoomUseCase, { CreateRoomInput } from "../app/usecase/CreateRoomUseCase";
 import JoinRoomUseCase, { JoinRoomInput } from "../app/usecase/JoinRoomUseCase";
 import LeaveRoomUseCase, { LeaveRoomInput } from "../app/usecase/LeaveRoomUseCase";
@@ -18,9 +19,19 @@ export class RoomController {
     private repoClass: new () => IRoomRepository;
     private eventDispatcher: IEventDispatcher;
 
-    constructor(repoClass: new () => IRoomRepository, eventDispatcher:IEventDispatcher) {
+    constructor(repoClass: new () => IRoomRepository, eventDispatcher: IEventDispatcher) {
         this.repoClass = repoClass;
         this.eventDispatcher = eventDispatcher;
+    }
+
+    startGame = async (req: Request, res: Response) => {
+        const { roomId } = req.params;
+        const input: StartGameInput = { roomId }
+
+        const startGameUseCase = new StartGameUseCase(this.newRepo, this.eventDispatcher);
+        await startGameUseCase.execute(input);
+
+        res.sendStatus(200);
     }
 
     createRoom = async (req: Request, res: Response) => {

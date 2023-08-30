@@ -36,13 +36,24 @@ export class Room {
 
     // Check if all players are ready
     get allReady(): boolean {
-        return !!([...this.seats.values()].filter(p => p.state === STATE.NOTREADY).length);
+        return !([...this.seats.values()].filter(p => p.state === STATE.NOTREADY).length);
     }
 
     // Check if game can be started
     get canStartGame(): boolean {
         return (this.seatedPlayerCount >= 3 && this.allReady);
     }
+
+    startGame() {
+        if (this.canStartGame) {
+            const playerIds = [...this.seats.values()]
+                .filter(p => !!p.playerId)
+                .map(p => p.playerId);
+            return this.makeEvent('startGame', { playerIds, roomId: this.id });
+        } else
+            return this.makeEvent("can't StartGame", null);
+    }
+
 
     sitDown(playerId: string, seatNumber?: number) {
         if (!seatNumber) {
@@ -91,7 +102,7 @@ export class Room {
 
     setName(name: string) {
         this.name = name;
-        return this.makeEvent('name was changed', {name});
+        return this.makeEvent('name was changed', { name });
     }
 
     *ready(playerId: PlayerId) {
@@ -112,14 +123,14 @@ export class Room {
         seat.lock();
         return this.makeEvent('seatLocked', { seatNumber: position });
     }
-    
+
 
     unlockSeat(position: number) {
         const seat = this.seats.get(position);
         seat.unlock();
         return this.makeEvent('seatUnlocked', { seatNumber: position });
     }
-    
+
 
     // Get first seated player
     private get getSeatedPlayer(): Seat {

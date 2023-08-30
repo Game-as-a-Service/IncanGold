@@ -29,7 +29,6 @@
   "homepage": "https://github.com/Game-as-a-Service/IncanGold#readme",
   "dependencies": {
     "events": "^3.3.0",
-    "google-auth-library": "^9.0.0",
     "pnpm": "^8.6.9",
     "vitest": "^0.33.0"
   }

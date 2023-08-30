@@ -1,9 +1,9 @@
-export { default as DistributeGemsAndArtifactsToExplorersEvent } from "./src/events/DistributeGemsAndArtifactsToExplorersEvent"
-export { default as Event } from "./src/events/Event"
-export { default as GameOverEvent} from "./src/events/GameOverEvent"
+export { DistributeGemsAndArtifactsToExplorersEvent } from "./src/events/DistributeGemsAndArtifactsToExplorersEvent"
+export { Event } from "./src/events/Event"
+export { GameOverEvent } from "./src/events/GameOverEvent"
 export { ExplorerMadeChoiceEvent, AllExplorersMadeChoiceEvent } from "./src/events/MadeChoiceEvent"
 export { NewTurnArtifactCardTriggeredEvent, NewTurnHazardCardTriggeredEvent, NewTurnTreasureCardTriggeredEvent } from "./src/events/NewTurnCardTriggeredEvent"
-export { default as RoundEndEvent } from "./src/events/RoundEndEvent"
+export { RoundEndEvent } from "./src/events/RoundEndEvent"
 
 export { default as Card } from "./src/entities/Card/Card"
 export { default as ArtifactCard } from "./src/entities/Card/ArtifactCard"

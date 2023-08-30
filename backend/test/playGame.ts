@@ -17,17 +17,25 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
     // const sp2 = socketPromise(client2);
     const sp3 = socketPromise(client3);
 
-    // 開房間 + 加入房間
+    // 開房間 + 加入房間 + 準備
     await createRoom(server, 'johndoe', 'room1');
     await joinRoom(server, '123', 'tke47');
     await joinRoom(server, '123', 'Jayyy');
 
+    await ready(server, '123', 'Jayyy')
+    await ready(server, '123', 'tke47')
+    await ready(server, '123', 'johndoe')
+
+    await waitSeconds(2);
+
     // 開始遊戲
     await startGame(server, '123', ['johndoe', 'tke47', 'Jayyy']);
     await enforcePlayerChoicesUseCase(server, '123', 3, 2);
-    await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    await waitSeconds(2);
     await makeChoice(server, '123', 'johndoe', Choice.KeepGoing)
-    await makeChoice(server, '123', 'tke47', Choice.KeepGoing)
+    // await makeChoice(server, '123', 'tke47', Choice.KeepGoing)
     // await makeChoice(server, '123', 'Jayyy', Choice.Quit)
 
     // 確保socket處理函式有被執行
@@ -42,8 +50,8 @@ async function enforcePlayerChoicesUseCase(server: any, roomId: string, round:nu
 }
 
 async function startGame(server: any, roomId: string, playerIds: string[]) {
-    await request(server).post(`/games/${roomId}/start`)
-        .send({ playerIds });
+    await request(server).post(`/rooms/${roomId}/start`);
+        // .send({ playerIds });
 }
 
 async function makeChoice(server: any, roomId: string, explorerId: string, choice: string) {
@@ -61,6 +69,11 @@ async function joinRoom(server: any, roomId: string, userId: string) {
         .send({ playerId: userId });
 }
 
+async function ready(server: any, roomId: string,userId: string) {
+    await request(server).patch(`/rooms/${roomId}/ready`)
+        .send({ playerId: userId });
+}
+
 async function establishConnection(userId: string) {
     const JWT_SECRET = 'secret';
     const token = jwt.sign({ userId }, JWT_SECRET);
@@ -75,11 +88,17 @@ function socketPromise(client: Socket) {
     const socketPromise = new Promise((resolve: (obj) => void) => (socketCallback = resolve));
     // Once Socket.io receives the message event, it executes the listener function, which calls socketCallback.
     client.on('message', (msg: any) => {
-        console.log('on Message :\n', msg);
+        console.log('on Message :\n', msg.events )
         console.log('client : ', client.id);
         socketCallback(msg);
     });
     // This binds the message event to the Promise.
     // Return the Promise, so that it can be awaited.
     return socketPromise;
+}
+
+async function waitSeconds(num:number){
+    return new Promise(resolve=>{
+        setTimeout(resolve,num*1000);
+    })
 }

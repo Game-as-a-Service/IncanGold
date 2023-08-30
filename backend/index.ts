@@ -26,7 +26,7 @@ export const bootstrap = async function () {
 
     app.use((req, res, next) => {
         res.setHeader("Access-Control-Allow-Origin", "*"); // 或指定具體的來源（Origin）
-        res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
         res.setHeader("Access-Control-Allow-Headers", "Content-Type");
         next();
     });
@@ -48,6 +48,6 @@ export const bootstrap = async function () {
     return httpServer;
 }
 
-// boostrap();
+// bootstrap();
 
 

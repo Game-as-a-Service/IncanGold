@@ -1,6 +1,6 @@
 import Card from "./Card";
 import IncanGold from "../IncanGold";
-import Event from "../../events/Event"
+import { Event } from "../../events/Event"
 import Artifact from "../Artifact";
 import { artifactCards } from "../../constant/CardInfo";
 import { NewTurnArtifactCardTriggeredEvent } from "../../events/NewTurnCardTriggeredEvent"
@@ -22,7 +22,7 @@ export default class ArtifactCard extends Card {
   }
 
   public trigger(game: IncanGold): Event {
-    return new NewTurnArtifactCardTriggeredEvent(game);
+    return NewTurnArtifactCardTriggeredEvent(game);
   }
 
   public giveArtifact(): Artifact {

@@ -15,18 +15,15 @@ export class IncanGoldController {
     constructor(Repository: new () => IIncanGoldRepository, eventDispatcher: IEventDispatcher) {
         this.Repository = Repository;
         this.eventDispatcher = eventDispatcher;
-        this.timeoutCoordinator = new TimeoutCoordinator(Repository,eventDispatcher);
+        this.timeoutCoordinator = new TimeoutCoordinator(Repository, eventDispatcher);
     }
 
-    startGame = async (req: Request, res: Response) => {
-        const { roomId } = req.params;
-        const { playerIds } = req.body;
+    startGame = async (data: any) => {
+        const { roomId, playerIds } = data;
         const input: StartGameInput = { roomId, playerIds };
 
-        const createRoomUseCase = new StartGameUseCase(this.newRepo, this.eventDispatcher);
-        await createRoomUseCase.execute(input);
-
-        res.sendStatus(200);
+        const startGameUseCase = new StartGameUseCase(this.newRepo, this.eventDispatcher);
+        await startGameUseCase.execute(input);
     }
 
     makeChoice = async (req: Request, res: Response) => {
@@ -35,16 +32,7 @@ export class IncanGoldController {
         const input: MakeChoiceInput = { gameId, explorerId, choice };
 
         const makeChoiceUseCase = new MakeChoiceUseCase(this.newRepo, this.eventDispatcher);
-
-        let pass = false;
-        while (!pass) {
-            try {
-                await makeChoiceUseCase.execute(input);
-                pass = true;
-            } catch (err) {
-                console.log(err);
-            }
-        }
+        await makeChoiceUseCase.execute(input);
         res.sendStatus(200);
     }
 
