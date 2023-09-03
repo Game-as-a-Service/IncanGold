@@ -29,7 +29,10 @@ function clickSocial(name) {
 </script>
 
 <template>
-  <div class="pages-login">
+  <loby-layout>
+    <div>login</div>
+  </loby-layout>
+  <!-- <div class="pages-login">
     <div class="pages-login__title">
       <p class="font-cubic">印加寶藏</p>
       <p class="font-cubic">INCAN GOLD</p>
@@ -66,7 +69,7 @@ function clickSocial(name) {
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <style>
