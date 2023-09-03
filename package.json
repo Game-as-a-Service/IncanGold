@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm run --stream --recursive dev",
+    "dev:frontend": "pnpm run --filter frontend dev",
     "build": "pnpm run --stream --recursive build",
     "test": "pnpm run --stream --recursive test",
     "test:core": "pnpm run --filter core test",
