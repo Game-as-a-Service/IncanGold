@@ -15,3 +15,25 @@ web Framework : express
 資料庫 : mysql
 docker
 RESTful API
+
+
+## frontend 啟動
+
+在根目錄輸入
+
+```
+pnpm install
+
+pnpm dev:frontend
+```
+
+## 前後端一起啟動
+
+在根目錄輸入
+
+```
+pnpm install
+
+pnpm dev
+```
+
