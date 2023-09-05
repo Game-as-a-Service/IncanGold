@@ -73,8 +73,15 @@ function goBack() {
 <style>
 .pages-room-list__main {
   position: relative;
-  width: 1231px;
-  padding: 56px 45px 45px 56px;
+  width: 573px;
+  padding: 56px 45px 45px 67px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+  .pages-room-list__main {
+    width: 1131px;
+  }
 }
 
 .pages-room-list__back-arrow {
@@ -95,5 +102,10 @@ function goBack() {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+}
+
+.pages-room-list__room-list > div {
+  margin-right: 11px;
+  margin-bottom: 11px;
 }
 </style>

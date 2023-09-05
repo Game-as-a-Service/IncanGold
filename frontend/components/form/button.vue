@@ -45,6 +45,10 @@ function emitClick() {
   cursor: pointer;
 }
 
+.components-form-login-button:hover {
+  opacity: 0.6;
+}
+
 .components-form-login-button:disabled {
   cursor: not-allowed;
 }

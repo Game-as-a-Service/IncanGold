@@ -28,6 +28,7 @@ const { info } = toRefs(props)
 
 <style>
 .components-room-card {
+  min-width: 450px;
   width: calc((100% - 22px) / 2);
   height: 141px;
   box-sizing: border-box;
@@ -37,8 +38,6 @@ const { info } = toRefs(props)
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-right: 11px;
-  margin-bottom: 11px;
   border-radius: 20px;
 }
 

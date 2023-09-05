@@ -14,7 +14,7 @@ function chagneRoute(path) {
   <loby-layout>
     <template #frame>
       <div class="pages-main__actions">
-        <form-button text="隨機加入" @click="chagneRoute('')" />
+        <form-button text="隨機加入" @click="chagneRoute('/')" />
         <form-button text="創建房間" @click="chagneRoute('/create-room')" />
         <form-button text="房間清單" @click="chagneRoute('/room-list')" />
         <form-button text="設定" @click="chagneRoute('')" />
