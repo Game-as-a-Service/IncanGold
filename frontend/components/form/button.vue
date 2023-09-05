@@ -46,7 +46,11 @@ function emitClick() {
 }
 
 .components-form-login-button:hover {
-  opacity: 0.6;
+  background-color: #fff7d9;
+}
+
+.components-form-login-button:active {
+  background-color: #ffeeb0;
 }
 
 .components-form-login-button:disabled {
