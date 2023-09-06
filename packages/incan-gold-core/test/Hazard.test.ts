@@ -1,80 +1,57 @@
-import IncanGold from '../src/domain/entities/IncanGold';
-import TreasureCard from '../src/domain/entities/Card/TreasureCard'
-import HazardCard from '../src/domain/entities/Card/HazardCard';
-import Player,{Choice} from '../src/domain/entities/Player';
-import Event  from '../src/domain/events/Event';
-import { NewTurnHazardCardTriggeredEvent } from '../src/domain/events/NewTurnCardTriggeredEvent';
-import { AllPlayersMadeChoiceEvent } from '../src/domain/events/MadeChoiceEvent';
+import HazardCard from '../src/entities/Card/HazardCard';
+import { RoundEndEvent } from '../src/events/RoundEndEvent';
+import { Choice } from '../src/constant/Choice';
+import { AllExplorersMadeChoiceEvent } from '../src/events/MadeChoiceEvent';
+import { setupIncanGold, putCardInTunnel } from './Utils/TestUtils';
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
-describe("災難卡被放入通道",()=>{
-    let game:IncanGold;
+describe("災難卡被放入通道", () => {
 
-    beforeEach(()=>{
-        game = new IncanGold();
-    })
-
-    it('回合第一張卡為災難卡，玩家只能繼續探險',()=>{
+    it('回合第一張卡為災難卡，玩家只能繼續探險', () => {
         // given 
-        game.setPlayerCount(3);
-        game.round = 1;
-        game.deck.appendCard(new HazardCard("HF1",'fire'));
+        const game = setupIncanGold('1', 1, 0, ['1', '2', '3']);
+        game.deck.appendCard(new HazardCard("HF1"));
         const iterator = game.startRound();
-        
-        // when 
-        console.log(iterator.next().value); // NewTurnHazardCardTriggeredEvent
+
+        // when NewTurnHazardCardTriggered
+        iterator.next(); 
 
         // then 
-        let event = iterator.next().value; // new AllPlayersMadeChoiceEvent
-        expect(event.name).toBe("AllPlayersMadeChoice");
-        Object.values((<AllPlayersMadeChoiceEvent>event).allPlayersChoices)
-        .forEach(choice=>expect(choice===Choice.KeepGoing));
+        let event: AllExplorersMadeChoiceEvent = iterator.next().value;
+        const { allExplorersChoices } = event.data;
+        Object.values(allExplorersChoices)
+            .forEach(choice => expect(choice).toBe(Choice.KeepGoing));
     })
 
-    it('災難卡種類尚未重複出現,繼續此round',()=>{
+    it('災難卡種類尚未重複出現,繼續此round', () => {
         // given 
-        game.setPlayerCount(1);
-        game.round = 1;
-        game.makePlayersEnterTunnel();
-        game.tunnel.appendCard(new HazardCard("HS1",'spider'));
-        game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new HazardCard("HP1",'python'));
-        game.tunnel.lastCard.trigger(game);
-        game.deck.appendCard(new HazardCard("HF1",'fire'));
-        const iterator = game.startTurn();
+        const game = setupIncanGold('1', 1, 3, ['1']);
+        putCardInTunnel(["HS1", "HP1"], game)
+        game.deck.appendCard(new HazardCard("HF1"));
 
-        // when 
-        console.log(iterator.next().value); // NewTurnHazardCardTriggeredEvent
-
+        // when NewTurnHazardCardTriggeredEvent
+        game.startTurn().next(); 
+        
         // then
-        const iterator2 = game.makeChoice(game.playersInTunnel[0],Choice.Quit);
-        iterator2.next();
-        console.log(iterator2.next().value);
         expect(game.round).toBe(1) // 依然在第一回合
     })
 
-    it('災難卡種類已重複出現，玩家們皆清空背包、離開通道',()=>{
+    it('災難卡種類已重複出現，玩家們皆清空背包、離開通道', () => {
         // given 
-        game.round = 1;
-        game.resetHazardCardCounter();
-        game.setPlayerCount(2);
-        game.makePlayersEnterTunnel();
-        game.tunnel.appendCard(new TreasureCard("T4",4));
-        game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new HazardCard("HS1",'spider'));
-        game.tunnel.lastCard.trigger(game);
-        game.tunnel.appendCard(new HazardCard("HP1",'python'));
-        game.tunnel.lastCard.trigger(game);
-        game.deck.appendCard(new HazardCard("HP2",'python'));
+        const game = setupIncanGold('1', 1, 4, ['1', '2']);
+        putCardInTunnel(["T4", "HS1", "HP1"], game)
+        game.deck.appendCard(new HazardCard("HP2"));
 
         // when 災難卡重複出現
         const iterator = game.startTurn();
-        console.log(iterator.next().value); // NewTurnHazardCardTriggeredEvent
+        iterator.next();
 
         // then 玩家們皆回到營地；背包內的資源沒有被加入總分
-        game.players.forEach(player=>expect(player.inTent).toBe(true));
-        game.players.forEach(player=>expect(player.points).toBe(0))
-        console.log(iterator.next().value); // RoundEndEvent
+        game.explorers.forEach(explorer => expect(explorer.inTent).toBe(true));
+        game.explorers.forEach(explorer => expect(explorer.points).toBe(0))
+
+        const event:RoundEndEvent = iterator.next().value;
+        expect(event.data.discardedCardIds[0]).toBe("HP2");
     })
 
 })

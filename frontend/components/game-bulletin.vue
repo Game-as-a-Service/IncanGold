@@ -72,9 +72,16 @@ onMounted(() => {
   overflow-y: scroll;
   height: 100%;
   padding-right: 5px;
+  scrollbar-width: thin;
+	scrollbar-color: rgba(4, 4, 4, 0.35)  rgba(132, 132, 132, 0.2);
 }
 .game-bulletin__wrapper::-webkit-scrollbar {
   width: 16px;
+}
+
+.game-bulletin__wrapper::-webkit-scrollbar-track{
+	background-color: rgba(132, 132, 132, 0.2);
+	border-radius: 10px;
 }
 
 .game-bulletin__wrapper::-webkit-scrollbar-thumb {

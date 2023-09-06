@@ -1,46 +1,45 @@
 import Card from "./Card";
-import Tunnel from "../Tunnel";
 import Gem from "../Gem";
-import Player from "../Player";
+import Explorer from "../Explorer";
+import IncanGold from "../IncanGold";
+import { Event } from "../../events/Event";
+import { NewTurnTreasureCardTriggeredEvent } from "../../events/NewTurnCardTriggeredEvent";
+import { treasureCards } from "../../constant/CardInfo";
 
-class TresasureCard extends Card {
+export default class TreasureCard extends Card {
   public readonly points: number;
   public gems: Gem[];
 
-  constructor(points: number) {
-    super();
-    this.points = points;
-    this.gems = [];
+  constructor(id: string, remainingGems?: number) {
+    super(id);
+    if (treasureCards[id] === undefined) throw new Error(`id: ${id} does not exist.`);
+    this.points = treasureCards[id];
+    this.gems = remainingGems === undefined ? [] : Array(remainingGems).fill(new Gem());
   }
 
   public generateGems(): void {
-    for (let i = 0; i < this.points; i++) {
-      this.gems.push(new Gem());
-    }
+    this.gems = Array(this.points).fill(new Gem());
   }
 
-  public devideGemsTo(players:Player[]): void {
-    // iterations:分配次數
-    var iterations = Math.floor(this.gems.length/players.length);
-
-    for(let i=0;i<iterations;i++){
-      players.forEach(player=>{
-        let gem = this.gems.pop();
-        if(gem) player.putGemInBag(gem)
-      });
-    }
+  public clear(): void {
+    this.gems = [];
   }
 
-  public trigger(): void {
+  get numOfGems(): number {
+    return this.gems.length;
+  }
+
+  public distributeGemsTo(explorers: Explorer[]): void {
+    var eachOneCanGet = Math.floor(this.numOfGems / explorers.length);
+    var left = this.numOfGems - (eachOneCanGet * explorers.length);
+    explorers.forEach(explorer => explorer.putGemsInBag(Array(eachOneCanGet).fill(new Gem())));
+    console.log(left);
+    this.gems = Array(left).fill(new Gem());
+  }
+
+  public trigger(game: IncanGold): Event {
     this.generateGems();
-    var players = this.tunnel?.players.filter(player=>player.inTent === false);
-    if(players) this.devideGemsTo(players);
+    this.distributeGemsTo(game.explorersInTunnel);
+    return NewTurnTreasureCardTriggeredEvent(game);
   }
-
-  public clear():void{
-    this.gems.splice(0,this.gems.length);
-  }
-
 }
-
-export default TresasureCard;

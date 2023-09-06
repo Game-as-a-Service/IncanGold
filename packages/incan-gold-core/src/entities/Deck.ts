@@ -1,45 +1,69 @@
 import Card from "./Card/Card"
-import HazardCard, {hazardNames} from "./Card/HazardCard"
+import { hazardCards, treasureCards } from "../constant/CardInfo";
+import HazardCard from "./Card/HazardCard"
 import TreasureCard from "./Card/TreasureCard"
 
-export class Deck{
-    public cards : Card[] = [];
+export class Deck {
+    public cards: Card[];
 
-    constructor(){
-        hazardNames.forEach(name=>{
-            for(let i=0;i<3;i++)
-                this.cards.push(new HazardCard(name));
-        });
-        // 5 11 13 是我自己捕的，找不到剩下3張神器卡的分數
-        var pointsList = [1, 2, 3, 4, 5, 7, 9, 11, 13, 14, 15, 17, 5, 11, 13]
-        pointsList.forEach(points=>{
-            this.cards.push(new TreasureCard(points));
-        });
+    constructor(cards: Card[] = []) {
+        if (cards.length)
+            this.cards = cards;
+        else {
+            const cards: Card[] = [...Object.keys(treasureCards)].map(id => new TreasureCard(id));
+            this.cards = cards.concat([...Object.keys(hazardCards)].map(id => new HazardCard(id)));
+        }
     }
 
-    public shuffle() : void {
+    get numOfCards(): number {
+        return this.cards.length;
+    }
+
+    public shuffle(): void {
         for (let i = this.cards.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
         }
     }
 
-    public appendCard(card:Card) : void {
+    public appendCard(card: Card): void {
         this.cards.push(card);
     }
 
-    public drawCard() : Card|undefined {
+    public drawCard(): Card | undefined {
         return this.cards.pop();
     }
 }
 
-export class TrashDeck{
-    public cards : Card[] = [];
+export class TrashDeck {
+    public cards: Map<number, Card[]>;
 
-    public appendCard(card:Card) : void {
-        this.cards.push(card);
+    constructor(cards: Map<number, Card[]>) {
+        const hasContent = [...cards.entries()].length !== 0;
+        this.cards = hasContent ? cards : this.setupCards();
     }
 
+    get numOfCards(): number {
+        return [...this.cards.values()]
+            .map(cards => cards.length)
+            .reduce((num, len) => num + len, 0);
+    }
+
+    appendCards(currentRound: number, cards: Card[]): void {
+        this.cards.set(currentRound, (this.cards.get(currentRound) || []).concat(cards));
+    }
+
+    get(round: number) {
+        return this.cards.get(round);
+    }
+
+    private setupCards() {
+        const cards = new Map<number, Card[]>();
+        [1, 2, 3, 4, 5].forEach(round => {
+            cards.set(round, []);
+        });
+        return cards;
+    }
 }
 
 export default {

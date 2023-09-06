@@ -1,24 +1,49 @@
-import Player from "./Player";
+import Gem from "./Gem"
+import Artifact from "./Artifact"
 import Bag from "./Bag"
 
-class Tent {
-  public readonly id: number;
-  public points: number;
-  public player: Player | null = null;
-  public bags:Bag[] = [];
+export default class Tent {
+    private _points: number;
+    private _numOfGems: number;
+    private _artifacts: Artifact[];
 
-  constructor(id: number) {
-    this.id = id;
-    this.points = 0;
-  }
-
-  public updatePoints(): void {
-    if(this.player?.bag){
-      this.points += this.player.bag.points;
-      var bag = this.player?.leaveBag();
-      if(bag) this.bags.push(bag);
+    constructor(points: number = 0, numOfGems: number = 0, artifacts: Artifact[] = []) {
+        this._points = points;
+        this._numOfGems = numOfGems;
+        this._artifacts = artifacts;
     }
-  }
-}
 
-export default Tent;
+    public update(bag: Bag) {
+        this.points += bag.points;
+        this.numOfGems += bag.numOfGems;
+        this._artifacts = this._artifacts.concat(bag.artifacts);
+    }
+
+    set points(points: number) {
+        this._points = points;
+    }
+
+    get points(): number {
+        return this._points;
+    }
+
+    set numOfGems(numOfGems: number) {
+        this._numOfGems = numOfGems;
+    }
+
+    get numOfGems(): number {
+        return this._numOfGems;
+    }
+
+    set artifacts(artifacts: Artifact[]) {
+        this._artifacts = artifacts;
+    }
+
+    get artifacts(): Artifact[] {
+        return this._artifacts;
+    }
+
+    get artifactsNames(): string[] {
+        return this._artifacts.map(artifact => artifact.name);
+    }
+}

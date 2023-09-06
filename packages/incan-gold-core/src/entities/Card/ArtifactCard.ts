@@ -1,20 +1,34 @@
 import Card from "./Card";
-import Tunnel from "../Tunnel";
+import IncanGold from "../IncanGold";
+import { Event } from "../../events/Event"
+import Artifact from "../Artifact";
+import { artifactCards } from "../../constant/CardInfo";
+import { NewTurnArtifactCardTriggeredEvent } from "../../events/NewTurnCardTriggeredEvent"
 
-export const artifactList =  {"黑暗大法師":12,"派大星":10,"金輪":8,"雞蛋糕模具":7,"杯子":5};
+export default class ArtifactCard extends Card {
 
-class ArtifactCard extends Card {
+  public readonly name: string;
+  public readonly points: number;
+  public artifact: Artifact | null = null;
+  public isArtifactPresent: boolean;
 
-  public readonly name : string;
-  public readonly points : number;
-
-  constructor(name:string,points:number) {
-    super();
+  constructor(id: string, isArtifactPresent: boolean = true) {
+    super(id);
+    const { name, points } = artifactCards[id];
     this.name = name;
     this.points = points;
+    this.isArtifactPresent = isArtifactPresent;
+    this.artifact = isArtifactPresent ? new Artifact(name, points) : null;
   }
-  
-  public trigger(): void {}
-}
 
-export default ArtifactCard;
+  public trigger(game: IncanGold): Event {
+    return NewTurnArtifactCardTriggeredEvent(game);
+  }
+
+  public giveArtifact(): Artifact {
+    this.isArtifactPresent = false;
+    if (this.artifact) return this.artifact;
+    throw new Error("Artifact is not present");
+  }
+
+}

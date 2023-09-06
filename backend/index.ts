@@ -1,12 +1,53 @@
 import express, { Express, Request, Response } from "express";
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
+import { SocketConnection } from "./src/Shared/infra/socket";
+import { MySqlContainer } from "testcontainers";
+import { AppDataSource, configDataSource } from "./src/Shared/infra/data-source";
+import { AuthRouter } from "./src/User/adapter/Auth.router";
+import { RoomRouter } from "./src/Room/adapter/Room.router";
+import { IncanGoldRouter } from "./src/IncanGold/adapter/IncanGold.router";
 
-const port = 8000;
-const app:Express = express();
+export const bootstrap = async function () {
+    const container = await new MySqlContainer()
+        .withExposedPorts(3306)
+        .withRootPassword('123456')
+        .withDatabase('test')
+        .start();
 
-app.get("/", (_req: Request, res: Response) => {
-    res.end("Hellow world")
-})
+    configDataSource(container.getHost(), container.getMappedPort(3306));
+    await AppDataSource.initialize();
 
-app.listen(port, () => {
-    console.log(`listening on port ${port}`)
-})
+    const port = 8000;
+    const app: Express = express();
+    const httpServer = createServer(app);
+
+    app.use(express.json());
+
+    app.use((req, res, next) => {
+        res.setHeader("Access-Control-Allow-Origin", "*"); // 或指定具體的來源（Origin）
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        next();
+    });
+
+    app.use('/auth', AuthRouter());
+    app.use('/rooms', RoomRouter());
+    app.use('/games', IncanGoldRouter())
+
+    app.get("/", (req: Request, res: Response) => {
+        res.end("Hellow handsome")
+    })
+
+    SocketConnection(httpServer);
+
+    httpServer.listen(port, () => {
+        console.log(`listening on port ${port}`)
+    })
+
+    return httpServer;
+}
+
+// bootstrap();
+
+

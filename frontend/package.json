@@ -1,5 +1,5 @@
 {
-	"name": "nuxt-app",
+	"name": "frontend",
 	"private": true,
 	"scripts": {
 		"build": "nuxt build",
@@ -9,10 +9,10 @@
 		"postinstall": "nuxt prepare"
 	},
 	"dependencies": {
-		"incan-gold-core": "workspace:^",
 		"normalize.css": "^8.0.1",
 		"nuxt": "^3.4.2",
-		"ramda": "^0.29.0"
+		"ramda": "^0.29.0",
+		"socket.io-client": "^4.7.1"
 	},
 	"devDependencies": {
 		"@types/node": "^18",

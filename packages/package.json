@@ -1,0 +1,26 @@
+{
+  "name": "incan-gold-core",
+  "version": "1.0.0",
+  "description": "",
+  "files": [
+    "package.json",
+    "dist/"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json ",
+    "test": "vitest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.4",
+    "ts-node": "^10.9.1",
+    "vitest": "^0.33.0"
+  }
+}
