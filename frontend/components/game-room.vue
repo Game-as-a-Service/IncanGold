@@ -1,76 +1,75 @@
 <template>
-    <ul class="game-room font-cubic">
+    <ul class="game-room">
         <button class="left-arrow"></button>
         <li class="game-room_name">
-            <div>
+            <div class="font-cubic">
                 <h2>房間名稱</h2>
                 <p>人數：4/8</p>
                 <p>房主：player name</p>
             </div>
-            <button>加入</button>
+            <button class="font-cubic">加入</button>
         </li>
         <li class="game-room_name">
-            <div>
+            <div class="font-cubic">
                 <h2>房間名稱</h2>
                 <p>人數：4/8</p>
                 <p>房主：player name</p>
             </div>
-            <button>加入</button>
+            <button class="font-cubic">加入</button>
         </li>
         <li class="game-room_name">
-            <div>
+            <div class="font-cubic">
                 <h2>房間名稱</h2>
                 <p>人數：4/8</p>
                 <p>房主：player name</p>
             </div>
-            <button>加入</button>
+            <button class="font-cubic">加入</button>
         </li>
         <li class="game-room_name">
-            <div>
+            <div class="font-cubic">
                 <h2>房間名稱</h2>
                 <p>人數：4/8</p>
                 <p>房主：player name</p>
             </div>
-            <button>加入</button>
+            <button class="font-cubic">加入</button>
         </li>
         <li class="game-room_name">
-            <div>
+            <div class="font-cubic">
                 <h2>房間名稱</h2>
                 <p>人數：4/8</p>
                 <p>房主：player name</p>
             </div>
-            <button>加入</button>
+            <button class="font-cubic">加入</button>
         </li>
         <li class="game-room_name">
-            <div>
+            <div class="font-cubic">
                 <h2>房間名稱</h2>
                 <p>人數：4/8</p>
                 <p>房主：player name</p>
             </div>
-            <button>加入</button>
+            <button class="font-cubic">加入</button>
         </li>
         <li class="game-room_name">
-            <div>
+            <div class="font-cubic">
                 <h2>房間名稱</h2>
                 <p>人數：4/8</p>
                 <p>房主：player name</p>
             </div>
-            <button>加入</button>
+            <button class="font-cubic">加入</button>
         </li>
         <li class="game-room_name">
-            <div>
+            <div class="font-cubic">
                 <h2>房間名稱</h2>
                 <p>人數：4/8</p>
                 <p>房主：player name</p>
             </div>
-            <button>加入</button>
+            <button class="font-cubic">加入</button>
         </li>
     </ul>
 </template>
 
 <style>
 .game-room_name, .game-room_name button{
-    font-family: 'Cubic_11';
     font-weight: 400;
 }
 .game-room{
@@ -88,7 +87,7 @@
 .left-arrow{
     width: 32px;
     height: 32px;
-    background-image: url("../assets/left arrow.png");
+    background-image: url("../public/left-arrow.png");
     position: absolute;
     left: 19.5px;
     top: 20px;
