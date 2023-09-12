@@ -1,8 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { Choice } from '../src/constant/Choice';
-import { GameOverEvent } from '../src/events/GameOverEvent'
+import { Choice, GameOverEvent, EventName } from '../../../src/IncanGold/domain/IncanGold';
 import { setupIncanGold, putCardInTunnel } from './Utils/TestUtils'
-import { EventName } from '../src/constant/EventName';
 
 describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通道中的卡洗回牌堆", () => {
 
@@ -20,7 +18,7 @@ describe("當遊戲回合結束時,遊戲檢查回合數,並結算勝負or把通
         iterator.next(); // RoundEndEvent
 
         // when 回合數超過5，遊戲結束 (詳見 IncanGold::*endRound)
-        const event:GameOverEvent = iterator.next().value;
+        const event: GameOverEvent = iterator.next().value;
 
         // then 遊戲結束
         expect(event.name).toBe(EventName.GameOver);

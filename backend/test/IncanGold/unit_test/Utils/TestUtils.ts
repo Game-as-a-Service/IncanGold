@@ -1,8 +1,6 @@
-import IncanGold from '../../src/entities/IncanGold';
-import TreasureCard from '../../src/entities/Card/TreasureCard'
-import HazardCard from '../../src/entities/Card/HazardCard';
-import ArtifactCard from '../../src/entities/Card/ArtifactCard'
-import Explorer from '../../src/entities/Explorer';
+import { IncanGold, TreasureCard, HazardCard, ArtifactCard, Explorer }
+    from '../../../../src/IncanGold/domain/IncanGold';
+import { noShuffle } from './NoShuffle';
 
 export function putCardInTunnel(cardsId: string[], game: IncanGold) {
     const { tunnel } = game;
@@ -24,6 +22,7 @@ function newCard(id: string) {
 export function setupIncanGold(id: string, round: number, turn: number, explorersId: string[]) {
     const explorers = explorersId.map(id => new Explorer(id));
     const game = new IncanGold(id, round, turn, explorers);
+    noShuffle(game);
     game.makeExplorersEnterTunnel();
     return game;
 }

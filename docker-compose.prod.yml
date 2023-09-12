@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  backend:
+    extends:
+      file: docker-compose.base.yml
+      service: backend
+    image: incan_gold
+    command: "tail -f /dev/null"
+
+  db:
+    extends:
+      file: docker-compose.base.yml
+      service: db

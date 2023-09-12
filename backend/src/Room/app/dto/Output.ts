@@ -1,4 +1,5 @@
-import { RoomDto } from "./RoomDto";
+import { flattenToDto, RoomDto } from "./RoomDto";
+import type { Room } from "../../domain/Room";
 import { Event } from "../../domain/event/Event";
 
 export interface Output {
@@ -6,6 +7,7 @@ export interface Output {
     events: Event[];
 }
 
-export function Output(room: RoomDto, events: Event[]): Output {
-    return Object.freeze({ room, events });
+export function Output(room: Room, events: Event[]): Output {
+    const roomDto = flattenToDto(room);
+    return Object.freeze({ room: roomDto, events });
 }

@@ -1,12 +1,7 @@
 import { expect, it } from 'vitest';
-import IncanGold from '../src/entities/IncanGold';
-import TreasureCard from '../src/entities/Card/TreasureCard'
-import ArtifactCard from '../src/entities/Card/ArtifactCard'
-import HazardCard from '../src/entities/Card/HazardCard';
-import { Choice } from '../src/constant/Choice';
-import { EventName } from '../src/constant/EventName';
-import Explorer from '../src/entities/Explorer';
-import { Event } from "../src/events/Event"
+import { Choice, EventName, IncanGold, TreasureCard, ArtifactCard, HazardCard, Explorer, Event }
+    from '../../../src/IncanGold/domain/IncanGold';
+
 
 interface ExplorerAndChoice {
     explorer: Explorer,
@@ -20,7 +15,7 @@ it("玩家隨機決定,跑完整場遊戲", () => {
     while (!game.gameOver) {
         let event = iterator.next().value;
         console.log(event);
-        if (event?.name === EventName.TurnEnd) display(game);
+        if (event && event.name === EventName.TurnEnd) display(game);
     }
 })
 

@@ -1,7 +1,5 @@
-import HazardCard from '../src/entities/Card/HazardCard';
-import { RoundEndEvent } from '../src/events/RoundEndEvent';
-import { Choice } from '../src/constant/Choice';
-import { AllExplorersMadeChoiceEvent } from '../src/events/MadeChoiceEvent';
+import { describe, it, expect } from 'vitest';
+import { Choice, RoundEndEvent, AllExplorersMadeChoiceEvent, HazardCard } from '../../../src/IncanGold/domain/IncanGold';
 import { setupIncanGold, putCardInTunnel } from './Utils/TestUtils';
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試
@@ -14,7 +12,7 @@ describe("災難卡被放入通道", () => {
         const iterator = game.startRound();
 
         // when NewTurnHazardCardTriggered
-        iterator.next(); 
+        iterator.next();
 
         // then 
         let event: AllExplorersMadeChoiceEvent = iterator.next().value;
@@ -30,8 +28,8 @@ describe("災難卡被放入通道", () => {
         game.deck.appendCard(new HazardCard("HF1"));
 
         // when NewTurnHazardCardTriggeredEvent
-        game.startTurn().next(); 
-        
+        game.startTurn().next();
+
         // then
         expect(game.round).toBe(1) // 依然在第一回合
     })
@@ -50,7 +48,7 @@ describe("災難卡被放入通道", () => {
         game.explorers.forEach(explorer => expect(explorer.inTent).toBe(true));
         game.explorers.forEach(explorer => expect(explorer.points).toBe(0))
 
-        const event:RoundEndEvent = iterator.next().value;
+        const event: RoundEndEvent = iterator.next().value;
         expect(event.data.discardedCardIds[0]).toBe("HP2");
     })
 

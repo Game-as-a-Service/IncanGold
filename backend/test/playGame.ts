@@ -7,7 +7,8 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
 
 (async () => {
     // 建立連線
-    const server = await bootstrap();
+    await bootstrap.start();
+    const server = bootstrap.httpServer;
     const client1 = await establishConnection('johndoe');
     const client2 = await establishConnection('tke47');
     const client3 = await establishConnection('Jayyy');
@@ -29,14 +30,14 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
     await waitSeconds(2);
 
     // 開始遊戲
-    await startGame(server, '123', ['johndoe', 'tke47', 'Jayyy']);
-    await enforcePlayerChoicesUseCase(server, '123', 3, 2);
+    await startGame(server, '123');
+    // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
     // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
     // await enforcePlayerChoicesUseCase(server, '123', 3, 2);
     await waitSeconds(2);
     await makeChoice(server, '123', 'johndoe', Choice.KeepGoing)
-    // await makeChoice(server, '123', 'tke47', Choice.KeepGoing)
-    // await makeChoice(server, '123', 'Jayyy', Choice.Quit)
+    await makeChoice(server, '123', 'tke47', Choice.KeepGoing)
+    await makeChoice(server, '123', 'Jayyy', Choice.Quit)
 
     // 確保socket處理函式有被執行
     // await Promise.all([sp1, sp2, sp3])
@@ -44,18 +45,18 @@ import { Choice } from "../src/IncanGold/domain/IncanGold";
 
 })();
 
-async function enforcePlayerChoicesUseCase(server: any, roomId: string, round:number, turn:number) {
-    await request(server).patch(`/games/${roomId}/enforceChoices`)
-        .send({ round,turn });
+async function enforcePlayerChoicesUseCase(server: any, roomId: string, round: number, turn: number) {
+    await request(server).patch(`/test/${roomId}/enforceChoices`)
+        .send({ round, turn });
 }
 
-async function startGame(server: any, roomId: string, playerIds: string[]) {
-    await request(server).post(`/rooms/${roomId}/start`);
-        // .send({ playerIds });
+async function startGame(server: any, roomId: string) {
+    await request(server).patch(`/test/${roomId}/start`)
+        .send({ hasShuffle: false, hasArtifactCard: false, cardIds: ["T1", "T2", "T3","HS1"] })
 }
 
 async function makeChoice(server: any, roomId: string, explorerId: string, choice: string) {
-    await request(server).patch(`/games/${roomId}/choice`)
+    await request(server).patch(`/test/${roomId}/choice`)
         .send({ explorerId, choice });
 }
 
@@ -69,7 +70,7 @@ async function joinRoom(server: any, roomId: string, userId: string) {
         .send({ playerId: userId });
 }
 
-async function ready(server: any, roomId: string,userId: string) {
+async function ready(server: any, roomId: string, userId: string) {
     await request(server).patch(`/rooms/${roomId}/ready`)
         .send({ playerId: userId });
 }
@@ -88,7 +89,7 @@ function socketPromise(client: Socket) {
     const socketPromise = new Promise((resolve: (obj) => void) => (socketCallback = resolve));
     // Once Socket.io receives the message event, it executes the listener function, which calls socketCallback.
     client.on('message', (msg: any) => {
-        console.log('on Message :\n', msg.events )
+        console.log('on Message :\n', JSON.stringify((msg as any).game))
         console.log('client : ', client.id);
         socketCallback(msg);
     });
@@ -97,8 +98,8 @@ function socketPromise(client: Socket) {
     return socketPromise;
 }
 
-async function waitSeconds(num:number){
-    return new Promise(resolve=>{
-        setTimeout(resolve,num*1000);
+async function waitSeconds(num: number) {
+    return new Promise(resolve => {
+        setTimeout(resolve, num * 1000);
     })
 }

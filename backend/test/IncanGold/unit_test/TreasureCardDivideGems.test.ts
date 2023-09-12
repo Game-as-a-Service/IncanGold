@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import TreasureCard from '../src/entities/Card/TreasureCard';
-import { NewTurnTreasureCardTriggeredEvent } from "../src/events/NewTurnCardTriggeredEvent";
+import { TreasureCard, NewTurnTreasureCardTriggeredEvent } from '../../../src/IncanGold/domain/IncanGold';
 import { setupIncanGold, putCardInTunnel } from './Utils/TestUtils';
 
 // 以下都是在 this.addArtifactCardAndShuffleDeck(); 被註解掉的情況下進行的測試

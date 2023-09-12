@@ -1,7 +1,5 @@
 import type { Room } from "../../domain/Room";
 import { Output } from "../dto/Output";
-import { Event } from "../../domain/event/Event";
-import { flattenToDto,RoomDto } from "../dto/RoomDto";
 import { IRoomRepository } from "../Repository";
 import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
 
@@ -27,7 +25,7 @@ export default class UnlockSeatUseCase {
         await this.roomRepository.save(room);
 
         // 推
-        this.eventDispatcher.emit('room', Output(flattenToDto(room), [event]));
+        this.eventDispatcher.emit('room', Output(room, [event]));
     }
 }
 

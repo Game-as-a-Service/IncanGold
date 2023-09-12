@@ -1,7 +1,8 @@
-import { artifactCards } from '../src/constant/CardInfo';
-import { Choice } from '../src/constant/Choice';
-import { DistributeGemsAndArtifactsToExplorersEvent } from '../src/events/DistributeGemsAndArtifactsToExplorersEvent'
+import { describe, it, expect } from 'vitest';
 import { setupIncanGold, putCardInTunnel } from './Utils/TestUtils';
+import { CardInfo, DistributeGemsAndArtifactsToExplorersEvent, Choice } from '../../../src/IncanGold/domain/IncanGold';
+const { artifactCards } = CardInfo;
+
 
 describe('玩家選擇結束後，分配寶石&神器', () => {
 

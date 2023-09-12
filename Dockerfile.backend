@@ -1,0 +1,21 @@
+FROM node:18.14.0-alpine as base
+WORKDIR /app
+COPY ./backend/package.json ./backend/package.json
+COPY ./backend ./backend 
+COPY ./packages ./packages
+WORKDIR /app/backend
+RUN npm install 
+
+FROM base as build_for_test
+RUN npm run build:for_test
+
+FROM base as build
+RUN npm run build
+WORKDIR /app
+
+FROM node:18.14.0-alpine as production
+WORKDIR /app
+COPY ./backend/package.json ./package.json
+COPY --from=build /app/dist ./dist
+RUN npm install --production
+CMD ["node", "dist/backend/main.js"]

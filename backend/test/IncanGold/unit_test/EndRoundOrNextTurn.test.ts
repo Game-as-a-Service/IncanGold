@@ -1,5 +1,5 @@
-import { Choice } from '../src/constant/Choice';
-import { RoundEndEvent } from '../src/events/RoundEndEvent';
+import { describe, it, expect } from 'vitest';
+import { Choice, RoundEndEvent } from '../../../src/IncanGold/domain/IncanGold';
 import { setupIncanGold, putCardInTunnel } from './Utils/TestUtils';
 
 describe('', () => {
@@ -37,7 +37,7 @@ describe('', () => {
 
         // when 通道中有玩家就開始新一Turn (詳見 IncanGold::*endTurn)
         const event = iterator.next().value;
-        
+
         // then 同Round，新Turn開始
         expect(event.name.startsWith('NewTurn')).toBe(true);
     })
