@@ -1,11 +1,10 @@
 import { IUserRepository } from "../app/Repository";
-import { IUser } from "../app/User";
 import { UserService } from "../app/UserService";
 import type { Request, Response } from "express";
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = 'secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 const GOOGLE_CLIENT_ID = 'google_client_id';
 
 export class AuthController {
@@ -22,19 +21,23 @@ export class AuthController {
     login = async (req: Request, res: Response) => {
         const { username, password } = req.body;
 
-        const user = await this.userService.validate(username, password);
-        if (!user)
-            return res.status(401).send('wrong user name or password');
+        const id = await this.userService.login(username, password);
+        if (!id)
+            return res.status(401).json({ message: 'Wrong username or password' });
 
-        const payload = { userId: user.id };
-        const token = jwt.sign(payload, JWT_SECRET);
-        res.json({ access_token: token });
+        const payload = { id, username };
+        try {
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '10d' });
+            res.status(200).json({ message: 'Success!', token });
+        } catch (err) {
+            res.status(500).json({ message: 'Token generation failed' });
+        }
     }
 
     register = async (req: Request, res: Response) => {
         const { username, password, email } = req.body;
-        await this.userService.create(username, password, email);
-        res.send('Registration succeeded!');
+        const user = await this.userService.register(username, password, email);
+        res.status(201).json(user);
     }
 
     google = async (req: Request, res: Response) => {
@@ -59,21 +62,20 @@ export class AuthController {
             idToken: tokens.id_token,
             audience: GOOGLE_CLIENT_ID
         });
-        const { name, email, picture } = ticket.getPayload();
+        const { name, email } = ticket.getPayload();
 
         // 在資料庫中新增或更新使用者
-        const user = await this.userService.save(name, null, email);
+        const user = await this.userService.register(name, null, email);
 
-        // 生成JWT Payload
         const { id, username } = user;
         const payload = { id, username, email };
 
-        // 簽發JWT token
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
-
-        // 將JWT回傳給客户端
-        res.json({ token });
-
+        try {
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '10d' });
+            res.status(200).json({ message: 'Success!', token });
+        } catch (err) {
+            res.status(500).json({ message: 'Token generation failed' });
+        }
     };
 
 }

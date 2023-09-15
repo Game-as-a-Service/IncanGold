@@ -26,9 +26,9 @@ export class RoomEventDispatcher implements IEventDispatcher {
                     this.emit('joinRoom', event.data);
                 if (event.type === "leaveRoom") {
                     this.emit('leaveRoom', event.data);
-                    SocketManager.manger.unicast(event.data.playerId, "you leaved room.");
+                    SocketManager.manger.unicast(event.data.playerId, { events: useCaseOutput.events });
                 }
-                if (event.type === "startGame") 
+                if (event.type === "startGame")
                     this.emit('startGame', event.data);
             }
             const { id: roomId } = useCaseOutput.room;
@@ -40,7 +40,7 @@ export class RoomEventDispatcher implements IEventDispatcher {
         return this.eventDispatcher.emit(eventName, ...args);
     }
 
-    on(eventName: string , listener: (...args: any[]) => void){
+    on(eventName: string, listener: (...args: any[]) => void) {
         this.eventDispatcher.on(eventName, listener);
     }
 

@@ -1,8 +1,6 @@
-import { Router,Request,Response } from "express";
+import { Router } from "express";
 import { AuthController } from "./Auth.controller";
 import { UserRepository } from "../infra/UserRepository";
-
-
 
 export function AuthRouter() {
 
@@ -11,6 +9,9 @@ export function AuthRouter() {
 
     // login
     router.post('/login', controller.login);
+
+    // register
+    router.post('/register', controller.register);
 
     return router;
 }

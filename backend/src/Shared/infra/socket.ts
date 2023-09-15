@@ -2,7 +2,6 @@ import { Socket, Server } from "socket.io";
 import type { Server as httpServer } from "http";
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = 'secret';
 export function SocketConnection(httpServer: httpServer) {
 
     const io = new Server(httpServer, {
@@ -18,18 +17,22 @@ export function SocketConnection(httpServer: httpServer) {
 
     io.on('connect', (socket) => {
         const token = socket.handshake.auth.token;
-        // todo : 處理沒有token的情況
-        if (!token) throw new Error('No token')
-        // 驗證 JWT 
-        const user = jwt.verify(token, JWT_SECRET);
-        const playerId: string = (user as any).userId;
-        SocketManager.manger.add(playerId, socket);
+        if (!token)
+            socket.emit('message', "說好的token呢?");
+            
+        // Verify and decode token logic
+        try {
+            const user = jwt.verify(token, process.env.JWT_SECRET);
+            const playerId: string = (user as any).userId;
+            SocketManager.manger.add(playerId, socket);
+        } catch (err) {
+            socket.emit('message', "Invalid token");
+        }
     });
 }
 
 
 type PlayerId = string
-
 export class SocketManager {
     private static socketManager: SocketManager | null = null;
     private _io: Server | null = null;
@@ -41,7 +44,6 @@ export class SocketManager {
 
     add(playerId: PlayerId, socket: Socket) {
         this.sockets.set(playerId, socket);
-        console.log(`server put socket ${socket.id} in socketManger.`);
     }
 
     get(id: PlayerId) {

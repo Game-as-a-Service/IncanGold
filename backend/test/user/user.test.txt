@@ -3,7 +3,7 @@ import { GenericContainer, StartedTestContainer } from "testcontainers";
 import { configDataSource, AppDataSource } from "../../src/Shared/infra/data-source";
 import { User } from "../../src/User/infra/User";
 import express, { Express } from "express";
-import { AuthRouter } from "../../src/User/adapter/Auth.router";
+import { AuthRouter } from "../../src/User/api/Auth.router";
 import request from 'supertest'
 
 describe('Functions related to the user', async () => {

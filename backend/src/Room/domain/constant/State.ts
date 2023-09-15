@@ -3,3 +3,8 @@ export enum STATE {
     NOTREADY = 'NOTREADY',
     NULL = 'NULL',
 }
+
+export enum ROOMSTATE{
+    WAITING = 'WAITING',
+    INGAME = 'INGAME',
+}

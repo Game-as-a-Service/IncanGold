@@ -10,8 +10,6 @@ export function IncanGoldRouterForFrontendDev() {
     const controller =
         new IncanGoldControllerForFrontendDev(IncanGoldRepository, RoomRepository, incanGoldEventDispatcher);
 
-    console.log("IncanGoldRouterForTest:", 13);
-    console.log(controller.startGame);
     // startGame
     router.patch('/:roomId/start', controller.startGame)
 

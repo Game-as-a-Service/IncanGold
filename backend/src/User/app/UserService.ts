@@ -7,18 +7,16 @@ export class UserService {
         this.repository = repository;
     }
 
-    async validate(username: string, password: string) {
-        const user = await this.repository.find(username, password);
-        return user;
+    async login(username: string, password: string) {
+        const { id } = await this.repository.find(username, password);
+        return id;
     }
 
-    async create(username: string, password: string, email: string) {
-        return await this.repository.create(username, password, email);
+    async register(username: string, password: string, email: string) {
+        const { id } = await this.repository.create(username, password, email);
+        return { id, username, email };
     }
 
-    async save(username: string, password: string, email: string){
-        return await this.repository.find(username, password);
-    }
 }
 
 

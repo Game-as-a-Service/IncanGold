@@ -1,18 +1,20 @@
 import { Event } from "./event/Event";
 import { Seat } from "./Seat";
-import { STATE } from "./constant/State";
+import { ROOMSTATE, STATE } from "./constant/State";
 
 type PlayerId = string;
 
 export class Room {
     public id: string;
+    public state: ROOMSTATE;
     public name: string;
     public password: string | undefined = undefined;
     public host: PlayerId;
     public seats: Map<number, Seat>;
 
-    constructor(id: string, name: string, host: PlayerId, password: string, seats: Map<number, Seat>) {
+    constructor(id: string, state: ROOMSTATE, name: string, host: PlayerId, password: string, seats: Map<number, Seat>) {
         this.id = id;
+        this.state = state;
         this.name = name;
         this.host = host;
         this.password = password;
@@ -41,11 +43,16 @@ export class Room {
 
     // Check if game can be started
     get canStartGame(): boolean {
-        return (this.seatedPlayerCount >= 3 && this.allReady);
+        return (
+            this.state === ROOMSTATE.WAITING &&
+            this.seatedPlayerCount >= 3 &&
+            this.allReady
+        );
     }
 
     startGame() {
         if (this.canStartGame) {
+            this.state = ROOMSTATE.INGAME;
             const playerIds = [...this.seats.values()]
                 .filter(p => !!p.playerId)
                 .map(p => p.playerId);
@@ -55,22 +62,25 @@ export class Room {
     }
 
 
-    sitDown(playerId: string, seatNumber?: number) {
-        if (!seatNumber) {
-            const seat = [...this.seats.values()].find(s => s.isAvailable);
-            seat.sitDown(playerId)
-        } else {
-            const seat = this.seats.get(seatNumber);
-            if (seat.isAvailable) seat.sitDown(playerId)
-        }
+    sitDown(playerId: string, seatNumber?: number): boolean {
+        let seat: Seat;
+        if (!seatNumber)
+            seat = [...this.seats.values()].find(s => s.isAvailable);
+        else
+            seat = this.seats.get(seatNumber).isAvailable ?
+                this.seats.get(seatNumber) : undefined;
+
+        if (seat) seat.sitDown(playerId);
+        return (!!seat);
     }
 
     *joinRoom(playerId: PlayerId, password: string) {
         if (this.validate(password))
             return this.makeEvent('joinRoomFailed', null);
 
-        this.sitDown(playerId)
-        yield this.makeEvent('joinRoom', { playerId, roomId: this.id });
+        const seated = (this.state === ROOMSTATE.WAITING) ?
+            this.sitDown(playerId) : false;
+        yield this.makeEvent('joinRoom', { playerId, seated, roomId: this.id });
 
         if (this.seatedPlayerCount === 1)
             return yield this.setHost(playerId);
@@ -78,10 +88,9 @@ export class Room {
 
     *leaveRoom(playerId: PlayerId) {
         // Vacate the seat occupied by the leaving player
-        this.vacateSeat(playerId);
+        const seatedOriginally = this.vacateSeat(playerId);
 
-        // Emit leave room event  
-        yield this.makeEvent('leaveRoom', { playerId, roomId: this.id });
+        yield this.makeEvent('leaveRoom', { playerId, seatedOriginally, roomId: this.id });
 
         // If leaving player was host, assign new host 
         if (this.host === playerId)
@@ -119,6 +128,8 @@ export class Room {
     }
 
     lockSeat(position: number) {
+        if (this.unlockedSeats <= 3)
+            return this.makeEvent('Lock failed', { description: "A minimum of 3 players are required to start the game." });
         const seat = this.seats.get(position);
         seat.lock();
         return this.makeEvent('seatLocked', { seatNumber: position });
@@ -138,9 +149,10 @@ export class Room {
     }
 
     // Clear seat
-    private vacateSeat(playerId: string) {
+    private vacateSeat(playerId: string): boolean {
         const seat = [...this.seats.values()].find(s => s.playerId === playerId);
-        seat.vacate();
+        if (seat) seat.vacate();
+        return (!!seat);
     }
 
     private makeEvent(type: string, data: any): Event {

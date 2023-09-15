@@ -4,3 +4,4 @@ node_modules/
 .idea
 .nuxt
 .pnpm-store/*
+fly.toml

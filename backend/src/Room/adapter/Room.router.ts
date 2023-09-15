@@ -11,6 +11,9 @@ export function RoomRouter() {
     // startGame
     router.post('/:roomId/start', controller.startGame);
 
+    // listRooms
+    router.get('/', controller.listRooms);
+
     // createRoom
     router.post('/', controller.createRoom);
 

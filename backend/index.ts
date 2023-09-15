@@ -2,7 +2,7 @@ import express, { Express, Request, Response, Router } from "express";
 import { createServer, Server, IncomingMessage, ServerResponse } from "http";
 import { SocketConnection } from "./src/Shared/infra/socket";
 import { AppDataSource, configDataSource } from "./src/Shared/infra/data-source";
-import { AuthRouter } from "./src/User/adapter/Auth.router";
+import { AuthRouter } from "./src/User/api/Auth.router";
 import { RoomRouter } from "./src/Room/adapter/Room.router";
 import { IncanGoldRouter } from "./src/IncanGold/adapter/IncanGold.router";
 import dotenv from 'dotenv';
@@ -32,11 +32,14 @@ class Bootstrap {
 
         const port = Number(process.env.PORT);
         this.app.get("/", (req: Request, res: Response) => {
-            res.end("Hello! Hansen_boii!")
+            res.status(200).json({
+                status: "success",
+                message: "Hello! Hansen_boii!",
+            });
         })
 
-        this.app.use('/auth', AuthRouter());
-        this.app.use('/rooms', RoomRouter());
+        this.app.use('/user', AuthRouter());
+        this.app.use('/rooms',RoomRouter());
         this.app.use('/games', IncanGoldRouter())
 
         SocketConnection(this.httpServer);
@@ -48,6 +51,10 @@ class Bootstrap {
 
     use(path: string, router: Router) {
         this.app.use(path, router);
+    }
+
+    close(){
+        this.httpServer.close()
     }
 }
 
