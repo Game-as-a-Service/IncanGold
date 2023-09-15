@@ -48,8 +48,12 @@ const users = [
 ]
 const user = ref(users[0])
 const room = ref({})
+const rooms = ref([])
 const game = ref({})
 const winner = ref({})
+const roomName = ref('')
+const selectRoomId = ref('')
+const HOST = 'https://incan-gold.fly.dev'
 // phase = DISCONNECT WAITING, PLAYING, END
 const phase = ref('DISCONNECT')
 let socket
@@ -57,7 +61,7 @@ const gameId = '123456'
 const playerId = 'a'
 const handleSocketConnect = () => {
   const token = user.value.token
-  socket = io('http://localhost:8000', { auth: { token } })
+  socket = io(`${HOST}/`, { auth: { token }, transports:['websocket', 'polling'] })
   phase.value = 'WAITING'
   socket.on('connected', () => {
     console.log('connected')
@@ -84,9 +88,9 @@ const handleSocketConnect = () => {
 const handleCreateRoom = () => {
   const params = {
     playerId: 'arong',
-    roomName: 'test',
+    roomName: roomName.value,
   }
-  useFetch('http://localhost:8000/rooms', {
+  useFetch(`${HOST}/rooms`, {
     method: 'POST',
     body: params
   })
@@ -98,13 +102,20 @@ const handleCreateRoom = () => {
   // socket.emit('create_room', params)
 }
 const handleJoinRoom = () => {
-  const roomId = '123'
+  const roomId = selectRoomId.value
   const params = {
     playerId: user.value.playerId,
   }
-  useFetch(`http://localhost:8000/rooms/${roomId}/players`, {
+  useFetch(`${HOST}rooms/${roomId}/players`, {
     method: 'POST',
     body: params
+  })
+}
+const handleSearchRoom = () => {
+  useFetch(`${HOST}/rooms/`, {
+    method: 'GET',
+  }).then(res => {
+    rooms.value = res.data._value
   })
 }
 const handleReady = () => {
@@ -112,7 +123,7 @@ const handleReady = () => {
   const params = {
     playerId: user.value.playerId,
   }
-  useFetch(`http://localhost:8000/rooms/${roomId}/ready`, {
+  useFetch(`${HOST}/rooms/${roomId}/ready`, {
     method: 'PATCH',
     body: params
   })
@@ -128,7 +139,7 @@ const handleStartGame = () => {
   // const params = {
   //   playerIds: Object.values(room.value.seats).filter(seat=>seat.state === 'READY').map(seat => seat.playerId),
   // }
-  useFetch(`http://localhost:8000/rooms/${roomId}/start`, {
+  useFetch(`${HOST}/rooms/${roomId}/start`, {
     method: 'POST',
     // body: params
   })
@@ -140,7 +151,7 @@ const handleChoice = (choice) => {
     explorerId: user.value.playerId,
     choice,
   }
-  useFetch(`http://localhost:8000/games/${roomId}/choice`, {
+  useFetch(`${HOST}/games/${roomId}/choice`, {
     method: 'PATCH',
     body: params
   })
@@ -179,8 +190,19 @@ const seats = computed(() => {
       <button @click="handleSocketConnect">連線</button>
     </div>
     <div v-if="phase === 'WAITING'">
-      <button @click="handleCreateRoom">創建房間</button>
-      <button @click="handleJoinRoom">加入房間</button>
+      <div>
+        房間名稱<input type="text" v-model="roomName">
+        <button @click="handleCreateRoom">創建房間</button>
+      </div>
+      <button @click="handleSearchRoom">搜尋房間</button>
+      <div>
+        <span>選擇房間</span>
+          <select v-model="selectRoomId">
+            <option value="">請選擇</option>
+            <option v-for="room in rooms" :key="room.id" :value="room.id">{{room.name}}</option>
+          </select>
+        <button @click="handleJoinRoom">加入房間</button>
+      </div>
       <button @click="handleReady">已準備好</button>
       <button @click="handleStartGame">開始遊戲</button>
       <div v-if="room.id">
