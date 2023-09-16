@@ -9,29 +9,26 @@
 const props = defineProps({
   label: {
     type: String,
-    default: ''
+    default: "",
   },
   value: {
     type: String,
-    default: ''
-  }
-})
+    default: "",
+  },
+});
 
-const emits = defineEmits(['update:value'])
+const emits = defineEmits(["update:value"]);
 
-const { value, label } = toRefs(props)
+const { value, label } = toRefs(props);
 
 const inputValue = computed({
   get() {
-    return value.value
+    return value.value;
   },
   set(event) {
-    emits('update:value', event)
-  }
-})
-
-
-
+    emits("update:value", event);
+  },
+});
 </script>
 
 <style>
@@ -47,11 +44,13 @@ const inputValue = computed({
 }
 
 .components-form-login-input :last-child {
-  width: 100%;
+  width: 390px;
   height: 42px;
   border-radius: 10px;
   border-width: 0;
   outline: none;
   background-color: rgba(186, 186, 186, 0.47);
+  padding: 12px;
+  color: #fff;
 }
 </style>

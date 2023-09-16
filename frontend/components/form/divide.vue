@@ -4,9 +4,10 @@
 
 <style>
 .components-form-divide {
-  width: 100%;
-  height: 1px;
-  background: rgba(147, 147, 147, 1);
+  width: 350px;
+  height: 0.25px;
+  background: #939393;
+  margin: 0 auto;
   margin-bottom: 18px;
 }
 </style>

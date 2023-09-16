@@ -1,54 +1,58 @@
 <script setup>
 const socials = [
   {
-    name: 'Google',
-    icon: '/google.png',
-    disabled: true
+    name: "Google",
+    icon: "/google.png",
+    disabled: true,
   },
   {
-    name: 'Facebook',
-    icon: '/facebook.png',
-    disabled: true
+    name: "Facebook",
+    icon: "/facebook.png",
+    disabled: true,
   },
   {
-    name: 'X',
-    icon: '/x.png',
-    disabled: true
+    name: "X",
+    icon: "/x.png",
+    disabled: true,
   },
   {
-    name: 'Discord',
-    icon: '/discord.png',
-    disabled: true
-  }
-]
+    name: "Discord",
+    icon: "/discord.png",
+    disabled: true,
+  },
+];
 
 const props = defineProps({
   mode: {
     type: String,
-    default: ''
-  }
-})
+    default: "",
+  },
+});
 
-const { mode } = toRefs(props)
+const { mode } = toRefs(props);
 
 const description = computed(() => {
-  if (mode.value === 'login') {
-    return '其他登入方式'
+  if (mode.value === "login") {
+    return "其他登入方式";
   }
-  if (mode.value === 'signup') {
-    return '選擇其他註冊的方式'
+  if (mode.value === "signup") {
+    return "選擇其他註冊的方式";
   }
-  return ''
-})
+  return "";
+});
 </script>
 
 <template>
   <div class="components-form-social-login">
-    <div>{{description}}</div>
+    <div>{{ description }}</div>
     <div>
       <template v-for="(social, indexOfSocial) in socials" :key="indexOfSocial">
-        <button class="components-form-social-login-button" @click="clickSocial(social.name)" :disabled="social.disabled">
-          <img :src="social.icon" :alt="social.name">
+        <button
+          class="components-form-social-login-button"
+          @click="clickSocial(social.name)"
+          :disabled="social.disabled"
+        >
+          <img :src="social.icon" :alt="social.name" />
         </button>
       </template>
     </div>
@@ -74,7 +78,7 @@ const description = computed(() => {
 }
 
 .components-form-social-login > :last-child :not(:last-child) {
-  margin-right: 30px;
+  margin-right: 32px;
 }
 
 .components-form-social-login-button {
@@ -82,11 +86,12 @@ const description = computed(() => {
   border-radius: 100%;
   border-width: 0;
   background-color: transparent;
+  padding: 0;
 }
 
 .components-form-social-login-button img {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
   object-position: center;
 }
