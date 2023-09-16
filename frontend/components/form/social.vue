@@ -1,58 +1,54 @@
 <script setup>
 const socials = [
   {
-    name: "Google",
-    icon: "/google.png",
-    disabled: true,
+    name: 'Google',
+    icon: '/google.png',
+    disabled: true
   },
   {
-    name: "Facebook",
-    icon: "/facebook.png",
-    disabled: true,
+    name: 'Facebook',
+    icon: '/facebook.png',
+    disabled: true
   },
   {
-    name: "X",
-    icon: "/x.png",
-    disabled: true,
+    name: 'X',
+    icon: '/x.png',
+    disabled: true
   },
   {
-    name: "Discord",
-    icon: "/discord.png",
-    disabled: true,
-  },
-];
+    name: 'Discord',
+    icon: '/discord.png',
+    disabled: true
+  }
+]
 
 const props = defineProps({
   mode: {
     type: String,
-    default: "",
-  },
-});
+    default: ''
+  }
+})
 
-const { mode } = toRefs(props);
+const { mode } = toRefs(props)
 
 const description = computed(() => {
-  if (mode.value === "login") {
-    return "其他登入方式";
+  if (mode.value === 'login') {
+    return '其他登入方式'
   }
-  if (mode.value === "signup") {
-    return "選擇其他註冊的方式";
+  if (mode.value === 'signup') {
+    return '選擇其他註冊的方式'
   }
-  return "";
-});
+  return ''
+})
 </script>
 
 <template>
   <div class="components-form-social-login">
-    <div>{{ description }}</div>
+    <div>{{description}}</div>
     <div>
       <template v-for="(social, indexOfSocial) in socials" :key="indexOfSocial">
-        <button
-          class="components-form-social-login-button"
-          @click="clickSocial(social.name)"
-          :disabled="social.disabled"
-        >
-          <img :src="social.icon" :alt="social.name" />
+        <button class="components-form-social-login-button" @click="clickSocial(social.name)" :disabled="social.disabled">
+          <img :src="social.icon" :alt="social.name">
         </button>
       </template>
     </div>

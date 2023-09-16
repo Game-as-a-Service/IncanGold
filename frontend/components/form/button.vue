@@ -25,7 +25,7 @@ const props = defineProps({
   }
 })
 
-const { text, type, disabled } = toRefs(props)
+const { text, type, disabled } = props
 
 const emits = defineEmits(['click'])
 
@@ -43,6 +43,14 @@ function emitClick() {
   outline: none;
   padding: 14.5px 72px;
   cursor: pointer;
+}
+
+.components-form-login-button:hover {
+  background-color: #fff7d9;
+}
+
+.components-form-login-button:active {
+  background-color: #ffeeb0;
 }
 
 .components-form-login-button:disabled {

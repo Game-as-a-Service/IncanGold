@@ -9,26 +9,26 @@
 const props = defineProps({
   label: {
     type: String,
-    default: "",
+    default: ''
   },
   value: {
     type: String,
-    default: "",
-  },
-});
+    default: ''
+  }
+})
 
-const emits = defineEmits(["update:value"]);
+const emits = defineEmits(['update:value'])
 
-const { value, label } = toRefs(props);
+const { value, label } = toRefs(props)
 
 const inputValue = computed({
   get() {
-    return value.value;
+    return value.value
   },
   set(event) {
-    emits("update:value", event);
-  },
-});
+    emits('update:value', event)
+  }
+})
 </script>
 
 <style>
