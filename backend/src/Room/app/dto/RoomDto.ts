@@ -30,10 +30,10 @@ export interface RoomDto {
 
 export function flattenToDtoForListRooms(room: Room) {
     const { id, name, unlockedSeats, seatedPlayerCount,
-        host, isPrivate, state: roomStats, canStartGame } = room;
+        host, isPrivate, state: roomStatus, canStartGame } = room;
     const roomDto = {
         id, name, unlockedSeats, seatedPlayerCount,
-        host, isPrivate, roomStats, canStartGame,
+        host, isPrivate, roomStatus, canStartGame,
     }
     return roomDto;
 }

@@ -11,11 +11,11 @@ export function RoomRouter() {
     // startGame
     router.post('/:roomId/start', controller.startGame);
 
-    // listRooms
-    router.get('/', controller.listRooms);
-
     // createRoom
     router.post('/', controller.createRoom);
+
+    // allRooms
+    router.get('/', controller.allRooms);
 
     // joinRoom
     router.post('/:roomId/players',controller.joinRoom);

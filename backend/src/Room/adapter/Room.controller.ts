@@ -107,10 +107,10 @@ export class RoomController {
         await this.execute(setPasswordUseCase, input, res);
     }
 
-    listRooms = async (req: Request, res: Response) => {
-        const setPasswordUseCase = new ListRoomsUseCase(this.newRepo);
-        const rooms = await setPasswordUseCase.execute();
-        res.sendStatus(200).json(rooms);
+    allRooms = async (req: Request, res: Response) => {
+        const listRoomsUseCase = new ListRoomsUseCase(this.newRepo);
+        const rooms = await listRoomsUseCase.execute();
+        res.json(rooms);
     }
 
     private async execute(useCase: any, input: any, res: Response) {

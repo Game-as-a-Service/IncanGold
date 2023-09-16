@@ -57,7 +57,7 @@ const gameId = '123456'
 const playerId = 'a'
 const handleSocketConnect = () => {
   const token = user.value.token
-  socket = io('http://localhost:8000', { auth: { token } })
+  socket = io('https://incan-gold.fly.dev/', { auth: { token } })
   phase.value = 'WAITING'
   socket.on('connected', () => {
     console.log('connected')
