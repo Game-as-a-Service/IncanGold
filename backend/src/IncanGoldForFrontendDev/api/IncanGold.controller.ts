@@ -4,7 +4,7 @@ import MakeChoiceUseCase, { MakeChoiceInput } from "../../IncanGold/app/useCase/
 import { EnforcePlayerChoicesInput } from "../../IncanGold/app/useCase/EnforcePlayerChoicesUseCase";
 import { IIncanGoldRepository } from "../../IncanGold/app/Repository";
 import { IRoomRepository } from "../../Room/app/Repository";
-import { IEventDispatcher } from "../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../Shared/app/Interface/EventDispatcher";
 import { TimeoutCoordinator } from "../../IncanGold/app/TimeoutCoordinatorCoordinator";
 
 export class IncanGoldControllerForFrontendDev {

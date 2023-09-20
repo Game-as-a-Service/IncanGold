@@ -15,7 +15,7 @@ export function SocketConnection(httpServer: httpServer) {
 
     SocketManager.manger.io = io;
 
-    io.on('connect', (socket) => {
+    io.on('connection', (socket) => {
         const token = socket.handshake.auth.token;
         if (!token)
             socket.emit('message', "說好的token呢?");
@@ -52,6 +52,10 @@ export class SocketManager {
 
     set io(io: Server) {
         this._io = io;
+    }
+
+    get io() {
+        return this._io;
     }
 
     static get manger(): SocketManager {

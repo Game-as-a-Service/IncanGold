@@ -9,5 +9,7 @@ export interface IRoomRepository {
     findById(gameId: string): Promise<Room | undefined>;
 
     save(game: Room): Promise<void>;
+
+    deleteById(id: string): Promise<number>;
 }
 

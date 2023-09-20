@@ -3,6 +3,8 @@ import { UserService } from "../app/UserService";
 import type { Request, Response } from "express";
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const GOOGLE_CLIENT_ID = 'google_client_id';
@@ -18,6 +20,13 @@ export class AuthController {
         this.client = new OAuth2Client(GOOGLE_CLIENT_ID);
     }
 
+    userInformation = async (req: Request, res: Response) => {
+        const { id } = (req as any).user;
+        const user = await this.userService.findById(Number(id));
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        return res.status(200).json(user);
+    }
+
     login = async (req: Request, res: Response) => {
         const { username, password } = req.body;
 
@@ -25,19 +34,26 @@ export class AuthController {
         if (!id)
             return res.status(401).json({ message: 'Wrong username or password' });
 
-        const payload = { id, username };
         try {
-            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '10d' });
+            const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '10d' });
             res.status(200).json({ message: 'Success!', token });
         } catch (err) {
+            console.log("40 : ", JWT_SECRET)
+            console.log('auth controller 40 : ', err)
             res.status(500).json({ message: 'Token generation failed' });
         }
     }
 
     register = async (req: Request, res: Response) => {
         const { username, password, email } = req.body;
-        const user = await this.userService.register(username, password, email);
-        res.status(201).json(user);
+        if (!username || !password || !email)
+            return res.status(400).json({ message: 'Missing required fields' });
+        try {
+            const user = await this.userService.register(username, password, email);
+            res.status(201).json(user);
+        } catch (err) {
+            res.json({ message: err.message });
+        }
     }
 
     google = async (req: Request, res: Response) => {

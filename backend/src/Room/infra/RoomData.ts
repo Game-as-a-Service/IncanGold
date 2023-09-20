@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn,Relation } from "typeorm";
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn, Relation } from "typeorm";
 import { SeatData } from "./SeatData";
 import { ROOMSTATE } from "../domain/constant/State";
 

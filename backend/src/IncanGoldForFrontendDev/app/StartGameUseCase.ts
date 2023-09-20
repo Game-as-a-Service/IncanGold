@@ -3,7 +3,7 @@ import { Output as RoomOutput } from "../../Room/app/dto/Output";
 import { Output as IncanGoldOutput } from "../../IncanGold/app/Dto/UseCaseOutput";
 import { IRoomRepository } from "../../Room/app/Repository";
 import { IIncanGoldRepository } from "../../IncanGold/app/Repository";
-import { IEventDispatcher } from "../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../Shared/app/Interface/EventDispatcher";
 import { substitute } from "./Substitute";
 
 export default class StartGameUseCase {

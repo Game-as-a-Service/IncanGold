@@ -53,6 +53,11 @@ export class RoomRepository implements IRoomRepository {
         }
     }
 
+    async deleteById(roomId: string): Promise<number> {
+        const { affected } = await this.dataSource.getRepository(RoomData).delete({ id: roomId });
+        return affected;
+    }
+
     private async updateSeats(manager: EntityManager) {
 
         const seatsPromise = this.room.seats.map(seat => {
@@ -69,7 +74,7 @@ export class RoomRepository implements IRoomRepository {
     }
 
     private async updateRoom(manager: EntityManager) {
-        const { id, passwd, hostId, state,version } = this.room;
+        const { id, passwd, hostId, state, version } = this.room;
 
         const result = await manager.createQueryBuilder()
             .update(RoomData)
@@ -87,7 +92,7 @@ export class RoomRepository implements IRoomRepository {
 
     private createRoomData(roomName: string, password: string) {
         const room = new RoomData();
-        room.id = uuidv4(); 
+        room.id = uuidv4();
         room.state = ROOMSTATE.WAITING;
         room.name = roomName;
         if (password)

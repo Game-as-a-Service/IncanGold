@@ -12,7 +12,7 @@ import SetPasswordUseCase, { SetPasswordInput } from "../app/usecase/SetPassword
 import ListRoomsUseCase from "../app/usecase/ListRoomsUseCase";
 import type { Request, Response } from "express";
 import { IRoomRepository } from "../app/Repository";
-import { IEventDispatcher } from "../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../Shared/app/Interface/EventDispatcher";
 
 export class RoomController {
 
@@ -118,7 +118,7 @@ export class RoomController {
             await useCase.execute(input);
             return res.sendStatus(200);
         } catch (err) {
-            // console.log(err);
+            console.log(err);
             res.send(err);
         }
     }

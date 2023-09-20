@@ -2,6 +2,7 @@ import express, { Express, Request, Response, Router } from "express";
 import { createServer, Server, IncomingMessage, ServerResponse } from "http";
 import { SocketConnection } from "./src/Shared/infra/socket";
 import { AppDataSource, configDataSource } from "./src/Shared/infra/data-source";
+import { SharedRouter } from "./src/Shared/api/Shared.router";
 import { AuthRouter } from "./src/User/api/Auth.router";
 import { RoomRouter } from "./src/Room/adapter/Room.router";
 import { IncanGoldRouter } from "./src/IncanGold/adapter/IncanGold.router";
@@ -38,9 +39,10 @@ class Bootstrap {
             });
         })
 
-        this.app.use('/user', AuthRouter());
-        this.app.use('/rooms',RoomRouter());
+        this.app.use('/users', AuthRouter());
+        this.app.use('/rooms', RoomRouter());
         this.app.use('/games', IncanGoldRouter())
+        this.app.use('', SharedRouter())
 
         SocketConnection(this.httpServer);
 
@@ -53,7 +55,7 @@ class Bootstrap {
         this.app.use(path, router);
     }
 
-    close(){
+    close() {
         this.httpServer.close()
     }
 }

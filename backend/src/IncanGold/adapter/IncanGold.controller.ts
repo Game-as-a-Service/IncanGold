@@ -3,7 +3,7 @@ import StartGameUseCase, { StartGameInput } from "../app/useCase/StartGameUseCas
 import MakeChoiceUseCase, { MakeChoiceInput } from "../app/useCase/MakeChoiceUseCase";
 import { EnforcePlayerChoicesInput } from "../app/useCase/EnforcePlayerChoicesUseCase";
 import { IIncanGoldRepository } from "../app/Repository";
-import { IEventDispatcher } from "../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../Shared/app/Interface/EventDispatcher";
 import { TimeoutCoordinator } from "../app/TimeoutCoordinatorCoordinator";
 
 export class IncanGoldController {

@@ -2,7 +2,7 @@ import { Output } from "../dto/Output";
 import { IRoomRepository } from "../Repository";
 import { IEventDispatcher } from "../../../Shared/app/Interface/EventDispatcher";
 
-export default class LeaveRoomUseCase {
+export default class GameOverUseCse {
 
     private roomRepository: IRoomRepository;
     private eventDispatcher: IEventDispatcher;
@@ -12,12 +12,12 @@ export default class LeaveRoomUseCase {
         this.eventDispatcher = eventDispatcher;
     }
 
-    async execute(input: LeaveRoomInput): Promise<void> {
-        // 查
-        const room = await this.roomRepository.findById(input.roomId);
+    async execute(gameId: string): Promise<void> {
+        // 創
+        const room = await this.roomRepository.findById(gameId);
 
         // 改
-        const events = Array.from(room.leaveRoom(input.playerId));
+        const events = [room.gameOver()];
 
         // 存
         await this.roomRepository.save(room);
@@ -27,7 +27,3 @@ export default class LeaveRoomUseCase {
     }
 }
 
-export interface LeaveRoomInput {
-    roomId: string;
-    playerId: string;
-}

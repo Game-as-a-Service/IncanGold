@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 
-const authenticate = (req: Request, res: Response, next: NextFunction) => {
+export const authenticate = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
@@ -14,6 +14,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
         (req as any).user = decoded;
         next();
     } catch (err) {
+        console.log(err.message);
         return res.status(401).json({ message: "Invalid token" });
     }
 }

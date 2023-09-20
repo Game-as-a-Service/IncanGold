@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AuthController } from "./Auth.controller";
 import { UserRepository } from "../infra/UserRepository";
+import { authenticate } from './Authenticate';
 
 export function AuthRouter() {
 
@@ -12,6 +13,9 @@ export function AuthRouter() {
 
     // register
     router.post('/register', controller.register);
+
+    // get user's information
+    router.get('/', authenticate, controller.userInformation);
 
     return router;
 }

@@ -1,8 +1,9 @@
-import { test, describe, beforeAll, expect, beforeEach,afterAll } from "vitest";
+import { test, describe, beforeAll, expect, beforeEach, afterAll } from "vitest";
 import { bootstrap } from "../../index";
-import { Client, joinRoom, createClients, ready } from "../Client";
+import { Client, joinRoom, createClients, ready, waitSeconds } from "../Client";
 import { Server } from "http";
-import e from "express";
+import { RoomRepository } from "../../src/Room/infra/RoomRepository";
+import { waitForDebugger } from "inspector";
 
 describe('Validate the rules related to leaveRoom.', async () => {
     let client1: Client;
@@ -88,4 +89,22 @@ describe('Validate the rules related to leaveRoom.', async () => {
             expect(room.host).toBe("Show");
         }
     )
+
+    test(`The room will be automatically deleted after all players have left.`, async () => {
+        // Given: Hansen create a room and Show join the room. Show leaves the room.
+        await client1.createRoom('room1');
+        await client1.getMessagesFromServer;
+        await joinRoom([client2], client1.getRoomId());
+        await client1.leaveRoom()
+
+        // When: Show leaves the room.
+        await client2.leaveRoom()
+
+        // Then: The room is automatically deleted.
+        await waitSeconds(0.5);
+        const roomRepository = new RoomRepository();
+        const rooms = await roomRepository.find();
+        const isRoomExist = rooms.some(room => room.id === client1.getRoomId());
+        expect(isRoomExist).toBe(false);
+    })
 })

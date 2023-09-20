@@ -92,9 +92,13 @@ export class Room {
 
         yield this.makeEvent('leaveRoom', { playerId, seatedOriginally, roomId: this.id });
 
-        // If leaving player was host, assign new host 
-        if (this.host === playerId)
-            yield this.setHost(this.getSeatedPlayer.playerId);
+        if (this.seatedPlayerCount === 0) {
+            yield this.makeEvent('noPlayersInRoom', { roomId: this.id });
+        } else {
+            // If leaving player was host, assign new host 
+            if (this.host === playerId)
+                yield this.setHost(this.getSeatedPlayer.playerId);
+        }
     }
 
     setHost(playerId: PlayerId) {
@@ -142,6 +146,10 @@ export class Room {
         return this.makeEvent('seatUnlocked', { seatNumber: position });
     }
 
+    gameOver() {
+        this.state = ROOMSTATE.WAITING;
+        return this.makeEvent('roomStateToWaiting', null);
+    }
 
     // Get first seated player
     private get getSeatedPlayer(): Seat {

@@ -1,7 +1,7 @@
 import type { Room } from "../../domain/Room";
 import { Output } from "../dto/Output";
 import { IRoomRepository } from "../Repository";
-import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../../Shared/app/Interface/EventDispatcher";
 
 export default class ReadyUseCase {
 

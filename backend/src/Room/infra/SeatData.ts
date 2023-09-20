@@ -1,8 +1,8 @@
-import { Entity,PrimaryColumn,Column,ManyToOne,Relation,JoinColumn } from "typeorm";
+import { Entity, PrimaryColumn, Column, ManyToOne, Relation, JoinColumn } from "typeorm";
 import { RoomData } from "./RoomData";
 import { STATE } from "../domain/constant/State";
 
-@Entity() 
+@Entity()
 export class SeatData {
 
   @PrimaryColumn('int')
@@ -21,8 +21,8 @@ export class SeatData {
   state: STATE;
 
   @PrimaryColumn({ type: 'varchar', name: 'roomId' })
-  @ManyToOne(() => RoomData, room => room.seats)
-  @JoinColumn({name:'roomId'})
+  @ManyToOne(() => RoomData, room => room.seats, { onDelete: "CASCADE" })
+  @JoinColumn({ name: 'roomId' })
   room: Relation<RoomData>;
 
 
