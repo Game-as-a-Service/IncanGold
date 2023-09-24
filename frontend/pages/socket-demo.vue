@@ -146,7 +146,7 @@ const handleMessage = () => {
 
 
 const handleStartGame = () => {
-  const roomId = '123'
+  const roomId = room.value.id
   // const params = {
   //   playerIds: Object.values(room.value.seats).filter(seat=>seat.state === 'READY').map(seat => seat.playerId),
   // }
@@ -157,7 +157,7 @@ const handleStartGame = () => {
 
 }
 const handleChoice = (choice) => {
-  const roomId = '123'
+  const roomId = room.value.id
   const params = {
     explorerId: user.value.playerId,
     choice,
