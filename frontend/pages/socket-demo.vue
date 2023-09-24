@@ -60,6 +60,7 @@ const phase = ref('DISCONNECT')
 let socket
 const connected = ref(false)
 const handleSocketConnect = () => {
+  handleSearchRoom()
   const token = user.value.token
   connected.value = true
   socket = io(`${HOST}/`, { auth: { token }, transports:['websocket', 'polling'] })
@@ -119,6 +120,7 @@ const handleExitRoom = () => {
   useFetch(`${HOST}/rooms/${roomId}/players/${playerId}`, {
     method: 'DELETE',
   })
+  room.value = {}
 }
 const handleSearchRoom = () => {
   useFetch(`${HOST}/rooms/`, {
@@ -128,7 +130,7 @@ const handleSearchRoom = () => {
   })
 }
 const handleReady = () => {
-  const roomId = '123'
+  const roomId = room.value.id
   const params = {
     playerId: user.value.playerId,
   }
@@ -218,7 +220,7 @@ onMounted(() => {
       </div>
       <div v-if="room.id">
         <button @click="handleReady">已準備好</button>
-        <button @click="handleStartGame">開始遊戲</button>
+        <button v-if="room.host === user.playerId" @click="handleStartGame">開始遊戲</button>
         <div>房間id: {{room.id}}</div>
         <div>房間名稱: {{room.name}}</div>
         <div>房主: {{room.host}}</div>
