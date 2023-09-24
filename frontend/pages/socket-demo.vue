@@ -54,6 +54,7 @@ const winner = ref({})
 const roomName = ref('')
 const selectRoomId = ref('')
 const HOST = 'https://incan-gold.fly.dev' 
+const endScores = ref([])
 // const HOST = 'http://localhost:8000' 
 // phase = DISCONNECT WAITING, PLAYING, END
 const phase = ref('DISCONNECT')
@@ -80,7 +81,8 @@ const handleSocketConnect = () => {
     const gameOverEvent = data.events.find(event => event.name === 'GameOver')
     if(gameOverEvent) {
       phase.value = 'END'
-      winner.value = gameOverEvent.data.winnerID
+      winner.value = gameOverEvent.data.winnerId
+      endScores.value = gameOverEvent.data.explorers
     }
   })
   handleSearchRoom()
@@ -269,6 +271,11 @@ const canChoise = computed(() => {
     <div v-if="phase === 'END'">
       <div>遊戲結束</div>
       <div>勝利者: {{ winner }}</div>
+      <div>分數</div>
+      <div v-for="score in endScores">
+        <span>{{ score.explorerId }}</span>
+        <span> {{ score.score }}</span>
+      </div>
     </div>
     <!-- <button @click="handleMessage">傳訊息</button> -->
     <!-- <button @click="handleReady">已準備好</button> -->
