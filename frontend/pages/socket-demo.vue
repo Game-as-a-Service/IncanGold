@@ -60,9 +60,7 @@ const phase = ref('DISCONNECT')
 let socket
 const connected = ref(false)
 const handleSocketConnect = () => {
-  handleSearchRoom()
   const token = user.value.token
-  connected.value = true
   socket = io(`${HOST}/`, { auth: { token }, transports:['websocket', 'polling'] })
   phase.value = 'WAITING'
   socket.on('connected', () => {
@@ -85,6 +83,8 @@ const handleSocketConnect = () => {
       winner.value = gameOverEvent.data.winnerID
     }
   })
+  handleSearchRoom()
+  connected.value = true
 }
 
 const handleCreateRoom = () => {
@@ -121,6 +121,7 @@ const handleExitRoom = () => {
     method: 'DELETE',
   })
   room.value = {}
+  handleSearchRoom()
 }
 const handleSearchRoom = () => {
   useFetch(`${HOST}/rooms/`, {
@@ -146,7 +147,7 @@ const handleMessage = () => {
 
 
 const handleStartGame = () => {
-  const roomId = '123'
+  const roomId = room.value.id
   // const params = {
   //   playerIds: Object.values(room.value.seats).filter(seat=>seat.state === 'READY').map(seat => seat.playerId),
   // }
@@ -157,7 +158,7 @@ const handleStartGame = () => {
 
 }
 const handleChoice = (choice) => {
-  const roomId = '123'
+  const roomId = room.value.id
   const params = {
     explorerId: user.value.playerId,
     choice,
@@ -176,6 +177,14 @@ const seats = computed(() => {
     }
   })
 })
+const roomPlayersCount = computed(() => {
+  if(!room.value.id) return 0
+  return Object.values(room.value.seats).filter(seat=>seat.playerId).length
+})
+const canChoise = computed(() => {
+  if(!game.value.explorers) return false
+  return game.value.explorers.find(explorer => explorer.explorerId === user.value.playerId && explorer.choice === 'NotSelected')
+})
 // const handleReady = () => {
 //   const params = {
 //     gameId,
@@ -184,9 +193,6 @@ const seats = computed(() => {
 //   }
 //   socket.emit('player_ready', params)
 // }
-onMounted(() => {
-  handleSearchRoom()
-})
 </script>
 <template>
   <div>
@@ -204,31 +210,39 @@ onMounted(() => {
       <button @click="handleSocketConnect">連線</button>
     </div>
     <div v-if="phase === 'WAITING'">
-      <div>
-        房間名稱<input type="text" v-model="roomName">
-        <button @click="handleCreateRoom">創建房間</button>
-      </div>
-      <button @click="handleSearchRoom">更新房間列表</button>
       <div v-if="!room.id">
+        <div>
+          房間名稱: <input type="text" v-model="roomName">
+          <button v-if="roomName === ''" type="button" class="text-white bg-blue-400 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2 text-center mx-2 border-0" disabled>創建房間</button>
+          <button v-else @click="handleCreateRoom" type="button" class="text-white bg-blue-600 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2 text-center mx-2 border-0 pointer">創建房間</button>
+        </div>
+        <button @click="handleSearchRoom">更新房間列表</button>
         <div>選擇房間</div>
         <div class="flex gap-2 flex-warp">
-          <div @click="handleJoinRoom(room)" class="text-center border-2 border- w-150 h-150 bg-purple-100 rounded-md pointer" v-for="room in rooms">
+          <div @click="handleJoinRoom(room)" class="text-center border-2 border-purple-200 w-150 h-150 bg-purple-100 rounded-md pointer flex flex-col justify-between" v-for="room in rooms">
             <div class="py-2">{{ room.name }}</div>
-            <div class="py-2">{{ room.seatedPlayerCount }} / {{ room.unlockedSeats }}</div>
+            <div v-if="room.roomStatus === 'INGAME'" class="py-2" >遊戲中</div>
+            <div v-else class="py-2">人數 {{ room.seatedPlayerCount }} / {{ room.unlockedSeats }}</div>
           </div>
         </div>
       </div>
       <div v-if="room.id">
-        <button @click="handleReady">已準備好</button>
         <button v-if="room.host === user.playerId" @click="handleStartGame">開始遊戲</button>
         <div>房間id: {{room.id}}</div>
         <div>房間名稱: {{room.name}}</div>
         <div>房主: {{room.host}}</div>
         <div>玩家:</div>
         <div v-for="seat in seats" :key="seat.id">
-          <span>playerId: {{seat.playerId}}</span>
-          <span>狀態: {{seat.state}}</span>
+          <div v-if="seat.playerId" class="py-1">
+            <span class="mr-2">探險者: {{seat.playerId}}</span>
+            <span v-if="seat.state === 'NOTREADY'" class="bg-red-100 py-1 px-2 rounded-md" >準備中</span>
+            <span v-if="seat.state === 'READY'" class="bg-green-100 py-1 px-2 rounded-md">已準備好</span>
+          </div>
         </div>
+        <div class="py-1" v-if="roomPlayersCount < room.unlockedSeats">
+          <span>等待探險者加入...</span>
+        </div>
+        <button @click="handleReady">已準備好</button>
         <button @click="handleExitRoom">離開房間</button>
       </div>
     </div>
@@ -243,10 +257,14 @@ onMounted(() => {
         <div v-for="explorer in game.explorers">
           <span>{{ explorer.explorerId }}</span>
           <span v-if="explorer.inTent">已放棄</span>
-          <span v-else="explorer.inTent">探索中</span>
-        </div> </div>
-      <button @click="()=>handleChoice('keepGoing')">繼續探索</button>
-      <button @click="()=>handleChoice('quit')">放棄</button>
+          <span v-else-if="explorer.choice === 'Selected'">已選擇</span>
+          <span v-else>考慮中...</span>
+        </div>
+      </div>
+      <div v-if="canChoise">
+        <button @click="()=>handleChoice('keepGoing')">繼續探索</button>
+        <button @click="()=>handleChoice('quit')">放棄</button>
+      </div>
     </div>
     <div v-if="phase === 'END'">
       <div>遊戲結束</div>
@@ -262,9 +280,6 @@ onMounted(() => {
 }
 .gap-2 {
   gap: 8px;
-}
-.py-2 {
-  padding: 8px 0;
 }
 .w-150 {
   width: 150px;
@@ -284,10 +299,75 @@ onMounted(() => {
 .bg-purple-100 {
 background-color: rgb(243 232 255)
 }
+.bg-red-100 {
+  background-color: rgb(254 226 226)
+}
+.bg-green-100 {
+  background-color: rgb(220 252 231)
+}
+.border-purple-200 {
+  border-color: rgb(243 232 255)
+}
 .rounded-md {
   border-radius: 8px;
 }
 .pointer {
   cursor: pointer;
+}
+.flex-col {
+  flex-direction: column;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.py-1 {
+  padding: 4px 0;
+}
+.px-2 {
+  padding: 0 8px;
+}
+.mr-2 {
+  margin-right: 8px;
+}
+.text-white {
+  color: #fff;
+}
+.bg-blue-400 {
+  background-color: rgb(96 165 250)
+}
+.bg-blue-600 {
+  background-color: rgb(37 99 235)
+}
+.hover\:bg-blue-800:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(30 64 175 / var(--tw-bg-opacity));
+}
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+.font-medium {
+  font-weight: 500;
+}
+.rounded-lg {
+  border-radius: 8px;
+}
+.text-sm {
+  font-size: 14px;
+  line-height: 20px;
+}
+.px-5 {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.py-2 {
+  padding-top: 0.5rem/* 8px */;
+  padding-bottom: 0.5rem/* 8px */;
+}
+.mx-2 {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.border-0 {
+  border-width: 0px;
 }
 </style>
