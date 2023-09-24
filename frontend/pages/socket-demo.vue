@@ -273,8 +273,7 @@ const canChoise = computed(() => {
       <div>勝利者: {{ winner }}</div>
       <div>分數</div>
       <div v-for="score in endScores">
-        <span>{{ score.explorerId }}</span>
-        <span> {{ score.score }}</span>
+        <span>{{ score.id }}獲得分數:{{ score.totalPoints }}</span>
       </div>
     </div>
     <!-- <button @click="handleMessage">傳訊息</button> -->
