@@ -78,7 +78,7 @@ export class Room {
         if (this.validate(password))
             return this.makeEvent('joinRoomFailed', null);
 
-        const seated = (this.state === ROOMSTATE.WAITING) ?
+        const seated = (this.state === ROOMSTATE.WAITING && !this.playerIsSeated(playerId)) ?
             this.sitDown(playerId) : false;
         yield this.makeEvent('joinRoom', { playerId, seated, roomId: this.id });
 

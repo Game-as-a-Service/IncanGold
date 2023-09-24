@@ -1,4 +1,4 @@
-import express, { Express, Request, Response, Router } from "express";
+import express, { Express, NextFunction, Request, Response, Router } from "express";
 import { createServer, Server, IncomingMessage, ServerResponse } from "http";
 import { SocketConnection } from "./src/Shared/infra/socket";
 import { AppDataSource, configDataSource } from "./src/Shared/infra/data-source";
@@ -18,10 +18,17 @@ class Bootstrap {
         this.httpServer = createServer(this.app);
 
         this.app.use(express.json());
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
+            const { path, params, body, method } = req;
+            console.log(`path : ${path}, method:${method}`)
+            console.log(`params : ${JSON.stringify(params)}`)
+            console.log(`body : ${JSON.stringify(body)}`)
+            next();
+        })
 
-        this.app.use((req, res, next) => {
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
             res.setHeader("Access-Control-Allow-Origin", "*"); // 或指定具體的來源（Origin）
-            res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
+            res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS,DELETE,PUT");
             res.setHeader("Access-Control-Allow-Headers", "Content-Type");
             next();
         });
@@ -43,6 +50,11 @@ class Bootstrap {
         this.app.use('/rooms', RoomRouter());
         this.app.use('/games', IncanGoldRouter())
         this.app.use('', SharedRouter())
+
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
+            console.log('Time: ', new Date())
+            next();
+        })
 
         SocketConnection(this.httpServer);
 
