@@ -20,7 +20,9 @@ class Bootstrap {
         this.app.use(express.json());
         this.app.use((req: Request, res: Response, next: NextFunction) => {
             const { path, params, body, method } = req;
-            console.log(`path : ${path}, params:${params}, body:${body}, method:${method}`)
+            console.log(`path : ${path}, method:${method}`)
+            console.log(`params : ${JSON.stringify(params)}`)
+            console.log(`body : ${JSON.stringify(body)}`)
             next();
         })
 
