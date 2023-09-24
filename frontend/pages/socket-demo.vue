@@ -57,10 +57,10 @@ const HOST = 'https://incan-gold.fly.dev'
 // phase = DISCONNECT WAITING, PLAYING, END
 const phase = ref('DISCONNECT')
 let socket
-const gameId = '123456'
-const playerId = 'a'
+const connected = ref(false)
 const handleSocketConnect = () => {
   const token = user.value.token
+  connected.value = true
   socket = io(`${HOST}/`, { auth: { token }, transports:['websocket', 'polling'] })
   phase.value = 'WAITING'
   socket.on('connected', () => {
@@ -87,7 +87,7 @@ const handleSocketConnect = () => {
 
 const handleCreateRoom = () => {
   const params = {
-    playerId: 'arong',
+    playerId: user.value.playerId,
     roomName: roomName.value,
   }
   useFetch(`${HOST}/rooms`, {
@@ -101,14 +101,22 @@ const handleCreateRoom = () => {
   // }
   // socket.emit('create_room', params)
 }
-const handleJoinRoom = () => {
-  const roomId = selectRoomId.value
+const handleJoinRoom = (room) => {
+  const roomId = room.id
   const params = {
     playerId: user.value.playerId,
   }
-  useFetch(`${HOST}rooms/${roomId}/players`, {
+  useFetch(`${HOST}/rooms/${roomId}/players`, {
     method: 'POST',
     body: params
+  })
+}
+
+const handleExitRoom = () => {
+  const roomId = room.value.id
+  const playerId = user.value.playerId
+  useFetch(`${HOST}/rooms/${roomId}/${playerId}`, {
+    method: 'DELETE',
   })
 }
 const handleSearchRoom = () => {
@@ -173,18 +181,21 @@ const seats = computed(() => {
 //   }
 //   socket.emit('player_ready', params)
 // }
-
+onMounted(() => {
+  handleSearchRoom()
+})
 </script>
 <template>
   <div>
-    <div>socket demo</div>
+    <div>印加寶藏臨時demo頁</div>
   </div>
-  <div>
+  <div v-if="!connected">
     <span>選擇身份</span>
     <select v-model="user">
       <option v-for="user in users" :key="user.playerId" :value="user">{{user.name}}</option>
     </select>
   </div>
+  <div v-else>歡迎回來，探險者 {{ user.name }}</div>
   <div>
     <div v-if="phase === 'DISCONNECT'">
       <button @click="handleSocketConnect">連線</button>
@@ -194,18 +205,19 @@ const seats = computed(() => {
         房間名稱<input type="text" v-model="roomName">
         <button @click="handleCreateRoom">創建房間</button>
       </div>
-      <button @click="handleSearchRoom">搜尋房間</button>
-      <div>
-        <span>選擇房間</span>
-          <select v-model="selectRoomId">
-            <option value="">請選擇</option>
-            <option v-for="room in rooms" :key="room.id" :value="room.id">{{room.name}}</option>
-          </select>
-        <button @click="handleJoinRoom">加入房間</button>
+      <button @click="handleSearchRoom">更新房間列表</button>
+      <div v-if="!room.id">
+        <div>選擇房間</div>
+        <div class="flex gap-2 flex-warp">
+          <div @click="handleJoinRoom(room)" class="text-center border-2 border- w-150 h-150 bg-purple-100 rounded-md pointer" v-for="room in rooms">
+            <div class="py-2">{{ room.name }}</div>
+            <div class="py-2">{{ room.seatedPlayerCount }} / {{ room.unlockedSeats }}</div>
+          </div>
+        </div>
       </div>
-      <button @click="handleReady">已準備好</button>
-      <button @click="handleStartGame">開始遊戲</button>
       <div v-if="room.id">
+        <button @click="handleReady">已準備好</button>
+        <button @click="handleStartGame">開始遊戲</button>
         <div>房間id: {{room.id}}</div>
         <div>房間名稱: {{room.name}}</div>
         <div>房主: {{room.host}}</div>
@@ -214,6 +226,7 @@ const seats = computed(() => {
           <span>playerId: {{seat.playerId}}</span>
           <span>狀態: {{seat.state}}</span>
         </div>
+        <button @click="handleExitRoom">離開房間</button>
       </div>
     </div>
     <div v-if="phase === 'PLAYING'" >
@@ -236,7 +249,42 @@ const seats = computed(() => {
       <div>遊戲結束</div>
       <div>勝利者: {{ winner }}</div>
     </div>
-    <button @click="handleMessage">傳訊息</button>
+    <!-- <button @click="handleMessage">傳訊息</button> -->
     <!-- <button @click="handleReady">已準備好</button> -->
   </div>
 </template>
+<style scoped>
+.flex {
+  display: flex;
+}
+.gap-2 {
+  gap: 8px;
+}
+.py-2 {
+  padding: 8px 0;
+}
+.w-150 {
+  width: 150px;
+}
+.h-150 {
+  height: 80px;
+}
+.flex-warp {
+  flex-wrap: wrap;
+}
+.text-center {
+  text-align: center;
+}
+.border-2 {
+  border-width: 2px;
+}
+.bg-purple-100 {
+background-color: rgb(243 232 255)
+}
+.rounded-md {
+  border-radius: 8px;
+}
+.pointer {
+  cursor: pointer;
+}
+</style>
