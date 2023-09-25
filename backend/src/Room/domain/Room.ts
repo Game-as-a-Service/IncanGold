@@ -148,6 +148,9 @@ export class Room {
 
     gameOver() {
         this.state = ROOMSTATE.WAITING;
+        [...this.seats.values()]
+            .filter(seat => !!seat.playerId)
+            .forEach(seat => seat.cancelReady());
         return this.makeEvent('roomStateToWaiting', null);
     }
 

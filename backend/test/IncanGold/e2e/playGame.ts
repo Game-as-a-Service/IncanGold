@@ -45,9 +45,7 @@ import { IncanGoldRouterForFrontendDev } from "../../../src/IncanGoldForFrontend
     await waitSeconds(0.5); // 等房間狀態改變再離開，不然會遇到race condition而被回覆err
     await hansen.leaveRoom();
     await show.leaveRoom();
-    await jay.leaveRoom();
-
-
+    // await jay.leaveRoom();
 })();
 
 
