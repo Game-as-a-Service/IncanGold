@@ -10,7 +10,7 @@ services:
       dockerfile: Dockerfile.backend
       target: build_for_test
     working_dir: /app/backend
-    command: npx vitest --run --dir ./test/IncanGold/unit_test
+    command: npx vitest --dir ./test/IncanGold/unit_test
 
   db:
     extends:

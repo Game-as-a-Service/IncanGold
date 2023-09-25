@@ -18,24 +18,24 @@ import { IncanGoldRouterForFrontendDev } from "../../../src/IncanGoldForFrontend
 
 
     // 開始遊戲
-    await hansen.startGameForTest(false, false, ["T1", "T2", "T3", "T3", "T3", "HS1"]);
+    await hansen.startGameForTest(false, false, ["A3", "A2", "A1", "A4", "A5", "HS1"]);
     await waitSeconds(2);
 
-    // await hansen.makeChoiceForTest(Choice.KeepGoing)
-    // await show.makeChoiceForTest(Choice.KeepGoing)
-    // await jay.makeChoiceForTest(Choice.Quit)
+    await hansen.makeChoiceForTest(Choice.KeepGoing)
+    await show.makeChoiceForTest(Choice.KeepGoing)
+    await jay.makeChoiceForTest(Choice.Quit)
 
-    // await hansen.makeChoiceForTest(Choice.KeepGoing)
-    // await show.makeChoiceForTest(Choice.KeepGoing)
+    await hansen.makeChoiceForTest(Choice.KeepGoing)
+    await show.makeChoiceForTest(Choice.KeepGoing)
 
-    // await hansen.makeChoiceForTest(Choice.KeepGoing)
-    // await show.makeChoiceForTest(Choice.KeepGoing)
+    await hansen.makeChoiceForTest(Choice.KeepGoing)
+    await show.makeChoiceForTest(Choice.KeepGoing)
 
-    for (let i = 0; i < 5; i++) {
-        await hansen.makeChoiceForTest(Choice.Quit)
-        await show.makeChoiceForTest(Choice.Quit)
-        await jay.makeChoiceForTest(Choice.Quit)
-    }
+    // for (let i = 0; i < 5; i++) {
+    //     await hansen.makeChoiceForTest(Choice.Quit)
+    //     await show.makeChoiceForTest(Choice.Quit)
+    //     await jay.makeChoiceForTest(Choice.Quit)
+    // }
 
     await jay.getMessagesFromServer;
     // jay.records.forEach(record => {

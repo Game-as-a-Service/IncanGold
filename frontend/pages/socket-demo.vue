@@ -237,14 +237,14 @@ const canChoise = computed(() => {
         <div v-for="seat in seats" :key="seat.id">
           <div v-if="seat.playerId" class="py-1">
             <span class="mr-2">探險者: {{seat.playerId}}</span>
-            <span v-if="seat.state === 'NOTREADY'" class="bg-red-100 py-1 px-2 rounded-md" >準備中</span>
-            <span v-if="seat.state === 'READY'" class="bg-green-100 py-1 px-2 rounded-md">已準備好</span>
+            <span v-if="seat.state === 'NOTREADY'" class="bg-red-100 py-1 px-2 rounded-md" >未準備</span>
+            <span v-if="seat.state === 'READY'" class="bg-green-100 py-1 px-2 rounded-md">已準備</span>
           </div>
         </div>
         <div class="py-1" v-if="roomPlayersCount < room.unlockedSeats">
           <span>等待探險者加入...</span>
         </div>
-        <button @click="handleReady">已準備好</button>
+        <button @click="handleReady">準備</button>
         <button @click="handleExitRoom">離開房間</button>
       </div>
     </div>

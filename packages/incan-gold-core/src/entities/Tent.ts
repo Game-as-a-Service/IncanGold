@@ -46,4 +46,8 @@ export default class Tent {
     get artifactsNames(): string[] {
         return this._artifacts.map(artifact => artifact.name);
     }
+
+    get artifactsIds(): string[] {
+        return this._artifacts.map(artifact => artifact.id);
+    }
 }

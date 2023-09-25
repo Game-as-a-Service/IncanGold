@@ -18,7 +18,7 @@ export default class ArtifactCard extends Card {
     this.name = name;
     this.points = points;
     this.isArtifactPresent = isArtifactPresent;
-    this.artifact = isArtifactPresent ? new Artifact(name, points) : null;
+    this.artifact = isArtifactPresent ? new Artifact(id, name, points) : null;
   }
 
   public trigger(game: IncanGold): Event {
