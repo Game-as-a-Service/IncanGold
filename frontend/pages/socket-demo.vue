@@ -252,15 +252,19 @@ const canChoise = computed(() => {
       <div>遊戲進度: Round {{ game.round }} Turn {{game.turn}}</div>
       <div>通道
         <span v-for="tunnel in game.tunnel">
-          <span>{{ tunnel.card }}</span> | 
+          <span class="py-1 px-2 rounded-md" :class="{
+            'bg-red-100': tunnel.card.startsWith('H'),
+            'bg-green-100':tunnel.card.startsWith('T'),
+            'bg-orange-100':tunnel.card.startsWith('A'),
+            }">{{ tunnel.card }}</span> | 
         </span>
       </div>
-      <div>探索者: 
-        <div v-for="explorer in game.explorers">
-          <span>{{ explorer.explorerId }}</span>
-          <span v-if="explorer.inTent">已放棄</span>
-          <span v-else-if="explorer.choice === 'Selected'">已選擇</span>
-          <span v-else>考慮中...</span>
+      <div class="mt-2">探險進度: 
+        <div v-for="explorer in game.explorers" class="py-1">
+          <span class="mr-2">探險者: {{ explorer.explorerId }}</span>
+          <span v-if="explorer.inTent" class="bg-gray-100 py-1 px-2 rounded-md">已放棄</span>
+          <span v-else-if="explorer.choice === 'Selected'" class="bg-green-100 py-1 px-2 rounded-md">已選擇</span>
+          <span v-else class="bg-red-100 py-1 px-2 rounded-md" >考慮中...</span>
         </div>
       </div>
       <div v-if="canChoise">
@@ -272,9 +276,11 @@ const canChoise = computed(() => {
       <div>遊戲結束</div>
       <div>勝利者: {{ winner }}</div>
       <div>分數</div>
-      <div v-for="score in endScores">
-        <span>{{ score.id }}獲得分數:{{ score.totalPoints }}</span>
+      <div v-for="score in endScores" class="py-1">
+        <span class="mr-2">探險者: {{ score.id }}</span>
+        獲得分數:<span class="bg-green-100 py-1 px-2 rounded-md">{{ score.totalPoints }}</span>
       </div>
+      <button @click="phase = 'WAITING'" type="button" class="mt-2 text-white bg-blue-600 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2 text-center mx-2 border-0 pointer">回到房間</button>
     </div>
     <!-- <button @click="handleMessage">傳訊息</button> -->
     <!-- <button @click="handleReady">已準備好</button> -->
@@ -305,6 +311,9 @@ const canChoise = computed(() => {
 .bg-purple-100 {
 background-color: rgb(243 232 255)
 }
+.bg-gray-100 {
+    background-color: rgb(229 231 235)
+}
 .bg-red-100 {
   background-color: rgb(254 226 226)
 }
@@ -313,6 +322,9 @@ background-color: rgb(243 232 255)
 }
 .border-purple-200 {
   border-color: rgb(243 232 255)
+}
+.bg-orange-100 {
+  background-color: rgb(255 243 224)
 }
 .rounded-md {
   border-radius: 8px;
@@ -375,5 +387,8 @@ background-color: rgb(243 232 255)
 }
 .border-0 {
   border-width: 0px;
+}
+.mt-2 {
+  margin-top: 8px;
 }
 </style>
