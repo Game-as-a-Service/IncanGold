@@ -5,7 +5,7 @@ services:
     extends:
       file: docker-compose.base.yml
       service: backend
-    image: ${ DOCKERHUB_USERNAME }/incan_gold_test:latest
+    image: ${DOCKERHUB_USERNAME}/incan_gold_test:latest
     working_dir: /app/backend
     command: npx vitest --dir .\test
 
