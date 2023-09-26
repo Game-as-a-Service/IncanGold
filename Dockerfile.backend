@@ -8,8 +8,8 @@ COPY ./backend ./backend
 COPY ./packages ./packages
 WORKDIR /app/backend
 
-FROM base as build_for_test
-RUN npm run build:for_test
+# FROM base as build_for_test
+# RUN npm run build:for_test
 
 FROM base as build
 RUN npm run build
