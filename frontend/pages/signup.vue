@@ -1,13 +1,23 @@
 <script setup>
 const form = reactive({
-  account: '',
-  password: '',
-  confirmPassword: '',
-  email: ''
-})
+  account: "",
+  password: "",
+  confirmPassword: "",
+  email: "",
+});
+
+const HOST = "https://incan-gold.fly.dev";
 
 function submitForm() {
-  console.log('signup')
+  const params = {
+    username: form.account,
+    password: form.password,
+    email: form.email,
+  };
+  useFetch(`${HOST}/users/register`, {
+    method: "POST",
+    body: params,
+  });
 }
 </script>
 
@@ -16,14 +26,32 @@ function submitForm() {
     <div class="pages-signup__main">
       <div class="pages-signup__form">
         <div class="pages-signup__form-info">
-          <form-input class="pages-signup__input" label="帳號" v-model:value="form.account" />
-          <form-input class="pages-signup__input" label="密碼" v-model:value="form.password" />
-          <form-input class="pages-signup__input" label="確認答案" v-model:value="form.confirmPassword" />
-          <form-input class="pages-signup__input" label="E-mail" v-model:value="form.email" />
+          <form-input
+            class="pages-signup__input"
+            label="帳號"
+            v-model:value="form.account"
+          />
+          <form-input
+            class="pages-signup__input"
+            label="密碼"
+            v-model:value="form.password"
+          />
+          <form-input
+            class="pages-signup__input"
+            label="確認答案"
+            v-model:value="form.confirmPassword"
+          />
+          <form-input
+            class="pages-signup__input"
+            label="E-mail"
+            v-model:value="form.email"
+          />
         </div>
         <div class="pages-signup__form-action">
           <form-button text="註冊" @click="submitForm" />
-          <div class="pages-signup__go-to-login">已有帳號? <router-link to="/login">點此登入</router-link></div>
+          <div class="pages-signup__go-to-login">
+            已有帳號? <router-link to="/login">點此登入</router-link>
+          </div>
         </div>
       </div>
       <form-divide />
@@ -67,6 +95,6 @@ function submitForm() {
 
 .pages-signup__go-to-login a:active,
 .pages-signup__go-to-login a:focus {
-  color: #FFC700;
+  color: #ffc700;
 }
 </style>
