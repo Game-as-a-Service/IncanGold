@@ -2,6 +2,7 @@ import { RoomData } from "./RoomData";
 import { SeatData } from "./SeatData";
 import { Room } from "../domain/Room";
 import { Seat } from "../domain/Seat";
+import { ROOMSTATE } from "../domain/constant/State";
 
 export class RoomMapper {
 
@@ -12,12 +13,13 @@ export class RoomMapper {
             seats.set(position, new Seat(locked, playerId, state));
         })
 
-        const { id, name, hostId, passwd } = roomData
-        return new Room(id, name, hostId, passwd, seats);
+        const { id, state, name, hostId, passwd } = roomData
+        return new Room(id, state, name, hostId, passwd, seats);
     }
 
     updateRoomData(room: Room, roomData: RoomData) {
         roomData.id = room.id;
+        roomData.state = room.state;
         roomData.name = room.name;
         roomData.hostId = room.host;
         roomData.passwd = room.password;

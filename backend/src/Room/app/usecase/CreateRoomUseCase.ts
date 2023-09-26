@@ -1,7 +1,6 @@
-import { flattenToDto, RoomDto } from "../dto/RoomDto";
 import { Output } from "../dto/Output";
 import { IRoomRepository } from "../Repository";
-import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../../Shared/app/Interface/EventDispatcher";
 
 export default class CreateRoomUseCase {
 
@@ -24,7 +23,7 @@ export default class CreateRoomUseCase {
         await this.roomRepository.save(room);
 
         // 推
-        this.eventDispatcher.emit('room', Output(flattenToDto(room), events));
+        this.eventDispatcher.emit('room', Output(room, events));
     }
 }
 

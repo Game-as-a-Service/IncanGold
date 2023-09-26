@@ -2,10 +2,14 @@ import { Room } from "../domain/Room";
 
 export interface IRoomRepository {
 
-    create(roomName:string, password:string):Promise<Room>;
+    find(): Promise<Room[] | undefined[]>;
 
-    findById(gameId:string):Promise<Room|undefined>;
-    
-    save(game:Room): Promise<void>; 
+    create(roomName: string, password: string): Promise<Room>;
+
+    findById(gameId: string): Promise<Room | undefined>;
+
+    save(game: Room): Promise<void>;
+
+    deleteById(id: string): Promise<number>;
 }
 

@@ -1,7 +1,7 @@
 import { IIncanGoldRepository } from '../Repository';
 import { Choice } from "../../domain/IncanGold"
 import { Output } from '../Dto/UseCaseOutput';
-import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../../Shared/app/Interface/EventDispatcher";
 
 export default class MakeChoiceUseCase {
     private incanGoldRepository: IIncanGoldRepository;

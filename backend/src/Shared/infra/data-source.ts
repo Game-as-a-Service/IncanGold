@@ -6,19 +6,19 @@ import { User } from "../../User/infra/User"
 import { RoomData } from "../../Room/infra/RoomData"
 import { SeatData } from "../../Room/infra/SeatData"
 
-export let AppDataSource : DataSource|null;
+export let AppDataSource: DataSource | null;
 
-export function configDataSource(host:string,port:number):void {
-    AppDataSource =  new DataSource({
+export function configDataSource(host: string, port: number): void {
+    AppDataSource = new DataSource({
         type: "mysql",
         host,
-        port,
-        username: "root",
-        password: "123456",
-        database: "test",
+        port: port,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
         synchronize: true,
         logging: false,
-        entities: [IncanGoldData,ExplorerData,User,RoomData,SeatData],
+        entities: [IncanGoldData, ExplorerData, User, RoomData, SeatData],
         migrations: [],
         subscribers: [],
     })

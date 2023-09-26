@@ -18,13 +18,18 @@ export class IncanGoldRepository implements IIncanGoldRepository {
         this.mapper = new IncanGoldMapper();
     }
 
+    async deleteById(gameId: string): Promise<number> {
+        const { affected } = await this.dataSource.getRepository(IncanGoldData).delete({ id: gameId });
+        return affected;
+    }
+
     async create(id: string, explorerIDs: string[]): Promise<IncanGold> {
         const incanGoldData = this.createIncanGoldData(explorerIDs, id);
         await this.dataSource.getRepository(IncanGoldData).save(incanGoldData);
         return this.mapper.toDomain(incanGoldData);
     }
 
-    async findById(gameId: string): Promise<IncanGold> {
+    async findById(gameId: string): Promise<IncanGold|undefined> {
         this.queryRunner = await this.createQueryRunner();
         let incanGoldData: IncanGoldData;
 
@@ -40,7 +45,10 @@ export class IncanGoldRepository implements IIncanGoldRepository {
             throw err;
         }
 
-        return this.mapper.toDomain(incanGoldData);
+        if(incanGoldData)
+            return this.mapper.toDomain(incanGoldData);
+        else
+            return undefined;
     }
 
     async save(game: IncanGold): Promise<void> {
@@ -81,7 +89,7 @@ export class IncanGoldRepository implements IIncanGoldRepository {
         await Promise.all(explorerPromise);
     }
 
-    private async createQueryRunner() { 
+    private async createQueryRunner() {
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();

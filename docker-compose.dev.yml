@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    extends:
+      file: docker-compose.base.yml
+      service: backend
+    image: node:18.14.0-alpine
+    working_dir: /source
+    volumes:
+      - .:/source
+      - ./backend/node_modules:/source/backend/node_modules
+
+  db:
+    extends:
+      file: docker-compose.base.yml
+      service: db

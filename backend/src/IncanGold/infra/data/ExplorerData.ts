@@ -29,7 +29,7 @@ export class ExplorerData {
     @Column("simple-array", { nullable: true })
     artifacts: string[]
 
-    @ManyToOne(() => IncanGoldData, (incanGold) => incanGold.explorers)
+    @ManyToOne(() => IncanGoldData, (incanGold) => incanGold.explorers, { onDelete: "CASCADE" })
     incanGold: Relation<IncanGoldData>
 
     static generateBy(

@@ -6,5 +6,7 @@ export interface IIncanGoldRepository {
     findById(gameId:string):Promise<IncanGold|undefined>;
     
     save(game:IncanGold): Promise<void>;
+
+    deleteById(gameId:string): Promise<number>;
 }
 

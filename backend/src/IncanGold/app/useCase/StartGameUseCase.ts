@@ -1,6 +1,6 @@
 import { IIncanGoldRepository } from '../Repository';
 import { Output } from '../Dto/UseCaseOutput';
-import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../../Shared/app/Interface/EventDispatcher";
 
 // Create a game entity using the room ID and the explorers' IDs 
 // (the game entity's ID will be the room ID), 
