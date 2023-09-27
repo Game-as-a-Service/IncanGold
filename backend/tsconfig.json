@@ -7,8 +7,8 @@
       ],
       "resolveJsonModule":true,
       "target": "ESNext",
-      "module": "ESNext",
-      "outDir": "./dist",
+      "module": "CommonJS",
+      "outDir": "../dist",
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
       "moduleResolution": "Node",
@@ -23,7 +23,7 @@
     "include": [
       "**/*.ts",
       "**/*.test.ts",
-      "../../../packages/**/*.ts",
+      "../packages/incan-gold-core/test",
     ]
   }
   

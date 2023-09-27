@@ -1,4 +1,4 @@
-import type { IncanGold, Explorer, Card, TreasureCard, ArtifactCard } from "../../domain/IncanGold"
+import { IncanGold, Explorer, Card, TreasureCard, ArtifactCard, Choice } from "../../domain/IncanGold"
 
 export interface GameStatus {
     round: number
@@ -14,6 +14,7 @@ export interface ExplorerDto {
     gems: number
     totalPoints: number
     artifacts: string[]
+    choice: string;
 }
 
 type cardId = string
@@ -37,16 +38,31 @@ function toExplorerDto(explorer: Explorer): ExplorerDto {
     const { id, inTent, bag, tent, points } = explorer;
     const { numOfGems } = bag;
     const { artifactsNames } = tent;
-    return generateExplorerDto(id, inTent, numOfGems, points, artifactsNames)
+
+    let choice: string = "";
+    if (explorer.inTent)
+        choice = explorer.choice;
+    else
+        choice = explorer.choice === Choice.NotSelected ? "NotSelected" : "Selected";
+
+    return generateExplorerDto(id, inTent, numOfGems, points, artifactsNames, choice)
 }
 
-function generateExplorerDto(id: string, inTent: boolean, numOfGems: number, points: number, artifactsNames: string[]): ExplorerDto {
+function generateExplorerDto(
+    id: string,
+    inTent: boolean,
+    numOfGems: number,
+    points: number,
+    artifactsNames: string[],
+    choice: string,
+): ExplorerDto {
     return {
         explorerId: id,
-        inTent: inTent,
+        inTent,
         gems: numOfGems,
         totalPoints: points,
-        artifacts: artifactsNames
+        artifacts: artifactsNames,
+        choice
     }
 }
 

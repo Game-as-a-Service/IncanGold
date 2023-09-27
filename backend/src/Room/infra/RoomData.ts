@@ -1,5 +1,6 @@
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn,Relation } from "typeorm";
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn, Relation } from "typeorm";
 import { SeatData } from "./SeatData";
+import { ROOMSTATE } from "../domain/constant/State";
 
 @Entity()
 export class RoomData {
@@ -15,6 +16,9 @@ export class RoomData {
 
   @Column('uuid', { nullable: true })
   hostId: string;
+
+  @Column('varchar', { length: 30 })
+  state: ROOMSTATE;
 
   @OneToMany(() => SeatData, seat => seat.room, {
     cascade: true,

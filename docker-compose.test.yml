@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  backend:
+    extends:
+      file: docker-compose.base.yml
+      service: backend
+    image: ${DOCKERHUB_USERNAME}/incan_gold_test:latest
+    working_dir: /app/backend
+    command: npx vitest --dir .\test
+
+  db:
+    extends:
+      file: docker-compose.base.yml
+      service: db

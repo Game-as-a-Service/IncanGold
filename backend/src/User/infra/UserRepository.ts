@@ -21,12 +21,32 @@ export class UserRepository implements IUserRepository {
         return user;
     }
 
-    async find(username: string, passwd: string): Promise<IUser | undefined> {
+    async find(username: string, passwd: string): Promise<IUser | null> {
         const user = await this.dataSource.getRepository(User).findOneBy({ username, passwd });
+        return user;
+    }
+
+    async findByName(username: string): Promise<IUser | null> {
+        const user = await this.dataSource.getRepository(User).findOneBy({ username });
+        return user;
+    }
+
+    async findByEmail(email: string): Promise<IUser | null> {
+        const user = await this.dataSource.getRepository(User).findOneBy({ email });
+        return user;
+    }
+
+    async findById(id: number): Promise<IUser | null> {
+        const user = await this.dataSource.getRepository(User).findOneBy({ id });
         return user;
     }
 
     async save(user: IUser): Promise<void> {
         await this.dataSource.getRepository(User).save(user);
+    }
+
+    async deleteById(id: number): Promise<number> {
+        const result = await this.dataSource.getRepository(User).delete({ id });
+        return result.affected;
     }
 }

@@ -6,7 +6,7 @@ import { AppDataSource } from "../../Shared/infra/data-source";
 import { RoomMapper } from "./RoomMapper";
 import { SeatData } from "./SeatData";
 import { v4 as uuidv4 } from 'uuid';
-import { STATE } from "../domain/constant/State";
+import { ROOMSTATE, STATE } from "../domain/constant/State";
 
 export class RoomRepository implements IRoomRepository {
 
@@ -22,6 +22,11 @@ export class RoomRepository implements IRoomRepository {
         const room = this.createRoomData(roomName, password);
         this.room = await this.dataSource.getRepository(RoomData).save(room, { reload: true });
         return this.mapper.toDomain(this.room);
+    }
+
+    async find(): Promise<Room[] | undefined[]> {
+        const rooms = await this.dataSource.getRepository(RoomData).find();
+        return rooms.map(room => this.mapper.toDomain(room));
     }
 
     async findById(roomId: string): Promise<Room | undefined> {
@@ -48,14 +53,19 @@ export class RoomRepository implements IRoomRepository {
         }
     }
 
+    async deleteById(roomId: string): Promise<number> {
+        const { affected } = await this.dataSource.getRepository(RoomData).delete({ id: roomId });
+        return affected;
+    }
+
     private async updateSeats(manager: EntityManager) {
 
         const seatsPromise = this.room.seats.map(seat => {
-            const { locked, playerId, state } = seat;
+            const { locked, playerId, state, position } = seat;
             return manager.createQueryBuilder()
                 .update(SeatData)
                 .set({ locked, playerId, state })
-                .where("position = :position", { position: seat.position })
+                .where("position = :position", { position })
                 .andWhere("roomId = :roomId", { roomId: this.room.id })
                 .execute();
         })
@@ -64,25 +74,26 @@ export class RoomRepository implements IRoomRepository {
     }
 
     private async updateRoom(manager: EntityManager) {
-        const { passwd, hostId } = this.room;
+        const { id, passwd, hostId, state, version } = this.room;
 
         const result = await manager.createQueryBuilder()
             .update(RoomData)
             .set({
-                passwd, hostId,
-                version: this.room.version + 1
+                passwd, hostId, state,
+                version: version + 1
             })
-            .where("id = :id", { id: this.room.id })
-            .andWhere("version = :version", { version: this.room.version }) // Optimistic Lock
+            .where("id = :id", { id })
+            .andWhere("version = :version", { version }) // Optimistic Lock
             .execute();
 
         if (result.affected === 0) // Incorrect version
-            throw new Error('Concurrent modification error');
+            throw new Error('Incorrect data version! concurrent modification error!');
     }
 
     private createRoomData(roomName: string, password: string) {
         const room = new RoomData();
-        room.id = '123'; // uuidv4();  change back later after test finish.
+        room.id = uuidv4();
+        room.state = ROOMSTATE.WAITING;
         room.name = roomName;
         if (password)
             room.passwd = password;

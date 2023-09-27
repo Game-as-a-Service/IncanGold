@@ -23,10 +23,11 @@ export class IncanGoldMapper {
         return new Explorer(id, choice, inTent, new Bag(gemsInBag), tent);
     }
 
-    private setupTent(totalPoints: number, gemsInTent: number, artifactIDs: string[]) {
-        const artifacts = artifactIDs.map(id => {
+    private setupTent(totalPoints: number, gemsInTent: number, artifactIds: string[]) {
+        const artifacts = artifactIds.map(id => {
+            console.log(28,artifactCards[id]);
             const { name, points } = artifactCards[id];
-            return new Artifact(name, points);
+            return new Artifact(id,name, points);
         });
         return new Tent(totalPoints, gemsInTent, artifacts);
     }
@@ -68,7 +69,7 @@ export class IncanGoldMapper {
         const gemsInBag = bag.numOfGems;
         const gemsInTent = tent.numOfGems;
         const totalPoints = tent.points;
-        const artifacts = tent.artifactsNames;
+        const artifacts = tent.artifactsIds;
         return ExplorerData.generateBy(id, choice, inTent, gemsInBag, gemsInTent, totalPoints, artifacts)
     }
 

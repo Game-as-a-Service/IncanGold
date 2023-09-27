@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 import StartGameUseCase, { StartGameInput } from "../app/useCase/StartGameUseCase";
 import MakeChoiceUseCase, { MakeChoiceInput } from "../app/useCase/MakeChoiceUseCase";
-import EnforcePlayerChoicesUseCase, { EnforcePlayerChoicesInput } from "../app/useCase/EnforcePlayerChoicesUseCase";
+import { EnforcePlayerChoicesInput } from "../app/useCase/EnforcePlayerChoicesUseCase";
 import { IIncanGoldRepository } from "../app/Repository";
-import { IEventDispatcher } from "../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../Shared/app/Interface/EventDispatcher";
 import { TimeoutCoordinator } from "../app/TimeoutCoordinatorCoordinator";
 
 export class IncanGoldController {

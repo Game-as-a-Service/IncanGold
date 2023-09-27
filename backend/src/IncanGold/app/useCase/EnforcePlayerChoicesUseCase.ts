@@ -1,6 +1,6 @@
 import { IIncanGoldRepository } from '../Repository';
 import { Output } from '../Dto/UseCaseOutput';
-import { IEventDispatcher } from "../../../Shared/interface/EventDispatcher";
+import { IEventDispatcher } from "../../../Shared/app/Interface/EventDispatcher";
 
 export default class EnforcePlayerChoicesUseCase {
     private incanGoldRepository: IIncanGoldRepository;

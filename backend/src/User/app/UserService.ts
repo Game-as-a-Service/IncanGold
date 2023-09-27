@@ -7,18 +7,37 @@ export class UserService {
         this.repository = repository;
     }
 
-    async validate(username: string, password: string) {
-        const user = await this.repository.find(username, password);
-        return user;
+    async findById(id: number) {
+        const { username, email } = await this.repository.findById(id);
+        return { id, username, email };
     }
 
-    async create(username: string, password: string, email: string) {
-        return await this.repository.create(username, password, email);
+    async login(username: string, password: string) {
+        const { id } = await this.repository.find(username, password);
+        return id;
     }
 
-    async save(username: string, password: string, email: string){
-        return await this.repository.find(username, password);
+    async register(username: string, password: string, email: string) {
+        const usernameExist = await this.usernameAlreadyExists(username);
+        if (usernameExist) throw new Error('Username already exists');
+
+        const emailExist = await this.emailAlreadyExists(email);
+        if (emailExist) throw new Error('Email already exists');
+
+        const { id } = await this.repository.create(username, password, email);
+        return { id, username, email };
     }
+
+    private async usernameAlreadyExists(username: string) {
+        const user = await this.repository.findByName(username);
+        return (!!user);
+    }
+
+    private async emailAlreadyExists(email: string) {
+        const user = await this.repository.findByEmail(email);
+        return (!!user);
+    }
+
 }
 
 
