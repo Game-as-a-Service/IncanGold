@@ -13,8 +13,8 @@ export class UserService {
     }
 
     async login(username: string, password: string) {
-        const { id } = await this.repository.find(username, password);
-        return id;
+        const user = await this.repository.find(username, password);
+        return user ? user.id : null;
     }
 
     async register(username: string, password: string, email: string) {
