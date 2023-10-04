@@ -9,14 +9,32 @@ const form = reactive({
 const HOST = "https://incan-gold.fly.dev";
 
 function submitForm() {
+  if (form.password != form.confirmPassword) {
+    alert("密碼與確認密碼不相同");
+    return;
+  }
+
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  if (!emailRegex.test(form.email)) {
+    alert("email 格式不正確");
+    return;
+  }
+
   const params = {
     username: form.account,
     password: form.password,
     email: form.email,
   };
+
   useFetch(`${HOST}/users/register`, {
     method: "POST",
     body: params,
+  }).then((res) => {
+    if (res.data._value.message == "Username already exists") {
+      alert("帳號已存在");
+    } else {
+      alert("註冊成功");
+    }
   });
 }
 </script>
