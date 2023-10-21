@@ -96,7 +96,7 @@ jobs:
       name: Setup Flyctl
       uses: superfly/flyctl-actions/setup-flyctl@master
     -
-      - name: Do something only for pull requests
+      name: deploy to another machine only for pull requests
       if: ${{ github.event_name == 'pull_request' }} 
       run: |
         sed -i "s/incan-gold/incan-gold-pr/g" fly.toml
