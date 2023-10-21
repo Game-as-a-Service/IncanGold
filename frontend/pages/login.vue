@@ -36,8 +36,7 @@ function gotoSignup() {
 
 <style>
 .pages-login__main {
-  width: 587px;
-  padding: 55px 98px 37px 98px;
+  padding: 36px 98px 31px 98px;
 }
 
 .pages-login__form {
@@ -47,7 +46,7 @@ function gotoSignup() {
 }
 
 .pages-login__form-info {
-  margin-bottom: 21px;
+  margin-bottom: 16px;
 }
 
 .pages-login__form-input:not(:last-child) {
@@ -61,6 +60,6 @@ function gotoSignup() {
 }
 
 .pages-login__form-action > button:not(:last-child) {
-  margin-bottom: 27px;
+  margin-bottom: 16px;
 }
 </style>

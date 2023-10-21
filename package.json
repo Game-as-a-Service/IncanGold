@@ -31,6 +31,7 @@
   "dependencies": {
     "events": "^3.3.0",
     "pnpm": "^8.6.9",
+    "unctx": "^2.3.1",
     "vitest": "^0.33.0"
   }
 }

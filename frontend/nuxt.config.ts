@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   css: ['normalize.css/normalize.css'],
   app: {
     head: {
+      title: 'Incan Gold',
       link: [
         {
           rel: 'preconnect',

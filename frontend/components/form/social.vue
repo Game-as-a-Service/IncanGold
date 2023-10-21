@@ -74,7 +74,7 @@ const description = computed(() => {
 }
 
 .components-form-social-login > :last-child :not(:last-child) {
-  margin-right: 30px;
+  margin-right: 32px;
 }
 
 .components-form-social-login-button {
@@ -82,11 +82,12 @@ const description = computed(() => {
   border-radius: 100%;
   border-width: 0;
   background-color: transparent;
+  padding: 0;
 }
 
 .components-form-social-login-button img {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
   object-position: center;
 }

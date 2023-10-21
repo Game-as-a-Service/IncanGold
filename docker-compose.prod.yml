@@ -5,7 +5,7 @@ services:
     extends:
       file: docker-compose.base.yml
       service: backend
-    image: incan_gold
+    image: ${DOCKERHUB_USERNAME}/incan_gold:latest
     command: "tail -f /dev/null"
 
   db:

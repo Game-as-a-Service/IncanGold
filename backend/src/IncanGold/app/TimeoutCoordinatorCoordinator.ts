@@ -8,8 +8,8 @@ interface GameTask {
     timeId: number
 }
 
-function GameTask(round: number, turn: number, timeId:number):GameTask{
-    return {round,turn,timeId};
+function GameTask(round: number, turn: number, timeId: number): GameTask {
+    return { round, turn, timeId };
 }
 
 type GameId = string;
@@ -24,6 +24,7 @@ export class TimeoutCoordinator {
         this.manager = new Map<GameId, GameTask>();
         this.Repository = Repository;
         this.eventDispatcher = eventDispatcher;
+        this.onDelete();
     }
 
     addCountdownTimerTask(enforcePlayerChoicesInput: EnforcePlayerChoicesInput) {
@@ -43,7 +44,7 @@ export class TimeoutCoordinator {
 
     isAheadOfProgress(id: GameId, round: number, turn: number): boolean {
         const gameTask = this.manager.get(id);
-        if(!gameTask){
+        if (!gameTask) {
             this.manager.set(id, GameTask(round, turn, 0));
             return true;
         }
@@ -56,8 +57,11 @@ export class TimeoutCoordinator {
         return true;
     }
 
+    private onDelete() {
+        this.eventDispatcher.on('deleteGame', (gameId: string) => this.manager.delete(gameId))
+    }
+
     private get newRepo() {
         return new this.Repository();
     }
-
 }

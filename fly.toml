@@ -1,0 +1,25 @@
+# fly.toml app configuration file generated for incan-gold on 2023-09-15T18:52:18+08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "incan-gold"
+primary_region = "hkg"
+
+[env]
+  PORT = "{{PORT}}"
+  DB_PORT = "{{DB_PORT}}"
+  DB_HOST = "{{DB_HOST}}"
+  DB_USERNAME = "{{DB_USERNAME}}"
+  DB_NAME = "{{DB_NAME}}"
+
+[build]
+  image = "{{DOCKERHUB_USERNAME}}/incan_gold:latest"  
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]

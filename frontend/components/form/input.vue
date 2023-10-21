@@ -29,9 +29,6 @@ const inputValue = computed({
     emits('update:value', event)
   }
 })
-
-
-
 </script>
 
 <style>
@@ -47,15 +44,13 @@ const inputValue = computed({
 }
 
 .components-form-login-input :last-child {
-  width: 100%;
+  width: 390px;
   height: 42px;
-  font-size: 18px;
-  line-height: 38px;
-  padding: 2px 20px;
-  box-sizing: border-box;
   border-radius: 10px;
   border-width: 0;
   outline: none;
   background-color: rgba(186, 186, 186, 0.47);
+  padding: 12px;
+  color: #fff;
 }
 </style>

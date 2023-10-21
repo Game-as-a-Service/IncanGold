@@ -5,12 +5,9 @@ services:
     extends:
       file: docker-compose.base.yml
       service: backend
-    build: 
-      context: .
-      dockerfile: Dockerfile.backend
-      target: build_for_test
+    image: ${DOCKERHUB_USERNAME}/incan_gold_test:latest
     working_dir: /app/backend
-    command: npx vitest --run --dir ./test/IncanGold/unit_test
+    command: npx vitest --dir .\test
 
   db:
     extends:

@@ -3,7 +3,6 @@ import { IEventDispatcher } from "../../Shared/app/Interface/EventDispatcher";
 import { SocketManager } from "../../Shared/infra/socket";
 import { Output } from "../app/Dto/UseCaseOutput";
 import { EventName } from "../domain/IncanGold";
-import { t } from "vitest/dist/types-198fd1d9";
 
 export class IncanGoldEventDispatcher implements IEventDispatcher {
 

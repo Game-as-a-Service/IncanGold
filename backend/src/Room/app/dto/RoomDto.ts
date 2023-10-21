@@ -2,14 +2,10 @@ import { Room } from "../../domain/Room";
 import { Seat } from "../../domain/Seat";
 
 export function flattenToDto(room: Room): RoomDto {
+    const { id, name, unlockedSeats, host, isPrivate, canStartGame, state: roomStatus } = room;
     const roomDto: RoomDto = {
-        id: room.id,
-        name: room.name,
-        unlockedSeats: room.unlockedSeats,
-        host: room.host,
-        isPrivate: room.isPrivate,
-        seats: {},
-        canStartGame: room.canStartGame,
+        id, name, unlockedSeats, host, isPrivate, canStartGame, roomStatus,
+        seats: {}
     }
     const seats = [...room.seats.entries()];
     seats.forEach(([key, seat]) => {
@@ -24,8 +20,9 @@ export interface RoomDto {
     unlockedSeats: number;
     host: string; // playerId
     isPrivate: boolean; // private room
-    seats: Record<number, Seat>
+    seats: Record<number, Seat>;
     canStartGame: boolean;
+    roomStatus: string;
 }
 
 export function flattenToDtoForListRooms(room: Room) {
