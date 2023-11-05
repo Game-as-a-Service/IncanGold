@@ -1,6 +1,10 @@
 <script setup>
 console.clear();
 
+import { useVuelidate } from "@vuelidate/core";
+import { required, email, minLength, sameAs } from "@vuelidate/validators";
+const HOST = "https://incan-gold.fly.dev";
+
 const form = reactive({
   account: "",
   password: "",
@@ -8,54 +12,56 @@ const form = reactive({
   email: "",
 });
 
-const HOST = "https://incan-gold.fly.dev";
+const password = computed(() => form.password);
 
-const accountIsValid = computed(() => {
-  return form.account !== "";
-});
+const rules = {
+  account: { required, $autoDirty: true },
+  password: { required, $autoDirty: true, minLengthValue: minLength(8) },
+  confirmPassword: {
+    required,
+    $autoDirty: true,
+    sameAsPassword: sameAs(password),
+  },
+  email: { required, $autoDirty: true, email },
+};
 
-const pwdRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{4,}$/;
-const pwdIsValid = computed(() => {
-  return pwdRegex.test(form.password);
-});
+const v$ = useVuelidate(rules, form);
 
-const checkPwdIsValid = computed(() => {
-  return form.password === form.confirmPassword && form.confirmPassword != "";
-});
+// Helper function to simplify computed properties
+const getValidationInfo = (field) => {
+  return {
+    invalid: computed(() => v$.value[field].$invalid),
+    dirty: computed(() => v$.value[field].$dirty),
+  };
+};
 
-const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-const checkEmailIsValid = computed(() => {
-  return emailRegex.test(form.email);
-});
+const accountInvalid = getValidationInfo("account").invalid;
+const accountDirty = getValidationInfo("account").dirty;
+const pwdInvalid = getValidationInfo("password").invalid;
+const pwdDirty = getValidationInfo("password").dirty;
+const checkPwdInvalid = getValidationInfo("confirmPassword").invalid;
+const checkPwdDirty = getValidationInfo("confirmPassword").dirty;
+const emailInvalid = getValidationInfo("email").invalid;
+const emailDirty = getValidationInfo("email").dirty;
 
 function submitForm() {
-  if (form.password != form.confirmPassword) {
-    alert("密碼與確認密碼不相同");
-    return;
-  }
+  console.log("submit");
 
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  if (!emailRegex.test(form.email)) {
-    alert("email 格式不正確");
-    return;
-  }
-
-  const params = {
-    username: form.account,
-    password: form.password,
-    email: form.email,
-  };
-
-  useFetch(`${HOST}/users/register`, {
-    method: "POST",
-    body: params,
-  }).then((res) => {
-    if (res.data._value.message == "Username already exists") {
-      alert("帳號已存在");
-    } else {
-      alert("註冊成功");
-    }
-  });
+  // const params = {
+  //   username: form.account,
+  //   password: form.password,
+  //   email: form.email,
+  // };
+  // useFetch(`${HOST}/users/register`, {
+  //   method: "POST",
+  //   body: params,
+  // }).then((res) => {
+  //   if (res.data._value.message == "Username already exists") {
+  //     alert("帳號已存在");
+  //   } else {
+  //     alert("註冊成功");
+  //   }
+  // });
 }
 </script>
 
@@ -64,14 +70,82 @@ function submitForm() {
     <div class="pages-signup__main">
       <div class="pages-signup__form">
         <div class="pages-signup__form-info">
-          <form-input :class="['pages-signup__input', {'pages-signup__is-valid': accountIsValid, 'pages-signup__is-invalid':!accountIsValid}]"  label="帳號" v-model:value="form.account" />
-          <div :class="['pages-signup__warning',{'d-none': accountIsValid}]">請輸入帳號</div>
-          <form-input :class="['pages-signup__input', {'pages-signup__is-valid': pwdIsValid, 'pages-signup__is-invalid':!pwdIsValid}]" label="密碼" v-model:value="form.password"/>
-          <div :class="['pages-signup__warning',{'d-none': pwdIsValid}]">密碼格式錯誤</div>
-          <form-input :class="['pages-signup__input', {'pages-signup__is-valid': checkPwdIsValid, 'pages-signup__is-invalid':!checkPwdIsValid}]" label="確認密碼" v-model:value="form.confirmPassword"/>
-          <div :class="['pages-signup__warning',{'d-none': checkPwdIsValid}]">密碼與確認密碼不符</div>
-          <form-input :class="['pages-signup__input', {'pages-signup__is-valid': checkEmailIsValid, 'pages-signup__is-invalid':!checkEmailIsValid}]" label="E-mail" v-model:value="form.email"/>
-          <div :class="['pages-signup__warning',{'d-none': checkEmailIsValid}]">Email 格式錯誤</div>
+          <form-input
+            :class="[
+              'pages-signup__input',
+              {
+                'pages-signup__is-valid': !accountInvalid && accountDirty,
+                'pages-signup__is-invalid': accountInvalid && accountDirty,
+              },
+            ]"
+            label="帳號"
+            v-model:value="form.account"
+          />
+          <div
+            :class="[
+              'pages-signup__warning',
+              accountInvalid && accountDirty ? 'd-block' : 'd-none',
+            ]"
+          >
+            請輸入帳號
+          </div>
+          <form-input
+            :class="[
+              'pages-signup__input',
+              {
+                'pages-signup__is-valid': !pwdInvalid && pwdDirty,
+                'pages-signup__is-invalid': pwdInvalid && pwdDirty,
+              },
+            ]"
+            label="密碼"
+            v-model:value="form.password"
+          />
+          <div
+            :class="[
+              'pages-signup__warning',
+              pwdInvalid && pwdDirty ? 'd-block' : 'd-none',
+            ]"
+          >
+            密碼格式錯誤
+          </div>
+          <form-input
+            :class="[
+              'pages-signup__input',
+              {
+                'pages-signup__is-valid': !checkPwdInvalid && checkPwdDirty,
+                'pages-signup__is-invalid': checkPwdInvalid && checkPwdDirty,
+              },
+            ]"
+            label="確認密碼"
+            v-model:value="form.confirmPassword"
+          />
+          <div
+            :class="[
+              'pages-signup__warning',
+              checkPwdInvalid && checkPwdDirty ? 'd-block' : 'd-none',
+            ]"
+          >
+            密碼與確認密碼不符
+          </div>
+          <form-input
+            :class="[
+              'pages-signup__input',
+              {
+                'pages-signup__is-valid': !emailInvalid && emailDirty,
+                'pages-signup__is-invalid': emailInvalid && emailDirty,
+              },
+            ]"
+            label="E-mail"
+            v-model:value="form.email"
+          />
+          <div
+            :class="[
+              'pages-signup__warning',
+              emailInvalid && emailDirty ? 'd-block' : 'd-none',
+            ]"
+          >
+            Email 格式錯誤
+          </div>
         </div>
         <div class="pages-signup__form-action">
           <form-button text="註冊" @click="submitForm" />
