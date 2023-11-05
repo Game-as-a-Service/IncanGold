@@ -18,7 +18,7 @@ function submitForm() {
         <div class="pages-signup__form-info">
           <form-input class="pages-signup__input" label="帳號" v-model:value="form.account" />
           <form-input class="pages-signup__input" label="密碼" v-model:value="form.password" />
-          <form-input class="pages-signup__input" label="確認答案" v-model:value="form.confirmPassword" />
+          <form-input class="pages-signup__input" label="確認密碼" v-model:value="form.confirmPassword" />
           <form-input class="pages-signup__input" label="E-mail" v-model:value="form.email" />
         </div>
         <div class="pages-signup__form-action">
@@ -34,7 +34,6 @@ function submitForm() {
 
 <style>
 .pages-signup__main {
-  width: 587px;
   padding: 36px 98px 31px 98px;
 }
 
@@ -67,6 +66,6 @@ function submitForm() {
 
 .pages-signup__go-to-login a:active,
 .pages-signup__go-to-login a:focus {
-  color: #FFC700;
+  color: #ffc700;
 }
 </style>
