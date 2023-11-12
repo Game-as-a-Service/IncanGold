@@ -36,6 +36,9 @@ const getValidationInfo = (field) => {
 };
 
 const accountInvalid = getValidationInfo("account").invalid;
+console.log(accountInvalid);
+console.log(!accountInvalid);
+
 const accountDirty = getValidationInfo("account").dirty;
 const pwdInvalid = getValidationInfo("password").invalid;
 const pwdDirty = getValidationInfo("password").dirty;
