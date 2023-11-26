@@ -15,7 +15,10 @@ const form = reactive({
 const password = computed(() => form.password);
 
 const rules = {
-  account: { required, $autoDirty: true },
+  account: {
+    required,
+    $autoDirty: true,
+  },
   password: { required, $autoDirty: true, minLengthValue: minLength(8) },
   confirmPassword: {
     required,
@@ -35,10 +38,7 @@ const getValidationInfo = (field) => {
   };
 };
 
-const accountInvalid = getValidationInfo("account").invalid;
-// console.log(accountInvalid);
-// console.log(!accountInvalid);
-
+let accountInvalid = getValidationInfo("account").invalid;
 const accountDirty = getValidationInfo("account").dirty;
 const pwdInvalid = getValidationInfo("password").invalid;
 const pwdDirty = getValidationInfo("password").dirty;
@@ -48,23 +48,22 @@ const emailInvalid = getValidationInfo("email").invalid;
 const emailDirty = getValidationInfo("email").dirty;
 
 function submitForm() {
-  console.log("submit");
+  const params = {
+    username: form.account,
+    password: form.password,
+    email: form.email,
+  };
 
-  // const params = {
-  //   username: form.account,
-  //   password: form.password,
-  //   email: form.email,
-  // };
-  // useFetch(`${HOST}/users/register`, {
-  //   method: "POST",
-  //   body: params,
-  // }).then((res) => {
-  //   if (res.data._value.message == "Username already exists") {
-  //     alert("帳號已存在");
-  //   } else {
-  //     alert("註冊成功");
-  //   }
-  // });
+  useFetch(`${HOST}/users/register`, {
+    method: "POST",
+    body: params,
+  }).then((res) => {
+    if (res.data._value.message == "Username already exists") {
+      alert("帳號已存在");
+    } else {
+      alert("註冊成功");
+    }
+  });
 }
 </script>
 
@@ -73,7 +72,6 @@ function submitForm() {
     <div class="pages-signup__main">
       <div class="pages-signup__form">
         <div class="pages-signup__form-info">
-          <span style="color: white">{{ accountInvalid }}</span>
           <form-input
             :class="[
               'pages-signup__input',
@@ -152,7 +150,13 @@ function submitForm() {
           </div>
         </div>
         <div class="pages-signup__form-action">
-          <form-button text="註冊"  @click="submitForm" :disabled="accountInvalid" />
+          <form-button
+            text="註冊"
+            @click="submitForm"
+            :disabled="
+              accountInvalid || pwdInvalid || checkPwdInvalid || emailInvalid
+            "
+          />
           <div class="pages-signup__go-to-login">
             已有帳號? <router-link to="/login">點此登入</router-link>
           </div>
