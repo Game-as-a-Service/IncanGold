@@ -6,8 +6,8 @@ const form = reactive({
   password: "",
 });
 
-const HOST = "https://incan-gold.fly.dev";
-// const HOST = "http://localhost:8000";
+// const HOST = "https://incan-gold.fly.dev";
+const HOST = "http://localhost:8000";
 
 function submitForm() {
   const params = {
@@ -20,10 +20,10 @@ function submitForm() {
     body: params,
   })
     .then((res) => {
-      console.log(res);
+      console.log(res.data);
 
       alert(`登入成功`);
-      // router.push("/create-room");
+      router.push("/room-list");
     })
     .catch((err) => {
       console.log(err);
