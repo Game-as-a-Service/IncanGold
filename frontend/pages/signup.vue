@@ -36,8 +36,8 @@ const getValidationInfo = (field) => {
 };
 
 const accountInvalid = getValidationInfo("account").invalid;
-console.log(accountInvalid);
-console.log(!accountInvalid);
+// console.log(accountInvalid);
+// console.log(!accountInvalid);
 
 const accountDirty = getValidationInfo("account").dirty;
 const pwdInvalid = getValidationInfo("password").invalid;
@@ -73,6 +73,7 @@ function submitForm() {
     <div class="pages-signup__main">
       <div class="pages-signup__form">
         <div class="pages-signup__form-info">
+          <span style="color: white">{{ accountInvalid }}</span>
           <form-input
             :class="[
               'pages-signup__input',
@@ -151,7 +152,7 @@ function submitForm() {
           </div>
         </div>
         <div class="pages-signup__form-action">
-          <form-button text="註冊" @click="submitForm" />
+          <form-button text="註冊"  @click="submitForm" :disabled="accountInvalid" />
           <div class="pages-signup__go-to-login">
             已有帳號? <router-link to="/login">點此登入</router-link>
           </div>

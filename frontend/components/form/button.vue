@@ -25,7 +25,7 @@ const props = defineProps({
   },
 });
 
-const { text, type, disabled } = props;
+const { text, type, disabled } = toRefs(props);
 
 const emits = defineEmits(["click"]);
 
