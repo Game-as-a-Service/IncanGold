@@ -1,8 +1,7 @@
 <script setup>
-console.clear();
-
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, sameAs } from "@vuelidate/validators";
+const router = useRouter();
 const HOST = "https://incan-gold.fly.dev";
 
 const form = reactive({
@@ -29,8 +28,6 @@ const rules = {
 };
 
 const v$ = useVuelidate(rules, form);
-
-// Helper function to simplify computed properties
 const getValidationInfo = (field) => {
   return {
     invalid: computed(() => v$.value[field].$invalid),
@@ -62,6 +59,7 @@ function submitForm() {
       alert("帳號已存在");
     } else {
       alert("註冊成功");
+      router.push("/login");
     }
   });
 }
