@@ -1,17 +1,37 @@
 <script setup>
-const router = useRouter()
+const router = useRouter();
 
 const form = reactive({
-  account: '',
-  password: ''
-})
+  account: "",
+  password: "",
+});
+
+const HOST = "https://incan-gold.fly.dev";
+// const HOST = "http://localhost:8000";
 
 function submitForm() {
-  console.log('login')
+  const params = {
+    username: form.account,
+    password: form.password,
+  };
+
+  useFetch(`${HOST}/users/login`, {
+    method: "POST",
+    body: params,
+  })
+    .then((res) => {
+      console.log(res);
+
+      alert(`登入成功`);
+      // router.push("/create-room");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 function gotoSignup() {
-  router.push('/signup')
+  router.push("/signup");
 }
 </script>
 
@@ -20,8 +40,16 @@ function gotoSignup() {
     <div class="pages-login__main">
       <div class="pages-login__form">
         <div class="pages-login__form-info">
-          <form-input class="pages-login__form-input" label="帳號" v-model:value="form.account" />
-          <form-input class="pages-login__form-input" label="密碼" v-model:value="form.password" />
+          <form-input
+            class="pages-login__form-input"
+            label="帳號"
+            v-model:value="form.account"
+          />
+          <form-input
+            class="pages-login__form-input"
+            label="密碼"
+            v-model:value="form.password"
+          />
         </div>
         <div class="pages-login__form-action">
           <form-button text="登入" @click="submitForm" />
