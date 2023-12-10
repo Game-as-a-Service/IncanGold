@@ -1,5 +1,5 @@
 import express, { Express, NextFunction, Request, Response, Router } from "express";
-import { createServer, Server, IncomingMessage, ServerResponse } from "http";
+import { createServer, Server } from "http";
 import { SocketConnection } from "./src/Shared/infra/socket";
 import { AppDataSource, configDataSource } from "./src/Shared/infra/data-source";
 import { SharedRouter } from "./src/Shared/api/Shared.router";
@@ -11,7 +11,7 @@ dotenv.config();
 
 class Bootstrap {
     private readonly app: Express;
-    public readonly httpServer: Server<typeof IncomingMessage, typeof ServerResponse>;
+    public readonly httpServer: Server;
 
     constructor() {
         this.app = express();

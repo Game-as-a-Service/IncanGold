@@ -6,10 +6,11 @@ services:
       file: docker-compose.base.yml
       service: backend
     image: node:18.14.0-alpine
-    working_dir: /source
+    working_dir: /source/backend
     volumes:
       - .:/source
       - ./backend/node_modules:/source/backend/node_modules
+    command: ['npm', 'run', 'dev']
 
   db:
     extends:
