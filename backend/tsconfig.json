@@ -21,8 +21,8 @@
       "experimentalSpecifierResolution": "node"
     },
     "include": [
-      "**/*.ts",
-      "**/*.test.ts",
+      "./**/*.ts",
+      "./**/*.test.ts",
       "../packages/incan-gold-core/test",
     ]
   }

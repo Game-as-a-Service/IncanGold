@@ -4,10 +4,10 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test:incanGold_domain": "npx  vitest --run --dir ./test/IncanGold/unit_test", 
-    "build:for_test":"npx tsc",
+    "test:incanGold_domain": "npx  vitest --run --dir ./test/IncanGold/unit_test",
+    "build:for_test": "npx tsc",
     "build": "tsc -p tsconfig.prod.json",
-    "dev": "nodemon",
+    "dev": "npx ts-node main.ts",
     "start": "npx ts-node main.ts"
   },
   "type": "commonjs",
@@ -30,15 +30,15 @@
     "@types/node": "^16.11.10",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.2",
-    "vitest": "^0.33.0",
-    "nodemon": "^2.0.22",
     "dotenv": "^16.3.1",
+    "nodemon": "^2.0.22",
     "socket.io-client": "^4.7.2",
     "supertest": "^6.3.3",
     "testcontainers": "^9.12.0",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "ttypescript": "^1.5.15",
-    "typescript-transform-paths": "^3.4.6"
+    "typescript-transform-paths": "^3.4.6",
+    "vitest": "^0.33.0"
   }
 }

@@ -27,13 +27,16 @@ pnpm install
 pnpm dev:frontend
 ```
 
-## 前後端一起啟動
+檢查 localhost:300 是否正常
+
+## 啟動後端服務
+
+先開啟 docker
 
 在根目錄輸入
 
 ```
-pnpm install
-
-pnpm dev
+docker compose -f docker-compose.dev.yml u
 ```
 
+檢查 localhost:8000
