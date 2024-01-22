@@ -2,7 +2,7 @@ name: CICD
 
 on:
   push:
-    branches: [ "docker-compose-InBackend" ]
+    branches: [ "docker-compose-InBackend","main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -95,7 +95,12 @@ jobs:
     -
       name: Setup Flyctl
       uses: superfly/flyctl-actions/setup-flyctl@master
-    - 
+    -
+      name: deploy to another machine only for pull requests
+      if: ${{ github.event_name == 'pull_request' }} 
+      run: |
+        sed -i "s/incan-gold/incan-gold-pr/g" fly.toml
+    -
       name: Replace env variables
       run: |
         sed -i "s/{{PORT}}/$PORT/g" fly.toml

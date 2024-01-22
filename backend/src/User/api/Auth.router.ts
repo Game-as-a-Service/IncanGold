@@ -15,7 +15,7 @@ export function AuthRouter() {
     router.post('/register', controller.register);
 
     // get user's information
-    router.get('/', authenticate, controller.userInformation);
+    router.get('/me', authenticate, controller.userInformation);
 
     return router;
 }

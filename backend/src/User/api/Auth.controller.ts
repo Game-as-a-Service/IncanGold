@@ -36,16 +36,17 @@ export class AuthController {
 
         try {
             const token = jwt.sign({ id }, JWT_SECRET, { expiresIn: '10d' });
-            res.status(200).json({ message: 'Success!', token });
+            return  res.status(200).json({ message: 'Success!', token });
         } catch (err) {
-            console.log("40 : ", JWT_SECRET)
             console.log('auth controller 40 : ', err)
-            res.status(500).json({ message: 'Token generation failed' });
+            return res.status(500).json({ message: 'Token generation failed' });
         }
     }
 
     register = async (req: Request, res: Response) => {
         const { username, password, email } = req.body;
+        console.log(req.body);
+        console.log(username, password, email);
         if (!username || !password || !email)
             return res.status(400).json({ message: 'Missing required fields' });
         try {

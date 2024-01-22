@@ -10,6 +10,12 @@ services:
     volumes:
       - .:/source
       - ./backend/node_modules:/source/backend/node_modules
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        cd ./backend
+        npx ts-node ./src/IncanGoldForFrontendDev/frontendDev.ts
 
   db:
     extends:
