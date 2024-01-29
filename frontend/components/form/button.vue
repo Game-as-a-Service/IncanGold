@@ -13,11 +13,11 @@
 const props = defineProps({
   text: {
     type: String,
-    default: "",
+    default: '',
   },
   type: {
     type: String,
-    defualt: "button",
+    defualt: 'button',
   },
   disabled: {
     type: Boolean,
