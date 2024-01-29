@@ -25,12 +25,12 @@ const props = defineProps({
   },
 });
 
-const { text, type, disabled } = props;
+const { text, type, disabled } = toRefs(props);
 
-const emits = defineEmits(['click']);
+const emits = defineEmits(["click"]);
 
 function emitClick() {
-  emits('click');
+  emits("click");
 }
 </script>
 
@@ -54,6 +54,8 @@ function emitClick() {
 }
 
 .components-form-login-button:disabled {
+  background-color: lightgrey;
+  color: gray;
   cursor: not-allowed;
 }
 </style>
